@@ -17,9 +17,9 @@
 	</h:panelGrid>
 --%>
 	<h:panelGrid columns="1">
-<%--		<h:outputText value="#{msgs.recipients}" />
---%>		
-		<h:selectManyListbox id="selectTo" size="5" value="#{Mailtool.recipientSelector.selectedItems}">
+		<h:outputText value="Recipients:" />
+		
+		<h:selectManyListbox id="selectTo" size="15" value="#{Mailtool.recipientSelector.selectedItems}">
 	  		<f:selectItems value="#{Mailtool.recipientSelector.listbox}"/>
 		</h:selectManyListbox>
 	</h:panelGrid>
@@ -29,7 +29,7 @@
 		<sakai:button_bar>
 			<sakai:button_bar_item
 				action="#{Mailtool.recipientSelector.processSelectAll}"
-				value="#{msgs.select_all_button}"
+				value="Select All"
 				rendered="true"
 				immediate="false" />
 		</sakai:button_bar>	
@@ -37,7 +37,7 @@
 		<sakai:button_bar>	
 			<sakai:button_bar_item
 				action="#{Mailtool.recipientSelector.processSelectNone}"
-				value="#{msgs.select_none_button}"
+				value="Select None"
 				rendered="true"
 				immediate="false" />
 		</sakai:button_bar>	

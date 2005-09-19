@@ -1,105 +1,35 @@
-/**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2006 The Sakai Foundation.
-* 
-* Licensed under the Educational Community License, Version 1.0 (the "License"); 
-* you may not use this file except in compliance with the License. 
-* You may obtain a copy of the License at
-* 
-*      http://www.opensource.org/licenses/ecl1.php
-* 
-* Unless required by applicable law or agreed to in writing, software 
-* distributed under the License is distributed on an "AS IS" BASIS, 
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-* See the License for the specific language governing permissions and 
-* limitations under the License.
-*
-**********************************************************************************/
-
 /*
- * Created Apr 15, 2005 by Steven Githens (s-githens@northwestern.edu)
+ * Created on Apr 15, 2005
  *
- * Modified/Expanded Aug, 2006 by SOO IL KIM (kimsooil@bu.edu)
- * 
+ * TODO To change the template for this generated file go to
+ * Window - Preferences - Java - Code Style - Code Templates
  */
 package org.sakaiproject.tool.mailtool;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.io.FilenameUtils;
-
-import org.sakaiproject.tool.cover.ToolManager;
-import org.sakaiproject.email.cover.EmailService;
-import org.sakaiproject.event.cover.NotificationService;
-import org.sakaiproject.authz.api.AuthzGroup;
-import org.sakaiproject.authz.cover.AuthzGroupService;
-import org.sakaiproject.authz.api.Role;
-import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.content.cover.ContentHostingService;
-import org.sakaiproject.site.api.Group;
-import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.api.ToolConfiguration;
-import org.sakaiproject.time.cover.TimeService;
-import org.sakaiproject.user.api.User;
-import org.sakaiproject.user.cover.UserDirectoryService;
-import org.sakaiproject.mailarchive.api.MailArchiveChannel;
-import org.sakaiproject.mailarchive.api.MailArchiveMessageEdit;
-import org.sakaiproject.mailarchive.api.MailArchiveMessageHeaderEdit;
-import org.sakaiproject.mailarchive.cover.MailArchiveService;
-import org.sakaiproject.entity.api.ResourcePropertiesEdit;
-import org.sakaiproject.site.cover.SiteService;
-
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIParameter;
-import javax.faces.context.ExternalContext;
+import org.sakaiproject.api.kernel.tool.cover.ToolManager;
+import org.sakaiproject.service.framework.email.EmailService;
+import org.sakaiproject.service.legacy.notification.NotificationService;
+import org.sakaiproject.service.legacy.realm.Realm;
+import org.sakaiproject.service.legacy.realm.RealmService;
+import org.sakaiproject.service.legacy.site.ToolConfiguration;
+import org.sakaiproject.service.legacy.time.cover.TimeService;
+import org.sakaiproject.service.legacy.user.User;
+import org.sakaiproject.service.legacy.user.UserDirectoryService;
+import org.sakaiproject.service.legacy.email.MailArchiveChannel;
+import org.sakaiproject.service.legacy.email.MailArchiveMessageEdit;
+import org.sakaiproject.service.legacy.email.MailArchiveMessageHeaderEdit;
+import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
 import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
-import javax.faces.model.SelectItem;
-import javax.faces.event.ActionEvent;
-import javax.faces.event.AbortProcessingException;
-
-import java.util.Properties;
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.InternetAddress;
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
-
-import org.sakaiproject.tool.mailtool.Attachment;
 
 public class Mailtool
 {
-	
-	private final Log log = LogFactory.getLog(this.getClass());
-
-	protected FacesContext facesContext = FacesContext.getCurrentInstance();
-
 	protected boolean DEBUG_NO_EMAIL = true;
 	
 	protected static final int NUMBER_ROLES = 15;
@@ -108,181 +38,105 @@ public class Mailtool
 	protected String m_realm = "";
 	
 	protected List /* EmailRole */ m_emailroles = new ArrayList();
-	protected String m_recipview = "";
-	protected String uploaddirectoryDefault="/tmp/";
-	protected String recipviewDefault="user";
+	protected String m_recipview = "role";
 	
 	/** For Main.jsp **/
 	protected String m_subject = "";
 	protected String m_body = "";
-	protected String m_editortype="";
-	
-	protected boolean is_fckeditor=false;
-	protected boolean is_htmlarea=false;
 
-	protected RecipientSelector m_recipientSelector = null;
 	protected boolean m_selectByRole = false;
 	protected boolean m_selectByUser = false;
 	protected boolean m_selectByTree = false;
 	protected boolean m_selectSideBySide = false;
 	protected boolean m_selectByFoothill = false;
-	protected boolean m_archiveMessage = false;
-	protected boolean m_sendmecopy = false;
-
-	private String m_recipJSPfrag = "";
-	private boolean m_buildNewView = false;
-	private String m_changedViewChoice = "";
-
+	
 	/** For Results.jsp **/
 	protected String m_results = "";
+	
 	
 	/***********************/
 	/** Set Sakai Services */
 	protected ToolConfiguration m_toolConfig = null;
-
-	
-	//protected EmailService m_emailService = null;
 	protected EmailService m_emailService = null;
+	protected UserDirectoryService m_userDirectoryService = null;
+	protected RealmService m_realmService = null;
 	
-	private UserDirectoryService m_userDirectoryService;
-	private AuthzGroupService m_realmService;
-	private AuthzGroup arole;
-	
-	private SiteService siteService;
-	protected Site currentSite = null;
-	//protected Logger logger = null;  // by SK 6/30/2006
-
-//	protected int MAXFILE=readMAXFILE();
-	
-	private List attachedFiles = new ArrayList();
-	private int MaxNumAttachment=readMaxNumAttachment();
-	private String filename="";
-	private int num_files=0;
-	private int num_id=0;
-	private boolean attachClicked=false;
-//	protected String uploaddirectory="";
-	protected String eid="";
-	
-	public void setattachClicked(boolean a)
-	{
-		this.attachClicked=a;
-	}
-	public boolean getattachClicked()
-	{
-		return attachClicked;
-	}
 	protected String getConfigParam(String parameter)
 	{
-		String p=ToolManager.getCurrentPlacement().getPlacementConfig().getProperty(parameter);
-		if (p==null) return "";
-		return p;
+		return ToolManager.getCurrentPlacement().getPlacementConfig().getProperty(parameter);
 	}
-	protected String getSiteID()
-	{
-		String id=ToolManager.getCurrentPlacement().getContext();
-		return id;
-	}
-	protected String getSiteType()
-	{
-		String sid=getSiteID();
-		String type="";
-		try{
-		type=SiteService.getSite(sid).getType();
-		}
-		catch(Exception e)
-		{		
-		}
-		return type;
-	}
-	protected String getSiteTitle()
-	{
-		String sid=getSiteID();
-		String title="";
-		try{
-			title=SiteService.getSite(sid).getTitle();
-		}
-		catch (Exception e)
-		{
-		}
-		return title;
-		
-	}
-	//public void setEmailService(EmailService service) { this.m_emailService = service; }
-	public void setUserDirectoryService(UserDirectoryService service) { this.m_userDirectoryService = service; }
-	public void setAuthzGroupService(AuthzGroupService service) { this.m_realmService = service; }
-	//public void setLogger(Logger logger) { this.logger = logger; } // by SK 6/30/2006
 	
-
+	public void setEmailService(EmailService service) { this.m_emailService = service; }
+	public void setUserDirectoryService(UserDirectoryService service) { this.m_userDirectoryService = service; }
+	public void setRealmService(RealmService service) { this.m_realmService = service; }
+	
 	/**  Done Setting Sakai Services **/
+	
 	
 	public Mailtool()
 	{
-		log.debug("Constructor");
-		//System.out.println("site title="+getSiteTitle());
-		//System.out.println("site type="+getSiteType());
-		//System.out.println("site id="+getSiteID());
-	}
-	public String getfilename()
-	{
-		return filename;
-	}
-	public void setfilename(String filename)
-	{
-		this.filename=filename;
-	}
-	public int getnum_files()
-	{
-		return this.num_files;
-	}
-	public void setnum_files(int num_files)
-	{
-		this.num_files=num_files;
-	}
-	public String getEditorType()
-	{
-		String editortype = this.getConfigParam("wysiwygeditor");		
-		return editortype;
-	}
 
-	public int readMaxNumAttachment()
-	{
-		try{
-			//int maxnumattachment = Integer.parseInt(this.getConfigParam("max.num.attachment"));		
-			int maxnumattachment = Integer.parseInt(ServerConfigurationService.getString("mailtool.max.num.attachment"));
-			return maxnumattachment;
-		}
-		catch (NumberFormatException e)
-		{
-			return 10000; // Actually this means "unlimited if not set or invalid"
-		}
-	}
-	public int getMaxNumAttachment()
-	{
-		return MaxNumAttachment;
-	}
-
-	public void setMaxNumAttachment(int m)
-	{
-		this.MaxNumAttachment=m;
-	}
-
-	public String getUploadDirectory()
-	{
-		String ud=ServerConfigurationService.getString("mailtool.upload.directory");
-		if (ud!="" && ud!=null)
-		{
-			File dir = new File(ud);
-			if (dir.isDirectory())
-				return ud;
-		}
-		
-		return uploaddirectoryDefault;
-	}
-	public void setEditorType(String editor)
-	{
-		m_editortype = editor;
 	}
 	
+	/* JavaScript should look like this.
+	<script language="JavaScript" type="text/javascript">
+	var groups = new Array();
+
+	var teachers = new Array();
+	teachers[teachers.length] = new User("user004", "User, Four", "u@four.org");
+	teachers[teachers.length] = new User("user005", "User, Five", "u@five.org");
+	groups[groups.length] = new Group("realm2", "Teachers", "Teacher", teachers);
+	
+	var users = new Array();
+	users[users.length] = new User("user001", "User, kljkjl", "u@one.org");
+	users[users.length] = new User("user002", "asdfsf, Two", "u@two.org");
+	users[users.length] = new User("user003", "User, Three", "u@three.org");
+	users[users.length] = new User("user006", "User, Six", "u@six.org");
+	users[users.length] = new User("user007", "User, Seven", "u@seven.org");
+	users[users.length] = new User("user008", "User, Eight", "u@eight.org");
+	groups[groups.length] = new Group("realm1", "Students", "Student", users);
+	
+	populate(groups);
+	*/
+	public String getInitJavascript()
+	{
+		System.out.println("SWG: Checking out the Client IDs");
+		for (Iterator i = FacesContext.getCurrentInstance().getClientIdsWithMessages(); i.hasNext();)
+		{
+			Object o = i.next();
+			System.out.println(o.getClass().toString());
+			System.out.println(o.toString());
+		}
+		System.out.println("SWG: getInitJavascript");
+		String retval = "<script language=\"JavaScript\" type=\"text/javascript\">\n"; 
+		retval += "function addusers()\n{";
+		retval += "var groups = new Array();\n";
+		
+		List emailgroups = this.getEmailGroups();
+		for (Iterator i = emailgroups.iterator(); i.hasNext();)
+		{
+			EmailGroup egroup = (EmailGroup) i.next();
+			String roleid = egroup.getEmailrole().getRoleid();
+			String rolearray = roleid + "_array";
+			retval += "var " + rolearray + " = new Array();\n";
+			
+			for (Iterator j = egroup.getEmailusers().iterator(); j.hasNext();)
+			{
+				EmailUser u = (EmailUser) j.next();
+				retval += rolearray + "[" + rolearray + ".length] = new User(\"" +
+					u.getUserid() + "\", \"" + u.getDisplayname() + "\", \"" +
+					u.getEmail() + "\");\n";
+			}
+			retval += "groups[groups.length] = new Group(\"" + roleid + "\", \"" +
+				egroup.getEmailrole().getRoleplural() + "\", \"" +
+				egroup.getEmailrole().getRolesingular() + "\", " + rolearray + ");\n";
+		}
+		
+		retval += "populate(groups);\n";
+		retval += "}</script>\n";
+		return retval;
+	}
+
 	public String getMessageSubject()
 	{
 		return m_subject;
@@ -314,13 +168,10 @@ public class Mailtool
 		return m_recipJSPfrag;
 	}
 	
+	private String m_recipJSPfrag = "";
 	protected void setSelectorType()
 	{	
-		String type = "";
-		if (m_changedViewChoice.equals(""))
-			type = getRecipview();
-		else 
-			type = m_changedViewChoice;
+		String type = getRecipview();
 		
 		m_selectByRole = false;
 		m_selectByUser = false;
@@ -395,11 +246,8 @@ public class Mailtool
 		this.m_recipientSelector = null;
 		this.m_subject = "";
 		this.m_body = "";
-		num_files=0;
-		attachedFiles.clear();
-		return "main_twopage";
+		return "main";
 	}
-//	public String processSendEmail(){ return "results";}
 	
 	public String processSendEmail()
 	{
@@ -437,134 +285,56 @@ public class Mailtool
 			subject = m_subject;
 		
 		//Should we append this to the archive?
-		/////String emailarchive = this.getConfigParam("emailarchive");
-		String emailarchive="/mailarchive/channel/"+getSiteID()+"/main";
-		/////if ((emailarchive != "") && (m_archiveMessage))
-		if (m_archiveMessage)
+		String emailarchive = this.getConfigParam("emailarchive");
+		if ((emailarchive != "") && (m_archiveMessage))
 		{
-			String attachment_info="<br/>";
-			Attachment a=null;
-	    	Iterator iter = attachedFiles.iterator();
-	    	int i=0;
-			while(iter.hasNext()) {
-				a = (Attachment) iter.next();
-				attachment_info+="<br/>";
-				attachment_info+="Attachment #"+(i+1)+": "+a.getFilename()+"("+a.getSize()+" Bytes)";
-				i++;
-			}
-			this.appendToArchive(emailarchive, fromString, subject, m_body+attachment_info);
+			this.appendToArchive(emailarchive, fromString, subject, m_body);
 		}
-		List headers = new ArrayList(); 
-		if (isFCKeditor() || isHTMLArea())
-			headers.add("content-type: text/html");
-		else
-			headers.add("content-type: text/plain");
-
-		String smtp_server = ServerConfigurationService.getString("smtp@org.sakaiproject.email.api.EmailService");
-		//String smtp_port = ServerConfigurationService.getString("smtp.port");
-
-		try 
-		{	
-/*
-			m_emailService.send(fromString,// fromString
-					       		toEmail,  // toString
-								subject,   // subject 
-								m_body,	   // content
-								null,   // headerToStr
-								null, // replyToStr
-								headers);
-*/
-    		  Properties props = new Properties();
-    		  props.put("mail.smtp.host", smtp_server);
-    		  //props.put("mail.smtp.port", smtp_port);
-    		  Session s = Session.getInstance(props,null);
-
-    		  MimeMessage message = new MimeMessage(s);
-
-    		  InternetAddress from = new InternetAddress(fromString);
-    		  message.setFrom(from);
-    		  
-//    		  String toAddresses = toEmail;
- //   		  message.addRecipients(Message.RecipientType.TO, toAddresses);
-    		  message.setSubject(subject);
-    		  String text = m_body;
-    		 String attachmentdirectory=getUploadDirectory();
-    		 
-		  		// Create the message part
-  			BodyPart messageBodyPart = new MimeBodyPart();
-
-  			// Fill the message
-			String messagetype="";
-			if (isFCKeditor() || isHTMLArea()){
-				messagetype="text/html";
-			}
-			else{
-				messagetype="text/plain";
-			}
-			messageBodyPart.setContent(text, messagetype);
-			Multipart multipart = new MimeMultipart();
-			multipart.addBodyPart(messageBodyPart);
-
-			// Part two is attachment
-			Attachment a=null;
-	    	Iterator iter = attachedFiles.iterator();
-			while(iter.hasNext()) {
-				a = (Attachment) iter.next();
-    			messageBodyPart = new MimeBodyPart();
-    			DataSource source = new FileDataSource(attachmentdirectory + this.getCurrentUser().getUserid()+"-"+a.getFilename());
-    			messageBodyPart.setDataHandler(new DataHandler(source));
-    			messageBodyPart.setFileName(a.getFilename());
-    			multipart.addBodyPart(messageBodyPart);
-    		}
-			message.setContent(multipart);
-
-
 		
 		//Send the emails
-		String recipientsString="";
-		for (Iterator i = emailusers.iterator(); i.hasNext();recipientsString+=",")
+		for (Iterator i = emailusers.iterator(); i.hasNext();)
 		{
-
 			EmailUser euser = (EmailUser) i.next();
 			
 			String toEmail = euser.getEmail(); // u.getEmail();
 			String toDisplay = euser.getDisplayname(); // u.getDisplayName();
 			String toString = toDisplay + " <" + toEmail + ">";
-
-			recipientsString+=toEmail;
-
-	   		/////message.addRecipients(Message.RecipientType.TO, toEmail);
-	   		
+			
+			try 
+			{
+				log("SWG Sending email with: fromString=" + fromString + 
+			        "  toString=" + toString + 
+					"  subject=" + subject +
+					"  headerToStr=" + toString + 
+					"  replyToStr=" + fromString );
+				
+				m_emailService.send(fromString,// fromString
+						       		toEmail,  // toString
+									subject,   // subject 
+									m_body,	   // content
+									null,   // headerToStr
+									null, // replyToStr
+									null);
+			}
+			catch (Exception e)
+			{
+				log("SWG Exception while trying to send the email: " + e.getMessage());
+			}
+			
 			if (i.hasNext())
 			{
-				m_results += toDisplay + "/ ";
+				m_results += toDisplay + ", ";
 			}
 			else
 			{
 				m_results += toDisplay;
 			}
-			
-		}
-		if (m_sendmecopy) message.addRecipients(Message.RecipientType.CC, fromEmail);
-
-		message.addRecipients(Message.RecipientType.TO, recipientsString);
-	
-		Transport.send(message);		
-		}
-		catch (Exception e)
-		{
-			//logger.debug("SWG Exception while trying to send the email: " + e.getMessage());
-			// by SK 6/30/2006
-			
-			log.debug("SWG Exception while trying to send the email: " + e.getMessage());
 		}
 		
 		//	Clear the Subject and Body of the Message
 		m_subject = "";
 		m_body = "";
-		num_files=0;
-		attachedFiles.clear();
-
+		
 		/* Display Users with Bad Emails if the option is
 		 * turned on.
 		 */
@@ -572,6 +342,7 @@ public class Mailtool
 		
 		if (showBadEmails.booleanValue() == true)
 		{
+			log("SWG inside print bad if statement");
 			m_results += "<br/><br/>";
 				
 			List /* String */ badnames = new ArrayList();
@@ -595,7 +366,7 @@ public class Mailtool
 				{
 					String name = (String) i.next();
 					if (i.hasNext() == true)
-						m_results += name + "/ ";
+						m_results += name + ", ";
 					else 
 						m_results += name;
 				}
@@ -605,63 +376,10 @@ public class Mailtool
 		return "results";
 	}
 	
-	
-	public void setViewChoice(String view)
-	{
-		if (m_changedViewChoice.equals(view))
-		{
-			m_buildNewView = false;
-		}
-		else
-		{
-			m_changedViewChoice = view;
-			m_buildNewView = true;
-		}
-	}
-	
-	public String getViewChoice()
-	{
-		if (m_changedViewChoice.equals(""))
-			return this.getRecipview();
-		else
-			return m_changedViewChoice;
-	}
-	
-	public List /* SelectItemGroup */ getViewChoiceDropdown()
-	{
-		List selectItems = new ArrayList();
-		
-		SelectItem item = new SelectItem();
-		item.setLabel("User");
-		item.setValue("user");
-		selectItems.add(item);
-		
-		item = new SelectItem();
-		item.setLabel("Role");
-		item.setValue("role");
-		selectItems.add(item);
-		
-		item = new SelectItem();
-		item.setLabel("Tree");
-		item.setValue("tree");
-		selectItems.add(item);
-		
-		item = new SelectItem();
-		item.setLabel("Side By Side");
-		item.setValue("sidebyside");
-		selectItems.add(item);
-		
-		item = new SelectItem();
-		item.setLabel("Foothill");
-		item.setValue("foothill");
-		selectItems.add(item);
-		
-		return selectItems;
-	}
-	
+	protected RecipientSelector m_recipientSelector = null;
 	public RecipientSelector getRecipientSelector()
 	{
-	 if ((m_recipientSelector == null) || (m_buildNewView == true))
+	 if (m_recipientSelector == null)
 	 {
 		List emailGroups = getEmailGroups();
 		
@@ -691,10 +409,14 @@ public class Mailtool
 		}
 		
 		m_recipientSelector.populate(emailGroups);
-		m_buildNewView = false;
 	 }
 		
 		return m_recipientSelector;
+	}
+
+	protected void log(String message)
+	{
+		System.out.println(message);
 	}
 	
 	/*
@@ -703,12 +425,8 @@ public class Mailtool
 	public String getSubjectPrefix()
 	{
 		String prefix = this.getConfigParam("subjectprefix");        //propsedit.getProperty("subjectprefix");
-		if (prefix == null || prefix == "")
-		{
-			String titleDefault=getSiteTitle()+": ";
-			return titleDefault;
-			//return "";
-		}
+		if (prefix == null)
+			return "";
 		else
 			return prefix;
 	}
@@ -720,91 +438,26 @@ public class Mailtool
 	{
 		//String recipview = m_toolConfig.getPlacementConfig().getProperty("recipview");
 		String recipview = this.getConfigParam("recipview");
-		if (recipview == null || recipview=="")
-			return recipviewDefault;
+		if (recipview == null)
+			return "";
 		else 
 			return recipview;
 	}
 	
 	public boolean isAllowedToSend()
 	{
-/***		String siteid = this.getConfigParam("mail.newlock.siteid");
+		String siteid = this.getConfigParam("mail.newlock.siteid");
+		//System.out.println("SWG: isAllowedToSend, " + siteid);
 		if (siteid == null)
 			return true;
 		
 		if (siteid.equals(""))
 			return true;
-		***/
-		String siteid="/site/"+getSiteID();
-		//return m_realmService.unlock(this.getCurrentUser().getUserid(), "mail.new", siteid);
-		return m_realmService.isAllowed(this.getCurrentUser().getUserid(), "mail.new", siteid);
-
+		
+		return m_realmService.unlock(this.getCurrentUser().getUserid(), "mail.new", siteid);
 	}
-
-	public boolean isFCKeditor()
-	{
-		String editortype=this.getConfigParam("wysiwygeditor");
-		if (editortype.equals("") || editortype==null)
-		{
-			editortype = ServerConfigurationService.getString("wysiwyg.editor");
-			if (editortype == null)
-				return false;
-		
-			if (editortype.equals(""))
-				return false;
-		
-			if (editortype.equalsIgnoreCase("fckeditor"))
-				return true;
-
-			return false;
-		}
-		else if (editortype.equalsIgnoreCase("fckeditor"))
-			return true;
-		
-		return false;
-	}
-	public boolean isHTMLArea()
-	{
-/*		
-		String editortype = this.getConfigParam("wysiwygeditor");
-		if (editortype == null)
-			return false;
-		
-		if (editortype.equals(""))
-			return false;
-		
-		if (editortype.equalsIgnoreCase("htmlarea"))
-			return true;
-
-		return false;
-*/
-		String editortype=this.getConfigParam("wysiwygeditor");
-		if (editortype.equals("") || editortype==null)
-		{
-			editortype = ServerConfigurationService.getString("wysiwyg.editor");
-			if (editortype == null)
-				return false;
-		
-			if (editortype.equals(""))
-				return false;
-		
-			if (editortype.equalsIgnoreCase("htmlarea"))
-				return true;
-
-			return false;
-		}
-		else if (editortype.equalsIgnoreCase("htmlarea"))
-			return true;
-		
-		return false;		
-	}
-
-	public boolean isPlainTextEditor()
-	{
-		if (isFCKeditor() || isHTMLArea()) return false;
-		
-		return true;
-	}
+	
+	
 	/*
 	 * Get Information from the Tool Config
 	 */
@@ -828,25 +481,7 @@ public class Mailtool
 	{
 		
 		List /* EmailRole */ theroles = new ArrayList();
-		String siteid=getSiteID();
-		String sitetype=getSiteType();
-/*		
-		if (sitetype.equals("project")){
-			EmailRole emailrole=new EmailRole("/site/"+siteid, "maintain", "Maintain", "Maintain roles");
-			theroles.add(emailrole);
-			EmailRole emailrole2=new EmailRole("/site/"+siteid, "access", "Access", "Access roles");
-			theroles.add(emailrole2);
-		}
-		else if (sitetype.equals("course")){
-			EmailRole emailrole=new EmailRole("/site/"+siteid, "Instructor", "Instructor", "Instructors");
-			theroles.add(emailrole);
-			EmailRole emailrole2=new EmailRole("/site/"+siteid, "Student", "Student", "Students");
-			theroles.add(emailrole2);
-			EmailRole emailrole3=new EmailRole("/site/"+siteid, "Teaching Assistant", "TA", "TAs");
-			theroles.add(emailrole3);
-		}
-*/
-		boolean already_configured=false;
+		
 		for (int i = 1; i < (NUMBER_ROLES+1); i++)
 		{
 			String rolerealm = this.getConfigParam("role" + i + "realmid");
@@ -861,40 +496,14 @@ public class Mailtool
 			{
 				EmailRole emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural);
 				theroles.add(emailrole);
-				already_configured=true;
 			}
 		}	
-		if (already_configured==false){
-			String realmid="/site/"+siteid;
-			try{
-			arole=m_realmService.getAuthzGroup(realmid);
-			} catch (Exception e){}
-			for (Iterator i = arole.getRoles().iterator(); i.hasNext(); ) {
-				Role r = (Role) i.next();
-				String rolename=r.getId();
-				EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, rolename, rolename);
-				theroles.add(emailrole);
-			}
-/*			
-			try{
-			currentSite = siteService.getSite(siteid);
-			}
-			catch(Exception e) {}
-			Collection groups = currentSite.getGroups();
-			for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
-			      Group currentGroup = (Group) groupIterator.next();
-			      String groupname=currentGroup.getTitle();
-			      EmailRole emailrole2=new EmailRole("/site/"+siteid, groupname, groupname, groupname);
-			      theroles.add(emailrole2);
-			}
-			*/
-		}
+		
 		return theroles;
 	}
 	
 	public boolean isEmailArchived()
 	{
-		
 		String emailarchive = this.getConfigParam("emailarchive");
 		if (emailarchive == null)
 			return false;
@@ -904,7 +513,8 @@ public class Mailtool
 		
 		return true;
 	}
-
+	
+	boolean m_archiveMessage = false;
 	public boolean isArchiveMessage()
 	{
 		return m_archiveMessage;
@@ -914,16 +524,6 @@ public class Mailtool
 	{
 		m_archiveMessage = value;
 	}
-
-	public boolean isSendMeCopy()
-	{
-		return m_sendmecopy;
-	}
-	
-	public void setSendMeCopy(boolean value)
-	{
-		m_sendmecopy = value;
-	}	
 	
 	/*
 	 * Build all groups that will be used for this
@@ -940,25 +540,23 @@ public class Mailtool
 			
 			String realmid = emailrole.getRealmid();
 			
-			AuthzGroup therealm = null;
+			Realm therealm = null;
 			try {
-				//therealm = m_realmService.getRealm(realmid);
-				therealm = m_realmService.getAuthzGroup(realmid);
+				therealm = m_realmService.getRealm(realmid);
 			} catch (Exception e) {}
 			
-			//Set users = therealm.getUsersWithRole(emailrole.getRoleid());
-			Set users = therealm.getUsersHasRole(emailrole.getRoleid());
+			Set users = therealm.getUsersWithRole(emailrole.getRoleid());
 			List /* EmailUser */ mailusers = new ArrayList();
 			for (Iterator j = users.iterator(); j.hasNext();)
 			{
 				String userid = (String) j.next();
 				try {
 					User theuser = m_userDirectoryService.getUser(userid);
-					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
+					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getDisplayName(), theuser.getEmail());
 					mailusers.add(emailuser);
 				} catch (Exception e) {}
 			}
-			Collections.sort(mailusers);
+			
 			EmailGroup thegroup = new EmailGroup(emailrole, mailusers);
 			thegroups.add(thegroup);
 		}
@@ -981,10 +579,7 @@ public class Mailtool
 		}
 		catch (Exception e)
 		{
-			//logger.debug("Exception: MailtoolBackend.getCurrentUser, " + e.getMessage());
-//			 by SK 6/30/2006
-			log.debug("Exception: MailtoolBackend.getCurrentUser, " + e.getMessage());
-
+			log("Exception: MailtoolBackend.getCurrentUser, " + e.getMessage());
 		}
 		
 		return euser;
@@ -1006,29 +601,12 @@ public class Mailtool
 		
 		if (channel == null)
 		{	
-			//logger.debug("Mailtool: The channel: " + channelRef + " is null.");
-//			 by SK 6/30/2006
-			log.debug("Mailtool: The channel: " + channelRef + " is null.");
-
+			System.out.println("SWG: The channel: " + channelRef + " is null.");
 			return false;
 		}
 		List mailHeaders = new Vector();
-//		mailHeaders.add(MailArchiveService.HEADER_OUTER_CONTENT_TYPE + ": text/plain; charset=ISO-8859-1");
-//		mailHeaders.add(MailArchiveService.HEADER_INNER_CONTENT_TYPE + ": text/plain; charset=ISO-8859-1");
-////		mailHeaders.add(MailArchiveService.HEADER_OUTER_CONTENT_TYPE + ": text/html; charset=ISO-8859-1");
-////		mailHeaders.add(MailArchiveService.HEADER_INNER_CONTENT_TYPE + ": text/html; charset=ISO-8859-1");
-
-		if (isFCKeditor() || isHTMLArea())
-		{
-			mailHeaders.add(MailArchiveService.HEADER_OUTER_CONTENT_TYPE + ": text/html; charset=ISO-8859-1");
-			mailHeaders.add(MailArchiveService.HEADER_INNER_CONTENT_TYPE + ": text/html; charset=ISO-8859-1");
-		}
-		else
-		{
-			mailHeaders.add(MailArchiveService.HEADER_OUTER_CONTENT_TYPE + ": text/plain; charset=ISO-8859-1");
-			mailHeaders.add(MailArchiveService.HEADER_INNER_CONTENT_TYPE + ": text/plain; charset=ISO-8859-1");
-		}
-	
+		mailHeaders.add(MailArchiveService.HEADER_OUTER_CONTENT_TYPE + ": text/plain; charset=ISO-8859-1");
+		mailHeaders.add(MailArchiveService.HEADER_INNER_CONTENT_TYPE + ": text/plain; charset=ISO-8859-1");
 		mailHeaders.add("Mime-Version: 1.0");
 		mailHeaders.add("From: " + sender);
 		mailHeaders.add("Reply-To: " + sender);
@@ -1055,107 +633,5 @@ public class Mailtool
 		}
 		return true;
 	}
-
-	
-	public void processFileUpload(ValueChangeEvent event) throws AbortProcessingException
-	{
-		
-		Attachment att = new Attachment();
-		int maxnumattachment=getMaxNumAttachment();
-		if (num_files < maxnumattachment){
-	    try
-	    {
-	        FileItem item = (FileItem) event.getNewValue();
-	        String fieldName = item.getFieldName();
-	        String fileName = item.getName();
-	        long fileSize = item.getSize();
-	        //System.out.println("processFileUpload(): item: " + item + " fieldname: " + fieldName + " filename: " + fileName + " length: " + fileSize);
-	   
-            filename = item.getName();
-			if (filename != null) {
-				filename = FilenameUtils.getName(filename);
-				att.setFilename(filename);
-			}
-			String ud = getUploadDirectory();
-			File dir = new File(ud);
-
-			if (isNotAlreadyUploaded(filename, attachedFiles)==false && dir.isDirectory())
-			{
-				//System.out.println("NAME: "+filename);
-				System.out.println("SIZE: "+item.getSize());
-
-				//File fNew= new File("C:\\Program Files\\Apache Software Foundation\\Tomcat 5.5\\temp\\", filename);
-				//File fNew= new File(ServerConfigurationService.getString("mailtool.upload.directory"), this.getCurrentUser().getUserid()+"-"+filename);
-				File fNew= new File(getUploadDirectory(), this.getCurrentUser().getUserid()+"-"+filename);
-				
-				// in IE, fi.getName() returns full path, while in FF, returns only name.
-				//File fNew= new File("/upload/", fi.getName());
-				//files[num_files]=filename;
-				//sizes[num_files]=(String) Long.toString(fileSize);
-				
-				att.setSize((String) Long.toString(fileSize));
-				att.setId(num_id);
-
-				System.out.println(fNew.getAbsolutePath());
-				num_files++;
-				num_id++;
-				item.write(fNew);
-				
-				attachedFiles.add(att);
-			}
-    		
-	    }
-	    catch (Exception ex)
-	    {
-	        // handle exception
-	    }
-		} // end if
-	}	
-
-	public List getAllAttachments() {
-
-	return attachedFiles;	
-	}
-	
-	    public static String getFacesParamValue(FacesContext fc, String name) {
-	        return (String) fc.getCurrentInstance().getExternalContext().getRequestParameterMap().get(name);
-	    }
-
-	    public void processRemoveFile()
-	    {
-	    	String id = getFacesParamValue(facesContext, "id");
-//	    	int index=Integer.parseInt(id);
-//	    	System.out.println("index="+index);
-//	    	attachedFiles.remove(index);
-	    	
-	    	Attachment a=null;
-	    	Attachment aForRemoval=null;
-	    	Iterator iter = attachedFiles.iterator();
-			while(iter.hasNext()) {
-				a = (Attachment) iter.next();
-				if(id.equals(a.getFilename())) {
-					aForRemoval=a;
-				}
-			}
-			attachedFiles.remove(aForRemoval);
-	    	num_files--;
-	    }
-
-	    public boolean isNotAlreadyUploaded(String s, List attachedFiles)
-	    {
-	    	Attachment a=null;
-	    	Iterator iter = attachedFiles.iterator();
-			while(iter.hasNext()) {
-				a = (Attachment) iter.next();
-				if(s.equals(a.getFilename())) {
-					return true;
-				}
-			}
-	    	return false;
-	    }	    
-	    public void toggle_attachClicked()
-	    {
-	    	attachClicked  = attachClicked ? false: true;
-	    }
 }
 
