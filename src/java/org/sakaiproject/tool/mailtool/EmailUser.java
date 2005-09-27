@@ -1,6 +1,7 @@
 package org.sakaiproject.tool.mailtool;
 
-public class EmailUser {
+
+public class EmailUser implements Comparable {
 	String m_userid = "";
 	String m_displayname = "";
 	String m_email = "";
@@ -54,5 +55,15 @@ public class EmailUser {
 			nicestring = m_displayname + " <" + m_email + ">";
 		
 		return nicestring;
+	}
+
+	public int compareTo(Object anotherEmailUser) throws ClassCastException
+	{
+		if (!(anotherEmailUser instanceof EmailUser))
+			throw new ClassCastException("An EmailUser object expected.");
+			    
+		String anotherEmailUserName = ((EmailUser)
+					anotherEmailUser).getDisplayname();  
+		return (getDisplayname().compareTo (anotherEmailUserName));	       
 	}
 }
