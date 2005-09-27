@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import java.util.Collections;
 
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.service.framework.email.EmailService;
@@ -552,11 +553,11 @@ public class Mailtool
 				String userid = (String) j.next();
 				try {
 					User theuser = m_userDirectoryService.getUser(userid);
-					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getDisplayName(), theuser.getEmail());
+					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
 					mailusers.add(emailuser);
 				} catch (Exception e) {}
 			}
-			
+			Collections.sort(mailusers);
 			EmailGroup thegroup = new EmailGroup(emailrole, mailusers);
 			thegroups.add(thegroup);
 		}
