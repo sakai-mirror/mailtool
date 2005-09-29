@@ -2,6 +2,7 @@ package org.sakaiproject.tool.mailtool;
 
 import org.sakaiproject.tool.mailtool.EmailUser;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,6 +45,7 @@ public class SelectByUserTable {
 	public SelectByUserTable(List /* EmailUsers */ users)
 	{
 		m_tablerows.clear();
+		Collections.sort(users);
 		for (Iterator i = users.iterator(); i.hasNext();)
 		{
 			EmailUser euser1 = (EmailUser) i.next();
@@ -55,6 +57,7 @@ public class SelectByUserTable {
 				EmailUser euser2 = (EmailUser) i.next();
 				te.setUser2(euser2);
 			}
+			
 			
 			m_tablerows.add(te);
 		}
