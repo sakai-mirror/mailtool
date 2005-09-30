@@ -28,6 +28,7 @@ import org.sakaiproject.service.legacy.email.MailArchiveMessageEdit;
 import org.sakaiproject.service.legacy.email.MailArchiveMessageHeaderEdit;
 import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 
 public class Mailtool
 {
@@ -170,9 +171,14 @@ public class Mailtool
 	}
 	
 	private String m_recipJSPfrag = "";
+
 	protected void setSelectorType()
 	{	
-		String type = getRecipview();
+		String type = "";
+		if (m_changedViewChoice.equals(""))
+			type = getRecipview();
+		else 
+			type = m_changedViewChoice;
 		
 		m_selectByRole = false;
 		m_selectByUser = false;
@@ -377,10 +383,66 @@ public class Mailtool
 		return "results";
 	}
 	
+	public void setViewChoice(String view)
+	{
+		System.out.println("SWG: The new viewChoice: " + view);
+		if (m_changedViewChoice.equals(view))
+		{
+			m_buildNewView = false;
+		}
+		else
+		{
+			m_changedViewChoice = view;
+			m_buildNewView = true;
+		}
+	}
+	
+	public String getViewChoice()
+	{
+		if (m_changedViewChoice.equals(""))
+			return this.getRecipview();
+		else
+			return m_changedViewChoice;
+	}
+	
+	private boolean m_buildNewView = false;
+	private String m_changedViewChoice = "";
+	public List /* SelectItemGroup */ getViewChoiceDropdown()
+	{
+		List selectItems = new ArrayList();
+		
+		SelectItem item = new SelectItem();
+		item.setLabel("User");
+		item.setValue("user");
+		selectItems.add(item);
+		
+		item = new SelectItem();
+		item.setLabel("Role");
+		item.setValue("role");
+		selectItems.add(item);
+		
+		item = new SelectItem();
+		item.setLabel("Tree");
+		item.setValue("tree");
+		selectItems.add(item);
+		
+		item = new SelectItem();
+		item.setLabel("Side By Side");
+		item.setValue("sidebyside");
+		selectItems.add(item);
+		
+		item = new SelectItem();
+		item.setLabel("Foothill");
+		item.setValue("foothill");
+		selectItems.add(item);
+		
+		return selectItems;
+	}
+	
 	protected RecipientSelector m_recipientSelector = null;
 	public RecipientSelector getRecipientSelector()
 	{
-	 if (m_recipientSelector == null)
+	 if ((m_recipientSelector == null) || (m_buildNewView == true))
 	 {
 		List emailGroups = getEmailGroups();
 		
@@ -410,6 +472,7 @@ public class Mailtool
 		}
 		
 		m_recipientSelector.populate(emailGroups);
+		m_buildNewView = false;
 	 }
 		
 		return m_recipientSelector;
