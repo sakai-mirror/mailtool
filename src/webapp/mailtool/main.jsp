@@ -36,6 +36,10 @@
 	
 	<h:outputText rendered="#{Mailtool.selectByRole and Mailtool.allowedToSend}" escape="false" value="Send mail to:<br/>" />
 
+	<h:selectOneListbox onchange="submit(); return false;" size="1" id="viewChoice" value="#{Mailtool.viewChoice}">
+	  		<f:selectItems value="#{Mailtool.viewChoiceDropdown}"/>
+	</h:selectOneListbox>
+
 	<%-- List these Methodically with boolean rendered properties --%>
 	<%-- <f:subview id="selectByRole" rendered="#{Mailtool.selectByRole}"> --%>
 
