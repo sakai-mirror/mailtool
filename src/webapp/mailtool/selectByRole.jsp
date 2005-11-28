@@ -8,9 +8,9 @@ Mailtool.rolesTable returns DataModel from SelectByRolesTable.getRoles
 
 <h:dataTable value="#{Mailtool.recipientSelector.dataModel}" var="role">
 	<h:column>
-		<h:selectBooleanCheckbox value="#{role.selected}"/>
+		<h:selectBooleanCheckbox id="col1check" value="#{role.selected}"/>
 	</h:column>
 	<h:column>
-		<h:outputText value="#{role.name}" />
+		<h:outputLabel value="#{role.name}" for="col1check" />
 	</h:column>
 </h:dataTable>
