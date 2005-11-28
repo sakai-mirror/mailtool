@@ -39,11 +39,11 @@ public class SelectorComponent extends UIOutput {
 		String clientId = component.getClientId(context);
 		Map requestParameterMap = context.getExternalContext()
 									.getRequestParameterMap();
-		//logger.info("SWG:inside Decode");
+		//logger.debug("SWG:inside Decode");
 		for (Iterator i = requestParameterMap.keySet().iterator(); i.hasNext();)
 		{
 			String key = (String) i.next();
-			//logger.info("SWG:decode key: " + key + " value: " + requestParameterMap.get(key));
+			//logger.debug("SWG:decode key: " + key + " value: " + requestParameterMap.get(key));
 			
 		}
 		UIInput comp = (UIInput) component;

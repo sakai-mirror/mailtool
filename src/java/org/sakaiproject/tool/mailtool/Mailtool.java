@@ -21,7 +21,6 @@ import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
-import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
 import org.sakaiproject.service.legacy.email.MailArchiveChannel;
 import org.sakaiproject.service.legacy.email.MailArchiveMessageEdit;
@@ -105,14 +104,14 @@ public class Mailtool
 	/*
 	public String getInitJavascript()
 	{
-		logger.info("SWG: Checking out the Client IDs");
+		logger.debug("SWG: Checking out the Client IDs");
 		for (Iterator i = FacesContext.getCurrentInstance().getClientIdsWithMessages(); i.hasNext();)
 		{
 			Object o = i.next();
-			logger.info(o.getClass().toString());
-			logger.info(o.toString());
+			logger.debug(o.getClass().toString());
+			logger.debug(o.toString());
 		}
-		logger.info("SWG: getInitJavascript");
+		logger.debug("SWG: getInitJavascript");
 		String retval = "<script language=\"JavaScript\" type=\"text/javascript\">\n"; 
 		retval += "function addusers()\n{";
 		retval += "var groups = new Array();\n";
@@ -312,13 +311,7 @@ public class Mailtool
 			String toString = toDisplay + " <" + toEmail + ">";
 			
 			try 
-			{
-				log("SWG Sending email with: fromString=" + fromString + 
-			        "  toString=" + toString + 
-					"  subject=" + subject +
-					"  headerToStr=" + toString + 
-					"  replyToStr=" + fromString );
-				
+			{	
 				m_emailService.send(fromString,// fromString
 						       		toEmail,  // toString
 									subject,   // subject 
@@ -329,7 +322,7 @@ public class Mailtool
 			}
 			catch (Exception e)
 			{
-				log("SWG Exception while trying to send the email: " + e.getMessage());
+				logger.debug("SWG Exception while trying to send the email: " + e.getMessage());
 			}
 			
 			if (i.hasNext())
@@ -353,7 +346,6 @@ public class Mailtool
 		
 		if (showBadEmails.booleanValue() == true)
 		{
-			log("SWG inside print bad if statement");
 			m_results += "<br/><br/>";
 				
 			List /* String */ badnames = new ArrayList();
@@ -479,11 +471,6 @@ public class Mailtool
 	 }
 		
 		return m_recipientSelector;
-	}
-
-	protected void log(String message)
-	{
-		logger.info(message);
 	}
 	
 	/*
@@ -649,7 +636,7 @@ public class Mailtool
 		}
 		catch (Exception e)
 		{
-			log("Exception: MailtoolBackend.getCurrentUser, " + e.getMessage());
+			logger.debug("Exception: MailtoolBackend.getCurrentUser, " + e.getMessage());
 		}
 		
 		return euser;
@@ -671,7 +658,7 @@ public class Mailtool
 		
 		if (channel == null)
 		{	
-			logger.info("Mailtool: The channel: " + channelRef + " is null.");
+			logger.debug("Mailtool: The channel: " + channelRef + " is null.");
 			return false;
 		}
 		List mailHeaders = new Vector();
