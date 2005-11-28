@@ -1,8 +1,6 @@
 /*
  * Created on Apr 15, 2005
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package org.sakaiproject.tool.mailtool;
 
@@ -17,8 +15,8 @@ import java.util.Collections;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.service.framework.email.EmailService;
 import org.sakaiproject.service.legacy.notification.NotificationService;
-import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.legacy.realm.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
@@ -61,7 +59,7 @@ public class Mailtool
 	protected ToolConfiguration m_toolConfig = null;
 	protected EmailService m_emailService = null;
 	protected UserDirectoryService m_userDirectoryService = null;
-	protected RealmService m_realmService = null;
+	protected AuthzGroupService m_realmService = null;
 	
 	protected String getConfigParam(String parameter)
 	{
@@ -70,7 +68,7 @@ public class Mailtool
 	
 	public void setEmailService(EmailService service) { this.m_emailService = service; }
 	public void setUserDirectoryService(UserDirectoryService service) { this.m_userDirectoryService = service; }
-	public void setRealmService(RealmService service) { this.m_realmService = service; }
+	public void setAuthzGroupService(AuthzGroupService service) { this.m_realmService = service; }
 	
 	/**  Done Setting Sakai Services **/
 	
@@ -518,7 +516,9 @@ public class Mailtool
 		if (siteid.equals(""))
 			return true;
 		
-		return m_realmService.unlock(this.getCurrentUser().getUserid(), "mail.new", siteid);
+		//return m_realmService.unlock(this.getCurrentUser().getUserid(), "mail.new", siteid);
+		return m_realmService.isAllowed(this.getCurrentUser().getUserid(), "mail.new", siteid);
+
 	}
 	
 	
@@ -604,12 +604,14 @@ public class Mailtool
 			
 			String realmid = emailrole.getRealmid();
 			
-			Realm therealm = null;
+			AuthzGroup therealm = null;
 			try {
-				therealm = m_realmService.getRealm(realmid);
+				//therealm = m_realmService.getRealm(realmid);
+				therealm = m_realmService.getAuthzGroup(realmid);
 			} catch (Exception e) {}
 			
-			Set users = therealm.getUsersWithRole(emailrole.getRoleid());
+			//Set users = therealm.getUsersWithRole(emailrole.getRoleid());
+			Set users = therealm.getUsersHasRole(emailrole.getRoleid());
 			List /* EmailUser */ mailusers = new ArrayList();
 			for (Iterator j = users.iterator(); j.hasNext();)
 			{

@@ -34,9 +34,9 @@
 		</managed-property>	
 		
 		<managed-property>
-			<description>Sakai RealmService</description>
-			<property-name>realmService</property-name>
-			<value>#{Components["org.sakaiproject.service.legacy.realm.RealmService"]}</value>
+			<description>Sakai AuthzGroupService</description>
+			<property-name>authzGroupService</property-name>
+			<value>#{Components["org.sakaiproject.service.legacy.authzGroup.AuthzGroupService"]}</value>
 		</managed-property>
 	</managed-bean>
 
