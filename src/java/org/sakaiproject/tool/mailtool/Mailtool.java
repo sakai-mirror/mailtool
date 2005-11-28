@@ -14,12 +14,14 @@ import java.util.Collections;
 
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.service.framework.email.EmailService;
+import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.notification.NotificationService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
+import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
 import org.sakaiproject.service.legacy.email.MailArchiveChannel;
 import org.sakaiproject.service.legacy.email.MailArchiveMessageEdit;
@@ -60,6 +62,7 @@ public class Mailtool
 	protected EmailService m_emailService = null;
 	protected UserDirectoryService m_userDirectoryService = null;
 	protected AuthzGroupService m_realmService = null;
+	protected Logger logger = null;
 	
 	protected String getConfigParam(String parameter)
 	{
@@ -69,6 +72,7 @@ public class Mailtool
 	public void setEmailService(EmailService service) { this.m_emailService = service; }
 	public void setUserDirectoryService(UserDirectoryService service) { this.m_userDirectoryService = service; }
 	public void setAuthzGroupService(AuthzGroupService service) { this.m_realmService = service; }
+	public void setLogger(Logger logger) { this.logger = logger; }
 	
 	/**  Done Setting Sakai Services **/
 	
@@ -98,16 +102,17 @@ public class Mailtool
 	
 	populate(groups);
 	*/
+	/*
 	public String getInitJavascript()
 	{
-		System.out.println("SWG: Checking out the Client IDs");
+		logger.info("SWG: Checking out the Client IDs");
 		for (Iterator i = FacesContext.getCurrentInstance().getClientIdsWithMessages(); i.hasNext();)
 		{
 			Object o = i.next();
-			System.out.println(o.getClass().toString());
-			System.out.println(o.toString());
+			logger.info(o.getClass().toString());
+			logger.info(o.toString());
 		}
-		System.out.println("SWG: getInitJavascript");
+		logger.info("SWG: getInitJavascript");
 		String retval = "<script language=\"JavaScript\" type=\"text/javascript\">\n"; 
 		retval += "function addusers()\n{";
 		retval += "var groups = new Array();\n";
@@ -136,6 +141,7 @@ public class Mailtool
 		retval += "}</script>\n";
 		return retval;
 	}
+	*/
 
 	public String getMessageSubject()
 	{
@@ -383,7 +389,6 @@ public class Mailtool
 	
 	public void setViewChoice(String view)
 	{
-		System.out.println("SWG: The new viewChoice: " + view);
 		if (m_changedViewChoice.equals(view))
 		{
 			m_buildNewView = false;
@@ -478,7 +483,7 @@ public class Mailtool
 
 	protected void log(String message)
 	{
-		System.out.println(message);
+		logger.info(message);
 	}
 	
 	/*
@@ -509,7 +514,6 @@ public class Mailtool
 	public boolean isAllowedToSend()
 	{
 		String siteid = this.getConfigParam("mail.newlock.siteid");
-		//System.out.println("SWG: isAllowedToSend, " + siteid);
 		if (siteid == null)
 			return true;
 		
@@ -667,7 +671,7 @@ public class Mailtool
 		
 		if (channel == null)
 		{	
-			System.out.println("SWG: The channel: " + channelRef + " is null.");
+			logger.info("Mailtool: The channel: " + channelRef + " is null.");
 			return false;
 		}
 		List mailHeaders = new Vector();

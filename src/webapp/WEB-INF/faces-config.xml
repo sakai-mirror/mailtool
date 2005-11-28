@@ -38,6 +38,12 @@
 			<property-name>authzGroupService</property-name>
 			<value>#{Components["org.sakaiproject.service.legacy.authzGroup.AuthzGroupService"]}</value>
 		</managed-property>
+		
+		<managed-property>
+			<description>logger</description>
+			<property-name>logger</property-name>
+			<value>#{Components["org.sakaiproject.service.framework.log.Logger"]}</value>
+		</managed-property>
 	</managed-bean>
 
 	<navigation-rule>

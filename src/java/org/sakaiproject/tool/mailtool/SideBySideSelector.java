@@ -16,7 +16,7 @@ public class SideBySideSelector implements RecipientSelector {
 	
 
 	public void populate(List emailgroups) {
-		System.out.println("SWG SideBySide Popsize: " + emailgroups.size());
+		//logger.info("SWG SideBySide Popsize: " + emailgroups.size());
 		m_model = new SideBySideModel(emailgroups);
 	}
 
