@@ -5,7 +5,7 @@
     <name>Sakai-Mailtool</name>
     <groupId>sakaiproject</groupId>
     <id>mailtool</id>
-    <currentVersion>2.0.0</currentVersion>
+    <currentVersion>TRUNK</currentVersion>
     <organization>
     		<name>Sakai Project</name>
     		<url>http://sakaiproject.org/</url>
@@ -17,13 +17,14 @@
 	</properties>
     
 	<dependencies>
-	
+<!--	
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai</artifactId>
 			<version>${pom.currentVersion}</version>
 			<type>plugin</type>
 		</dependency>
+-->
 
 		<dependency>
 			<groupId>sakaiproject</groupId>
