@@ -8,19 +8,24 @@
 
 <faces-config>
 
+ <application>
+    <message-bundle>org.sakaiproject.tool.mailtool.Messages</message-bundle>
+    <locale-config>
+      <default-locale>en</default-locale>
+      <!-- 
+      <supported-locale>de</supported-locale>
+      <supported-locale>fr</supported-locale>
+      <supported-locale>es</supported-locale>
+      -->
+    </locale-config>
+  </application>
+
 	<managed-bean>
 		<description>Mailtool</description>
 		<managed-bean-name>Mailtool</managed-bean-name>
 		<managed-bean-class>org.sakaiproject.tool.mailtool.Mailtool</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 		
-	<!--
-		<managed-property>
-			<description>Provide the Tool Config</description>
-			<property-name>toolConfig</property-name>
-			<value>#{Components["org.sakaiproject.api.kernel.tool.ActiveToolManager"]}</value>
-		</managed-property>	
-	-->	
 		<managed-property>
 			<description>Service Dependency: UserDirectoryService</description>
 			<property-name>userDirectoryService</property-name>
