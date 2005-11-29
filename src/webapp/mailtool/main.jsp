@@ -8,6 +8,8 @@
 <%@ taglib uri="http://sakaiproject.org/jsf/mailtool" prefix="mailtool" %>
 
 <f:view>
+<f:loadBundle basename="org.sakaiproject.tool.mailtool.Messages" var="msgs"/>
+
 	<f:verbatim><!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -18,10 +20,11 @@
 	<%= request.getAttribute("sakai.html.head.css.base") %>
 	<%= request.getAttribute("sakai.html.head.css.skin") %>
 	<%= request.getAttribute("sakai.html.head.js") %>
-	<script type="text/javascript" language="JavaScript" src="/mailtool/mailtool.js"></script>
-<%--	<h:outputText escape="false" value="#{Mailtool.initJavascript}"/> --%>
+	<%-- <script type="text/javascript" language="JavaScript" src="/mailtool/mailtool.js"></script>
+<h:outputText escape="false" value="#{Mailtool.initJavascript}"/> --%>
 </head>
 <body onload="<%=request.getAttribute("sakai.html.body.onload")%>;">
+
 
 <h:form>
 	<sakai:view_content>
@@ -32,9 +35,9 @@
 --%>
 <%--	<mailtool:selector value="#{Mailtool.recipientSelector.listbox}"/> --%>
 	
-	<h:outputText rendered="#{not Mailtool.allowedToSend}" escape="false" value="You are not allowed to send email<br/>" />
+	<h:outputText rendered="#{not Mailtool.allowedToSend}" escape="false" value="#{msgs.no_mail_permission}<br/>" />
 	
-	<h:outputText rendered="#{Mailtool.selectByRole and Mailtool.allowedToSend}" escape="false" value="Send mail to:<br/>" />
+	<h:outputText rendered="#{Mailtool.selectByRole and Mailtool.allowedToSend}" escape="false" value="#{msgs.send_mail_to}<br/>" />
 
 	<h:selectOneListbox onchange="submit(); return false;" size="1" id="viewChoice" value="#{Mailtool.viewChoice}">
 	  		<f:selectItems value="#{Mailtool.viewChoiceDropdown}"/>
@@ -64,25 +67,25 @@
 	</f:subview>
 	
 	<h:selectBooleanCheckbox rendered="#{Mailtool.emailArchived and Mailtool.allowedToSend}" value="#{Mailtool.archiveMessage}" />
-	<h:outputText rendered="#{Mailtool.emailArchived and Mailtool.allowedToSend}" value="Append to Email Archive" /><br/><br/>
+	<h:outputText rendered="#{Mailtool.emailArchived and Mailtool.allowedToSend}" value="#{msgs.append_to_email_archive}" /><br/><br/>
 
-	<h:outputText value="Message Subject" rendered="#{Mailtool.allowedToSend}" /><br/>
+	<h:outputText value="#{msgs.message_subject}" rendered="#{Mailtool.allowedToSend}" /><br/>
 	<h:inputText value="#{Mailtool.messageSubject}" rendered="#{Mailtool.allowedToSend}"/><br/><br/>
 	
-	<h:outputText value="Message Body" rendered="#{Mailtool.allowedToSend}"/><br/>
+	<h:outputText value="#{msgs.message_body}" rendered="#{Mailtool.allowedToSend}"/><br/>
 	<h:inputTextarea rows="10" cols="40" value="#{Mailtool.messageBody}" rendered="#{Mailtool.allowedToSend}"/><br/>
 	
 <sakai:button_bar>
 
 	<sakai:button_bar_item
 		action="#{Mailtool.processSendEmail}"
-		value="Send Mail"
+		value="#{msgs.send_mail_button}"
 		rendered="#{Mailtool.allowedToSend}"
 		immediate="false" />
 		
 	<sakai:button_bar_item
 		action="#{Mailtool.processCancelEmail}"
-		value="Cancel"
+		value="#{msgs.cancel_mail_button}"
 		rendered="#{Mailtool.allowedToSend}"
 		immediate="false" />
 		

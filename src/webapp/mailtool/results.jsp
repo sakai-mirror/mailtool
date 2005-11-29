@@ -17,7 +17,7 @@
 		<sakai:button_bar>
 			<sakai:button_bar_item
 				action="main"
-				value="OK"
+				value="#{msgs.ok_button}"
 				rendered="true"
 				immediate="false" />
 		</sakai:button_bar>	

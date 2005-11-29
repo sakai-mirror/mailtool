@@ -11,16 +11,13 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 	<h:dataTable value="#{Mailtool.recipientSelector.dataModel}" var="row">
 		<h:column>
 			<h:selectBooleanCheckbox id="selectAllCheckbox" rendered="#{row.collapsed}" value="#{row.allSelected}" />
-			<h:outputLabel for="selectAllCheckbox" rendered="#{row.collapsed}" value="All #{row.pluralRolename}" />
-			<%-- <h:outputText rendered="#{row.collapsed}" value="All " />
-			<h:outputText rendered="#{row.collapsed}" value="#{row.pluralRolename}" />
-			--%>
+			<h:outputLabel for="selectAllCheckbox" rendered="#{row.collapsed}" value="#{msgs.all_prefix} #{row.pluralRolename}" />
 			
-			<h:commandLink rendered="#{row.collapsed}" actionListener="#{row.actionExpand}" onmouseup="submit()" value="Select Individuals" />
+			<h:commandLink rendered="#{row.collapsed}" actionListener="#{row.actionExpand}" onmouseup="submit()" value="#{msgs.select_individuals_button}" />
 			
-			<h:outputText rendered="#{not row.collapsed}" value="Select Individual " />
+			<h:outputText rendered="#{not row.collapsed}" value="#{msgs.select_individual_prefix} " />
 			<h:outputText rendered="#{not row.collapsed}" value="#{row.pluralRolename}" />
-			<h:commandLink rendered="#{not row.collapsed}" actionListener="#{row.actionCollapse}" onmouseup="submit()" value="Collapse" />
+			<h:commandLink rendered="#{not row.collapsed}" actionListener="#{row.actionCollapse}" onmouseup="submit()" value="#{msgs.collapse_button}" />
 			
 			<h:dataTable rendered="#{not row.collapsed}" value="#{row.userTable}" var="user_row" >
 				<h:column>
