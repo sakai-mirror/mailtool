@@ -1,6 +1,13 @@
 <?xml version="1.0"?>
 <registration>
 
+	<tool id="sakai.mailtool.whiteboard"
+			title="Sakai Mailtool"
+			description="Send mail to groups in your course. UI designed for Blackboard migration">
+		<category name="course" />			
+		<category name="project" />			
+	</tool>
+
 	<tool	id="sakai.mailtool"
 			title="Sakai Mailtool"
 			description="Send mail to groups in your course.">
