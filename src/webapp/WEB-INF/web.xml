@@ -74,17 +74,34 @@
         </init-param>
         <load-on-startup> 1 </load-on-startup>
     </servlet>
+    
+    <servlet>
+        <servlet-name>sakai.mailtool.whiteboard</servlet-name>
+        <servlet-class>org.sakaiproject.jsf.util.JsfTool</servlet-class>
+        <init-param>
+            <param-name>default</param-name>
+            <param-value>main</param-value>
+        </init-param>
+        <init-param>
+            <param-name>path</param-name>
+            <param-value>/whiteboardmail</param-value>
+        </init-param>
+         <init-param>
+            <param-name>default.last.view</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <load-on-startup> 1 </load-on-startup>
+    </servlet>
 
   	<welcome-file-list>
 	    <welcome-file>index.html</welcome-file>
   	</welcome-file-list>
-
+<!--
 	<jsp-config>
 		<jsp-property-group>
 			<url-pattern>*.jsp</url-pattern>
 			<include-prelude>prelude.jspf</include-prelude>
-			<!-- <include-coda>/inc/codaEmbedded.jspf</include-coda> -->
 		</jsp-property-group>
 	</jsp-config>
-
+-->
 </web-app>
