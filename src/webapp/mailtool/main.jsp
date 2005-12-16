@@ -9,7 +9,7 @@
 
 <f:view>
 <f:loadBundle basename="org.sakaiproject.tool.mailtool.Messages" var="msgs"/>
-
+<%--
 	<f:verbatim><!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -20,12 +20,13 @@
 	<%= request.getAttribute("sakai.html.head.css.base") %>
 	<%= request.getAttribute("sakai.html.head.css.skin") %>
 	<%= request.getAttribute("sakai.html.head.js") %>
-	<%-- <script type="text/javascript" language="JavaScript" src="/mailtool/mailtool.js"></script>
-<h:outputText escape="false" value="#{Mailtool.initJavascript}"/> --%>
+	 <script type="text/javascript" language="JavaScript" src="/mailtool/mailtool.js"></script>
+<h:outputText escape="false" value="#{Mailtool.initJavascript}"/> 
 </head>
 <body onload="<%=request.getAttribute("sakai.html.body.onload")%>;">
+--%>
 
-
+<sakai:view_container title="Send Email">
 <h:form>
 	<sakai:view_content>
 		<sakai:messages />
@@ -95,5 +96,6 @@
 	</sakai:view_content>
 </h:form>
 
+</sakai:view_container>
 
 </f:view>
