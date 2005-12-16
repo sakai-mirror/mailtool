@@ -20,11 +20,18 @@ scriptsoap = WSDL.SOAPProxy(script_url)
 
 scriptsoap.addNewSite(sessionid, siteid, "Mailtool", "A site containing all the tools tha",  "All the shipped tools", "", "", True, "access", True, True, "", "test" )
 
+print scriptsoap.addNewPageToSite(sessionid,siteid,"Announcements",0)
 print scriptsoap.addNewPageToSite(sessionid,siteid,"Role",0)
 print scriptsoap.addNewPageToSite(sessionid,siteid,"User",0)
 print scriptsoap.addNewPageToSite(sessionid,siteid,"Tree",0)
 print scriptsoap.addNewPageToSite(sessionid,siteid,"Side",0)
 print scriptsoap.addNewPageToSite(sessionid,siteid,"Foothill",0)
+print scriptsoap.addNewPageToSite(sessionid,siteid,"Sections",0)
+print scriptsoap.addNewPageToSite(sessionid,siteid,"Info",0)
+
+print scriptsoap.addNewToolToPage(sessionid,siteid,"Announcements","Announcements","sakai.announcements","")
+print scriptsoap.addNewToolToPage(sessionid,siteid,"Sections","Sections","sakai.sections","")
+print scriptsoap.addNewToolToPage(sessionid,siteid,"Info","Info","sakai.siteinfo","")
 
 #Role
 print scriptsoap.addNewToolToPage(sessionid,siteid,"Role","Role","sakai.mailtool","")
