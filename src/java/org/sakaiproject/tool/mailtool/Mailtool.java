@@ -81,66 +81,6 @@ public class Mailtool
 
 	}
 	
-	/* JavaScript should look like this.
-	<script language="JavaScript" type="text/javascript">
-	var groups = new Array();
-
-	var teachers = new Array();
-	teachers[teachers.length] = new User("user004", "User, Four", "u@four.org");
-	teachers[teachers.length] = new User("user005", "User, Five", "u@five.org");
-	groups[groups.length] = new Group("realm2", "Teachers", "Teacher", teachers);
-	
-	var users = new Array();
-	users[users.length] = new User("user001", "User, kljkjl", "u@one.org");
-	users[users.length] = new User("user002", "asdfsf, Two", "u@two.org");
-	users[users.length] = new User("user003", "User, Three", "u@three.org");
-	users[users.length] = new User("user006", "User, Six", "u@six.org");
-	users[users.length] = new User("user007", "User, Seven", "u@seven.org");
-	users[users.length] = new User("user008", "User, Eight", "u@eight.org");
-	groups[groups.length] = new Group("realm1", "Students", "Student", users);
-	
-	populate(groups);
-	*/
-	/*
-	public String getInitJavascript()
-	{
-		logger.debug("SWG: Checking out the Client IDs");
-		for (Iterator i = FacesContext.getCurrentInstance().getClientIdsWithMessages(); i.hasNext();)
-		{
-			Object o = i.next();
-			logger.debug(o.getClass().toString());
-			logger.debug(o.toString());
-		}
-		logger.debug("SWG: getInitJavascript");
-		String retval = "<script language=\"JavaScript\" type=\"text/javascript\">\n"; 
-		retval += "function addusers()\n{";
-		retval += "var groups = new Array();\n";
-		
-		List emailgroups = this.getEmailGroups();
-		for (Iterator i = emailgroups.iterator(); i.hasNext();)
-		{
-			EmailGroup egroup = (EmailGroup) i.next();
-			String roleid = egroup.getEmailrole().getRoleid();
-			String rolearray = roleid + "_array";
-			retval += "var " + rolearray + " = new Array();\n";
-			
-			for (Iterator j = egroup.getEmailusers().iterator(); j.hasNext();)
-			{
-				EmailUser u = (EmailUser) j.next();
-				retval += rolearray + "[" + rolearray + ".length] = new User(\"" +
-					u.getUserid() + "\", \"" + u.getDisplayname() + "\", \"" +
-					u.getEmail() + "\");\n";
-			}
-			retval += "groups[groups.length] = new Group(\"" + roleid + "\", \"" +
-				egroup.getEmailrole().getRoleplural() + "\", \"" +
-				egroup.getEmailrole().getRolesingular() + "\", " + rolearray + ");\n";
-		}
-		
-		retval += "populate(groups);\n";
-		retval += "}</script>\n";
-		return retval;
-	}
-	*/
 
 	public String getMessageSubject()
 	{
