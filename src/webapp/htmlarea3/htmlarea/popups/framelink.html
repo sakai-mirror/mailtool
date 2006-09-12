@@ -1,0 +1,47 @@
+<html>
+<head>
+<script type="text/javascript">
+function twoframes()
+{
+document.getElementById("frame1").src="frame_c.htm"
+document.getElementById("frame2").src="frame_d.htm"
+}
+</script>
+<script language="JavaScript" type="text/javascript">
+function getget(name) {
+  var q = document.location.search;
+  var i = q.indexOf(name + '=');
+
+  if (i == -1) {
+    return false;
+  }
+
+  var r = q.substr(i + name.length + 1, q.length - i - name.length - 1);
+
+  i = r.indexOf('&');
+
+  if (i != -1) {
+    r = r.substr(0, i);
+  }
+
+  return r.replace(/\+/g, ' ');
+}</script>
+
+</head>
+
+<body>
+<!---
+<script language="JavaScript" type="text/javascript">
+var framesrc1="/access/content/group/"+getget('siteid')+"/?basedir=none";
+var framesrc2="/sakai-jsf-resource/inputRichText/sakai-popups/insertLink.html?siteid="+getget('siteid');
+</script>
+<iframe src="JavaScript:document.framesrc1" id="frame1" width=1 height=1></iframe>
+<iframe src="JavaScript:document.framesrc2" id="frame2"></iframe>
+---->
+
+<iframe id="frame1" src="/access/content/group/816f754a-1ae4-40a7-bf3f-e3211523f74a/" width=0 height=0></iframe>
+<iframe id="frame2" src="link2.html?siteid=816f754a-1ae4-40a7-bf3f-e3211523f74a" width=100% height=100%></iframe>
+<br />
+</body>
+
+</html>
