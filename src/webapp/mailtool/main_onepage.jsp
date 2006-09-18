@@ -109,12 +109,7 @@
 		<sakai:button_bar_item action="#{Mailtool.processSendEmail}" value="#{msgs.send_mail_button}" rendered="#{Mailtool.allowedToSend}" immediate="false" />
 		<sakai:button_bar_item action="#{Mailtool.processCancelEmail}" value="#{msgs.cancel_mail_button}" rendered="#{Mailtool.allowedToSend}" immediate="false" />
 </sakai:button_bar>
-<%---
-		<br/>
-		<h:commandLink action="main_twopage">
-			<f:verbatim>Two page version</f:verbatim>
-		</h:commandLink>
----%>
+
 </sakai:view_content>
 
 </h:form>
