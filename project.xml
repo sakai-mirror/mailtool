@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
-			<version>1.0</version>
+			<version>1.1.1</version>
 		</dependency>
 		
 		<dependency>
@@ -254,7 +254,7 @@
 		<dependency>
 			<groupId>commons-digester</groupId>
 			<artifactId>commons-digester</artifactId>
-			<version>1.6</version>
+			<version>1.7</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>        
@@ -263,12 +263,10 @@
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
-  	        <version>3.1</version>
-<!-- 
+  	        <version>3.2</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties> 
--->
 		</dependency>
 		
 		<dependency>
@@ -283,7 +281,7 @@
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
-			<version>1.0.4</version>
+			<version>1.1</version>
 		</dependency>
 
 		<dependency>
@@ -319,7 +317,7 @@
 				<war.bundle>true</war.bundle>
 			</properties>        
 		</dependency>
- <!-- 		
+		
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
@@ -328,7 +326,7 @@
 				<war.bundle>true</war.bundle>
 			</properties>        
 		</dependency>
--->
+
 	<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
