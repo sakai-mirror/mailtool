@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="lib" path="target/mailtool/WEB-INF/lib/commons-beanutils-1.7.0.jar"/>
+	<classpathentry kind="lib" path="target/mailtool/WEB-INF/lib/commons-collections-3.1.jar"/>
+	<classpathentry kind="lib" path="target/mailtool/WEB-INF/lib/commons-digester-1.6.jar"/>
+	<classpathentry kind="lib" path="target/mailtool/WEB-INF/lib/commons-io-1.1.jar"/>
+	<classpathentry kind="lib" path="target/mailtool/WEB-INF/lib/jsf-api-1.1.01.jar"/>
+	<classpathentry kind="lib" path="target/mailtool/WEB-INF/lib/jsf-impl-1.1.01.jar"/>
+	<classpathentry kind="lib" path="target/mailtool/WEB-INF/lib/jstl-1.1.2.jar"/>
+	<classpathentry kind="lib" path="target/mailtool/WEB-INF/lib/sakai-jsf-app-2.2.1.jar"/>
+	<classpathentry kind="lib" path="target/mailtool/WEB-INF/lib/sakai-jsf-tool-2.2.1.jar"/>
+	<classpathentry kind="lib" path="target/mailtool/WEB-INF/lib/sakai-jsf-widgets-2.2.1.jar"/>
+	<classpathentry kind="lib" path="target/mailtool/WEB-INF/lib/sakai-jsf-widgets-sun-2.2.1.jar"/>
+	<classpathentry kind="lib" path="target/mailtool/WEB-INF/lib/sakai-util-2.2.1.jar"/>
+	<classpathentry kind="lib" path="target/mailtool/WEB-INF/lib/standard-1.1.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="target/mailtool/WEB-INF/classes"/>
+</classpath>
