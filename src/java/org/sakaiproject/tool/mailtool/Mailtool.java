@@ -33,7 +33,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
@@ -50,8 +49,6 @@ import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.content.cover.ContentHostingService;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
@@ -62,19 +59,11 @@ import org.sakaiproject.mailarchive.api.MailArchiveChannel;
 import org.sakaiproject.mailarchive.api.MailArchiveMessageEdit;
 import org.sakaiproject.mailarchive.api.MailArchiveMessageHeaderEdit;
 import org.sakaiproject.mailarchive.cover.MailArchiveService;
-import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.site.cover.SiteService;
 
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIParameter;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.AbortProcessingException;
 
 import java.util.Properties;
@@ -531,7 +520,7 @@ public class Mailtool
 			
 			String toEmail = euser.getEmail(); // u.getEmail();
 			String toDisplay = euser.getDisplayname(); // u.getDisplayName();
-			String toString = toDisplay + " <" + toEmail + ">";
+			//String toString = toDisplay + " <" + toEmail + ">";
 
 			recipientsString+=toEmail;
 
@@ -831,7 +820,7 @@ public class Mailtool
 		
 		List /* EmailRole */ theroles = new ArrayList();
 		String siteid=getSiteID();
-		String sitetype=getSiteType();
+		//String sitetype=getSiteType();
 /*		
 		if (sitetype.equals("project")){
 			EmailRole emailrole=new EmailRole("/site/"+siteid, "maintain", "Maintain", "Maintain roles");
@@ -1076,8 +1065,8 @@ public class Mailtool
 	    try
 	    {
 	        FileItem item = (FileItem) event.getNewValue();
-	        String fieldName = item.getFieldName();
-	        String fileName = item.getName();
+	        //String fieldName = item.getFieldName();
+	        //String fileName = item.getName();
 	        long fileSize = item.getSize();
 	        //System.out.println("processFileUpload(): item: " + item + " fieldname: " + fieldName + " filename: " + fileName + " length: " + fileSize);
 	   
