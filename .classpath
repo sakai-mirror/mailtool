@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry kind="src" path="src/webapp/WEB-INF"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jspapi/jars/jsp-api-2.0.jar"/>
@@ -28,10 +27,9 @@
 	<classpathentry kind="src" path="/email-api"/>
 	<classpathentry kind="src" path="/gradebook"/>
 	<classpathentry kind="src" path="/entity-api"/>
-	<classpathentry kind="src" path="/util-util"/>	
-	<classpathentry kind="src" path="/mailarchive-api"/>	
+	<classpathentry kind="src" path="/util-util"/>
+	<classpathentry kind="src" path="/mailarchive-api"/>
 	<classpathentry kind="src" path="/message-api"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="target/mailtool/WEB-INF/classes"/>
 </classpath>
-

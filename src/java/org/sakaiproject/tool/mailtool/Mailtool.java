@@ -874,7 +874,8 @@ public class Mailtool
 				EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, rolename, rolename);
 				theroles.add(emailrole);
 			}
-			
+/*			this is for detection group. it should be done in getEmailGroups()
+ * 
 			try{
 			currentSite = siteService.getSite(siteid);
 			}
@@ -886,7 +887,7 @@ public class Mailtool
 			      EmailRole emailrole2=new EmailRole("/site/"+siteid, groupname, groupname, groupname);
 			      theroles.add(emailrole2);
 			}
-			
+			*/
 		}
 		return theroles;
 	}

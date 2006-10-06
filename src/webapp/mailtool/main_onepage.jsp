@@ -27,7 +27,7 @@
 
 <sakai:view_content>
 <sakai:messages />
-
+<%--
 <h:panelGroup>
 <f:verbatim><br/></f:verbatim>
 <h:graphicImage alt="blank" url="/images/icon_redface.gif" width="19" height="19"></h:graphicImage>
@@ -37,18 +37,23 @@
 </h:commandLink>
 <f:verbatim><br/></f:verbatim>
 </h:panelGroup>
+--%>
+<sakai:tool_bar>
+        <sakai:tool_bar_item value="Options" action="configure" immediate="true" />
+</sakai:tool_bar>
 
 <h:panelGroup rendered="#{not Mailtool.allowedToSend}" >
 <f:verbatim><br/></f:verbatim>
 <h:outputText escape="false" value="#{msgs.no_mail_permission}<br/>" />
 </h:panelGroup>
-<h:panelGroup rendered="#{Mailtool.allowedToSend}" >
+<h:panelGroup rendered="#{Mailtool.allowedToSend}">
 <f:verbatim><br/></f:verbatim>
 <h:outputText escape="false" value="#{msgs.send_mail_to} " />
-					<h:selectOneListbox onchange="submit(); return false;" size="1" id="viewChoice" value="#{Mailtool.viewChoice}">
+
+<%--					<h:selectOneListbox onchange="submit(); return false;" size="1" id="viewChoice" value="#{Mailtool.viewChoice}">
 						<f:selectItems value="#{Mailtool.viewChoiceDropdown}" />
 					</h:selectOneListbox>
-
+--%>
 					<f:subview id="selectByRole" rendered="#{Mailtool.selectByRole}">
 						<jsp:include page="selectByRole.jsp" />
 					</f:subview>
