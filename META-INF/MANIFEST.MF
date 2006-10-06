@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: 1_AutoConfig
+Bundle-SymbolicName: 2.2.1_AutoConfig
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
