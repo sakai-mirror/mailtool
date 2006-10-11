@@ -115,12 +115,12 @@ public class Mailtool
 	protected boolean m_selectByTree = false;
 	protected boolean m_selectSideBySide = false;
 	protected boolean m_selectByFoothill = false;
-	protected boolean m_archiveMessage = false;
-	protected boolean m_sendmecopy = false;
+	protected boolean m_archiveMessage = true; /* default is true */
+	protected boolean m_sendmecopy = true; /* default is true */
 
 	private String m_recipJSPfrag = "";
 	private boolean m_buildNewView = false;
-	private String m_changedViewChoice = "";
+	private String m_changedViewChoice = getRecipview(); /* this initialization solves SAK-6810 */
 
 	/** For Results.jsp **/
 	protected String m_results = "";
