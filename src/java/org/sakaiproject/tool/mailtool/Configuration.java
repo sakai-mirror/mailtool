@@ -23,20 +23,29 @@ package org.sakaiproject.tool.mailtool;
 
 public class Configuration {
 
-	private String id;
+	private int id;
+	private String rid;
 	private String realmid;
 	private String singular;
 	private String plural;
 	
 	public Configuration() {
 	}
-	public String getId()
+	public int getId()
 	{
 		return id;
 	}
-	public void setId(String id)
+	public void setId(int id)
 	{
 		this.id=id;
+	}
+	public String getRoleId()
+	{
+		return rid;
+	}
+	public void setRoleId(String rid)
+	{
+		this.rid=rid;
 	}
 	public String getRealmid() {
 		return realmid;

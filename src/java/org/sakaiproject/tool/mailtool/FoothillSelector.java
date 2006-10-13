@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.faces.model.DataModel;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
@@ -288,5 +289,9 @@ public class FoothillSelector implements RecipientSelector {
 		}
 		
 		return "main";
+	}
+	public DataModel getDataModel()
+	{
+		return null;
 	}
 }

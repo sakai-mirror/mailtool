@@ -23,6 +23,8 @@ package org.sakaiproject.tool.mailtool;
 
 import java.util.List;
 
+import javax.faces.model.DataModel;
+
 public interface RecipientSelector {
 
 	//Method to populate groups and roles
@@ -33,5 +35,6 @@ public interface RecipientSelector {
 	
 	public List /* EmailGroup */ getSelectedUsersByGroup();
 	
-
+	public DataModel getDataModel();
+	
 }
