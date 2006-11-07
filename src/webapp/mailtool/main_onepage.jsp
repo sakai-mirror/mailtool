@@ -56,13 +56,13 @@
 </f:verbatim>
 </f:facet>
 		<h:panelGroup>
-			<h:outputText rendered="#{Mailtool.replyToSender or Mailtool.doNotReply}" value="From: "/>
-			<h:outputText rendered="#{Mailtool.replyToOther}" value="Reply-to: "/>
+			<h:outputText rendered="#{Mailtool.replyToSelected != 'otheremail'}" value="From: "/>
+			<h:outputText rendered="#{Mailtool.replyToSelected == 'otheremail'}" value="Reply-to: "/>
 		</h:panelGroup>
 		<h:panelGroup>
-			<h:outputText rendered="#{Mailtool.replyToSender}" value="#{Mailtool.currentUser.displayname} <#{Mailtool.currentUser.email}>"/>
-			<h:outputText rendered="#{Mailtool.replyToOther}" value="#{Mailtool.replyToOtherEmail}"/>
-			<h:outputText rendered="#{Mailtool.doNotReply}" value="No Reply"/>
+			<h:outputText rendered="#{Mailtool.replyToSelected == 'yes' }" value="#{Mailtool.currentUser.displayname} <#{Mailtool.currentUser.email}>"/>
+			<h:outputText rendered="#{Mailtool.replyToSelected == 'otheremail' }" value="#{Mailtool.replyToOtherEmail}"/>
+			<h:outputText rendered="#{Mailtool.replyToSelected == 'no' }" value="No Reply"/>
 		</h:panelGroup>
 
 		<h:outputText escape="false" value="View: "/>
@@ -133,10 +133,10 @@
 	<h:panelGroup>
 	<h:outputText value="#{msgs.message_body}"/>
 		<h:panelGroup>
-					<h:panelGroup rendered="#{Mailtool.richTextFormat}">
+					<h:panelGroup rendered="#{Mailtool.textFormat=='htmltext'}">
 						<sakai:rich_text_area  rows="10" columns="70" value="#{Mailtool.messageBody}"/>
 					</h:panelGroup>
-					<h:panelGroup rendered="#{not Mailtool.richTextFormat}">
+					<h:panelGroup rendered="#{Mailtool.richTextFormat=='plaintext'}">
 						<h:inputTextarea rows="10" cols="70" value="#{Mailtool.messageBody}"/>
 						<f:verbatim><br/></f:verbatim>
 					</h:panelGroup>
