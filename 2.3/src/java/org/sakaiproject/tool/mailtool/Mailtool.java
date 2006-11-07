@@ -69,6 +69,7 @@ import org.sakaiproject.tool.cover.SessionManager;
 import javax.faces.context.FacesContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.validator.ValidatorException;
@@ -119,6 +120,7 @@ public class Mailtool
 	protected String m_replytootheremail="";
 	protected String m_body = "";
 	protected String m_editortype="";
+	protected String m_replyto="";
 	
 	protected boolean is_fckeditor=false;
 	protected boolean is_htmlarea=false;
@@ -249,14 +251,14 @@ public class Mailtool
 
 		String reply=getConfigParam("replyto").trim().toLowerCase();
 		if (reply.equals("") || reply.equals("yes")){
-			setReplyToSender(true);			
+			setReplyToSelected("yes");			
 		} else if (reply.equals("no")){
-			setDoNotReply(true);
-		} else {
-			setReplyToOther(true);			
-			setReplyToOtherEmail(getConfigParam("replyto"));
+			setReplyToSelected("no");
+		} else { // reply to other email
+			setReplyToSelected("otheremail");			
+			setReplyToOtherEmail(getConfigParam("replyto").trim().toLowerCase());
 		}
-		
+
 		setSendMeCopyInOptions(getConfigParam("sendmecopy").trim().toLowerCase().equals("")!=true);
 		setSendMeCopy(getConfigParam("sendmecopy").trim().toLowerCase().equals("yes"));
 		
@@ -1279,26 +1281,40 @@ public class Mailtool
 		return true;
 	}
 
-	public void processReplyToSender(ValueChangeEvent event) throws AbortProcessingException
+	public void processReplyTo(ValueChangeEvent event)
 	{
-			setReplyToSender(true);
+			if (isReplyToSender()){
 			setReplyToOther(false);
 			setDoNotReply(false);
-	}
-	public void processReplyToOther(ValueChangeEvent event) throws AbortProcessingException
-	{
-			setReplyToOther(true);
-			setReplyToSender(false);
-			setDoNotReply(false);
-	}
-	
-	public void processDoNotReply(ValueChangeEvent event) throws AbortProcessingException
-	{
-			setDoNotReply(true);
+			}
+			else if (isDoNotReply()){
 			setReplyToSender(false);
 			setReplyToOther(false);
+			}
+			else if (isReplyToOther()){
+			setReplyToSender(false);
+			setDoNotReply(false);
+			}
+	}
+	public void processReplyTo2(ValueChangeEvent event)
+	{
+		String reply = getReplyToSelected().trim().toLowerCase();
+			if (reply.equals("yes")){ // reply to sender
+				setReplyToSender(true);
+				setReplyToOther(false);
+				setDoNotReply(false);
+			}
+			else if (reply.equals("no")){
+				setDoNotReply(true);
+				setReplyToSender(false);
+				setReplyToOther(false);
+			}
+			else if (reply.equals("other")){
+				setReplyToOther(true);
+				setReplyToSender(false);
+				setDoNotReply(false);
+			}
 	}	
-	
 	public void processFileUpload(ValueChangeEvent event) throws AbortProcessingException
 	{
 		
@@ -1470,7 +1486,8 @@ public class Mailtool
 			m_results2 += " (Default: "+(isArchiveMessage() ? "yes": "no")+")";
 			m_results2 += "<br/>recipview = "+ getViewChoice();
 			m_results2 += "<br/>subjectprefix = "+ (getSubjectPrefix().trim().equals("")!=true && getSubjectPrefix()!=null ? getSubjectPrefix() : getConfigParam("subjectprefix"));
-			m_results2 += "<br/>reply-to="+ (isReplyToSender() ? "sender(default)" : isReplyToOther() ? getReplyToOtherEmail() : "no");
+//			m_results2 += "<br/>reply-to="+ (isReplyToSender() ? "sender(default)" : isReplyToOther() ? getReplyToOtherEmail() : "no");
+			m_results2 += "<br/>reply-to="+ (getReplyToSelected().trim().toLowerCase().equals("yes") ? "sender(default)" : getReplyToSelected().trim().toLowerCase().equals("no") ? "no reply" : getReplyToOtherEmail());			
 			m_results2 += "<br/>message format="+(isRichTextFormat() ? "enhanced formatting": "plain text");
 			
 			while (iter.hasNext()){
@@ -1518,7 +1535,7 @@ public class Mailtool
 			else {
 				setConfigParam("emailarchive", "");
 			}
-			
+/*			
 			if (isReplyToSender()){
 				setConfigParam("replyto", "yes");
 			}
@@ -1527,6 +1544,15 @@ public class Mailtool
 			}
 			else if (isDoNotReply()){
 				setConfigParam("replyto", "no");
+			}
+*/
+			String reply = getReplyToSelected().trim().toLowerCase();
+			if (reply.equals("yes")){
+				setConfigParam("replyto", "yes");
+			} else if (reply.equals("no")){
+				setConfigParam("replyto", "no");
+			} else if (reply.equals("otheremail")){
+				setConfigParam("replyto", getReplyToOtherEmail());
 			}
 			if (isRichTextFormat()){
 				setConfigParam("messageformat", "html");
@@ -1563,4 +1589,10 @@ public class Mailtool
 	            throw new ValidatorException(message);
 	        }
 		} 
+		public String getReplyToSelected() {
+		    return m_replyto;
+		}
+		public void setReplyToSelected(String r) {
+		    this.m_replyto = r;
+		} 		
 }
