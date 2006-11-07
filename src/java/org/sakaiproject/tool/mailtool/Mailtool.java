@@ -138,6 +138,7 @@ public class Mailtool
 	protected boolean m_replytosender = false;
 	protected boolean m_donotreply = false;
 	protected boolean m_replytoother = false;
+	protected boolean m_allusers = false;
 	
 	protected String m_textformat = "";
 
@@ -520,10 +521,17 @@ public class Mailtool
 		 * emails.
 		 */
 		Set emailusers = new HashSet();
-		for (Iterator i = selected.iterator(); i.hasNext();)
-		{
-			EmailUser u = (EmailUser) i.next();
-			emailusers.add(u);
+		if (isAllUsersSelected()){
+			for (Iterator i=getEmailGroups().iterator();i.hasNext();){
+				EmailGroup group = (EmailGroup) i.next();
+				emailusers.addAll(group.getEmailusers());
+			}
+		} else{
+			for (Iterator i = selected.iterator(); i.hasNext();)
+			{
+				EmailUser u = (EmailUser) i.next();
+				emailusers.add(u);
+			}
 		}
 		
 		m_subjectprefix = getSubjectPrefixFromConfig();
@@ -1130,7 +1138,16 @@ public class Mailtool
 	{
 		m_sendmecopyInOptions = value;
 	}	
-	
+
+	public boolean isAllUsersSelected()
+	{
+		return m_allusers;
+	}
+	public void setAllUsersSelected(boolean value)
+	{
+		m_allusers = value;
+	}	
+
 	/*
 	 * Build all groups that will be used for this
 	 */
