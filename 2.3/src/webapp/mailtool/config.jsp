@@ -89,14 +89,13 @@ Settings chosen on this page will become the default settings for this site.</fo
 </h:panelGroup>
 --%>
 <h:panelGroup>
-<h:selectOneRadio value="#{Mailtool.replyToSelected }" onclick="submit()" valueChangeListener="#{Mailtool.processReplyTo2}">
+<h:selectOneRadio value="#{Mailtool.replyToSelected }" onclick="submit()">
 <f:selectItem itemLabel="Reply to sender" itemValue="yes"/>
 <f:selectItem itemLabel="Reply to other" itemValue="otheremail"/>
 <f:selectItem itemLabel="Do not reply" itemValue="no"/> 
 </h:selectOneRadio>
 <h:panelGroup rendered="#{Mailtool.replyToSelected == 'otheremail'}">
-		<f:verbatim><br/></f:verbatim>	
-		<h:outputText value="Reply-to: " />
+		<h:outputText value="Reply-to email: " />
 		<h:inputText value="#{Mailtool.replyToOtherEmail }" size="20" />
 </h:panelGroup>
 </h:panelGroup>
@@ -113,23 +112,24 @@ Settings chosen on this page will become the default settings for this site.</fo
 
 <h:outputText value="Message format " />
 <h:panelGroup>
-	<h:selectBooleanCheckbox value="#{Mailtool.richTextFormat}" onclick="submit()" />
-	<h:outputText value="Enhanced Formatting"/>
-	<h:panelGroup rendered="#{Mailtool.richTextFormat}">
-		<f:verbatim><br/></f:verbatim>
-		<h:outputText value="Message will be formatted in text/html" />
+	<h:selectOneRadio value="#{Mailtool.textFormat}" onclick="submit()">
+		<f:selectItem itemLabel="Plain text (text/plain)" itemValue="plaintext"/>
+		<f:selectItem itemLabel="Enhanced formatting (text/html)" itemValue="htmltext"/>
+	</h:selectOneRadio>
+	
+	<h:panelGroup rendered="{Mailtool.textFormat == 'plaintext'}">
+		<h:outputText value="Message will be formatted in Plain text." />
 	</h:panelGroup>
-	<h:panelGroup rendered="#{not Mailtool.richTextFormat}">
-		<f:verbatim><br/></f:verbatim>
-		<h:outputText value="Message will be formatted in text/plain" />
-	</h:panelGroup>
+	<h:panelGroup rendered="{Mailtool.textFormat == 'htmltext'}">
+		<h:outputText value="Message will be formatted in HTML." />	
+	</h:panelGroup>	
 </h:panelGroup>
 
 <h:outputText value="Subject Prefix " />
 <h:panelGroup>
 <h:inputText size="50" value="#{Mailtool.subjectPrefix}"/>
 <f:verbatim><br/></f:verbatim>
-<h:outputText value="(Current: #{Mailtool.subjectPrefixFromConfig})" />
+<h:outputText value="(Current Prefix: #{Mailtool.subjectPrefixFromConfig})" />
 </h:panelGroup>
 
 <h:panelGroup>

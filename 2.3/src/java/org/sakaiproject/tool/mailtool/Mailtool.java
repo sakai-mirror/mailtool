@@ -138,7 +138,8 @@ public class Mailtool
 	protected boolean m_replytosender = false;
 	protected boolean m_donotreply = false;
 	protected boolean m_replytoother = false;
-	protected boolean m_richtextformat = false;
+	
+	protected String m_textformat = "";
 
 	private String m_recipJSPfrag = "";
 	private boolean m_buildNewView = false;
@@ -265,13 +266,13 @@ public class Mailtool
 		setArchiveMessageInOptions(getConfigParam("emailarchive").trim().toLowerCase().equals("")!=true);
 		setArchiveMessage(getConfigParam("emailarchive").trim().toLowerCase().equals("yes"));
 		
-		String richtext=getConfigParam("messageformat").trim().toLowerCase();
-		if (richtext.equals("") || richtext.equals("html"))
+		String textformat=getConfigParam("messageformat").trim().toLowerCase();
+		if (textformat.equals("") || textformat.equals("htmltext"))
 		{
-			setRichTextFormat(true);
+			setTextFormat("htmltext");
 		}
 		else{
-			setRichTextFormat(false);
+			setTextFormat("plaintext");
 		}
 		
 		log.debug("Constructor");
@@ -570,7 +571,7 @@ public class Mailtool
 		}
 		List headers = new ArrayList(); 
 //		if (isFCKeditor() || isHTMLArea())
-		if (isRichTextFormat())
+		if (getTextFormat().equals("htmltext"))
 			headers.add("content-type: text/html");
 		else
 			headers.add("content-type: text/plain");
@@ -598,20 +599,20 @@ public class Mailtool
 
     		  InternetAddress from = new InternetAddress(fromString);
     		  message.setFrom(from);
-		  if (isReplyToSender()){
-			  // do nothing
-		  }
-		  else if (isReplyToOther() && getReplyToOtherEmail().equals("")!=true){
-			  // need input(email) validation
-			  InternetAddress replytoList[] = {new InternetAddress(getConfigParam("replyto").trim()) };
-			  
-			  message.setReplyTo(replytoList);
-		  } else if (isDoNotReply()){
+    		  String reply = getReplyToSelected().trim().toLowerCase();
+		  if (reply.equals("yes")){
+			  // "reply to sender" is default. So do nothing
+		  } else if (reply.equals("no")){
 			  String noreply=getSiteTitle()+" <noreply@"+smtp_server+">";
 			  InternetAddress noreplyemail=new InternetAddress(noreply);
 			  message.setFrom(noreplyemail);
 		  }
-
+		  else if (reply.equals("otheremail") && getReplyToOtherEmail().equals("")!=true){
+			  // need input(email) validation
+			  InternetAddress replytoList[] = {new InternetAddress(getConfigParam("replyto").trim()) };
+			  
+			  message.setReplyTo(replytoList);
+		  }
     		  
 //    		  String toAddresses = toEmail;
  //   		  message.addRecipients(Message.RecipientType.TO, toAddresses);
@@ -625,7 +626,7 @@ public class Mailtool
   			// Fill the message
 			String messagetype="";
 			//if (isFCKeditor() || isHTMLArea()){
-			if (isRichTextFormat()){
+			if (getTextFormat().equals("htmltext")){
 				messagetype="text/html";
 			}
 			else{
@@ -1085,33 +1086,13 @@ public class Mailtool
 		return true;
 	}
 
-	public boolean isReplyToSender()
+	public String getTextFormat()
 	{
-		return m_replytosender;
+		return m_textformat;
 	}
-	public void setReplyToSender(boolean value)
+	public void setTextFormat(String format)
 	{
-		m_replytosender = value;
-	}
-	public boolean isReplyToOther()
-	{
-		return m_replytoother;
-	}
-	public void setReplyToOther(boolean value)
-	{
-		m_replytoother = value;
-	}
-	public boolean isDoNotReply()
-	{
-		return m_donotreply;
-	}
-	public boolean isRichTextFormat()
-	{
-		return m_richtextformat;
-	}
-	public void setRichTextFormat(boolean value)
-	{
-		m_richtextformat = value;
+		m_textformat = format;
 	}
 	public void setDoNotReply(boolean value)
 	{
@@ -1280,7 +1261,7 @@ public class Mailtool
 		}
 		return true;
 	}
-
+/****
 	public void processReplyTo(ValueChangeEvent event)
 	{
 			if (isReplyToSender()){
@@ -1309,12 +1290,13 @@ public class Mailtool
 				setReplyToSender(false);
 				setReplyToOther(false);
 			}
-			else if (reply.equals("other")){
+			else if (reply.equals("otheremail")){
 				setReplyToOther(true);
 				setReplyToSender(false);
 				setDoNotReply(false);
 			}
 	}	
+***/	
 	public void processFileUpload(ValueChangeEvent event) throws AbortProcessingException
 	{
 		
@@ -1488,7 +1470,7 @@ public class Mailtool
 			m_results2 += "<br/>subjectprefix = "+ (getSubjectPrefix().trim().equals("")!=true && getSubjectPrefix()!=null ? getSubjectPrefix() : getConfigParam("subjectprefix"));
 //			m_results2 += "<br/>reply-to="+ (isReplyToSender() ? "sender(default)" : isReplyToOther() ? getReplyToOtherEmail() : "no");
 			m_results2 += "<br/>reply-to="+ (getReplyToSelected().trim().toLowerCase().equals("yes") ? "sender(default)" : getReplyToSelected().trim().toLowerCase().equals("no") ? "no reply" : getReplyToOtherEmail());			
-			m_results2 += "<br/>message format="+(isRichTextFormat() ? "enhanced formatting": "plain text");
+			m_results2 += "<br/>message format="+(getTextFormat().trim().toLowerCase().equals("htmltext") ? "enhanced formatting": "plain text");
 			
 			while (iter.hasNext()){
 				c=(Configuration) iter.next();
@@ -1554,11 +1536,11 @@ public class Mailtool
 			} else if (reply.equals("otheremail")){
 				setConfigParam("replyto", getReplyToOtherEmail());
 			}
-			if (isRichTextFormat()){
-				setConfigParam("messageformat", "html");
+			if (getTextFormat().trim().toLowerCase().equals("htmltext")){
+				setConfigParam("messageformat", "htmltext");
 			}
 			else{
-				setConfigParam("messageformat", "plain");
+				setConfigParam("messageformat", "plaintext");
 			}
 			
 			// reset Mailtool (with updated options)
