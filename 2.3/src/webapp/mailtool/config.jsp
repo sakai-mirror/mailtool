@@ -36,22 +36,22 @@ Settings chosen on this page will become the default settings for this site.</fo
 </f:verbatim>
 </f:facet>
 
-<h:outputText value="Show other options" />
+<h:outputText value="Show buttons" />
 <h:panelGroup>
         <h:selectBooleanCheckbox  required="false" immediate="true" onclick="submit(); return false;" value="#{Mailtool.sendMeCopyInOptions}" />
-        <h:outputText value="Send me a copy" />
+        <h:outputText value="Show 'Send me a copy'" />
                 <h:panelGroup rendered="#{Mailtool.sendMeCopyInOptions}" >
                         <f:verbatim><br/></f:verbatim>
                         <h:selectBooleanCheckbox value="#{Mailtool.sendMeCopy}"/>
-                        <h:outputText value="If checked, default is (Send me a copy)" />
+                        <h:outputText value="If checked, default is (Send me a copy=true)" />
                 </h:panelGroup>
                 <f:verbatim><br/></f:verbatim>
         <h:selectBooleanCheckbox value="#{Mailtool.archiveMessageInOptions}"  required="false" immediate="true" onclick="submit(); return false;" />
-        <h:outputText value="#{msgs.append_to_email_archive} (Visible only if Email Archive is added)"/>
+        <h:outputText value="Show 'Add to Email Archive' (Visible only if Email Archive is added)"/>
                 <h:panelGroup rendered="#{Mailtool.archiveMessageInOptions}" >
                         <f:verbatim><br/></f:verbatim>
                         <h:selectBooleanCheckbox value="#{Mailtool.archiveMessage}"/>
-                        <h:outputText value="If checked, default is (Append to Archive)" />
+                        <h:outputText value="If checked, default is (Append to Archive=true)" />
                 </h:panelGroup>
 </h:panelGroup>
 

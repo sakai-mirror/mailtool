@@ -202,7 +202,7 @@ public class Mailtool
 	protected void setConfigParam(String parameter, String newvalue)
 	{
 		ToolManager.getCurrentPlacement().getPlacementConfig().setProperty(parameter, newvalue);
-		ToolManager.getCurrentPlacement().save();
+	//	ToolManager.getCurrentPlacement().save(); // will be saved in processUpdateOptions 
 	}
 	protected String getSiteID()
 	{
@@ -1462,22 +1462,22 @@ public class Mailtool
 			Configuration c=null;
 			Iterator iter = renamedRoles.iterator();
 
-			m_results2 += "<br/>Show \"Send me a copy\" = "+ (isSendMeCopyInOptions() ? " Show": " Do not show");
-			m_results2 += " (Default: "+(isSendMeCopy() ? "yes": "no")+")";
-			m_results2 += "<br/>Show \"Append to Email Archive\" = "+ (isArchiveMessageInOptions() ? " Show": " Do not show");
-			m_results2 += " (Default: "+(isArchiveMessage() ? "yes": "no")+")";
-			m_results2 += "<br/>recipview = "+ getViewChoice();
-			m_results2 += "<br/>subjectprefix = "+ (getSubjectPrefix().trim().equals("")!=true && getSubjectPrefix()!=null ? getSubjectPrefix() : getConfigParam("subjectprefix"));
+			m_results2 += "<br/><font color=\"blue\">Show \"Send me a copy\" button</font>= "+ (isSendMeCopyInOptions() ? " yes": " no");
+			m_results2 += " (Default: "+(isSendMeCopy() ? "checked": "unchecked")+")";
+			m_results2 += "<br/><font color=\"blue\">Show \"Add to Email Archive\" button</font>= "+ (isArchiveMessageInOptions() ? " yes": " no");
+			m_results2 += " (Default: "+(isArchiveMessage() ? "checked": "unchecked")+")";
+			m_results2 += "<br/><font color=\"blue\">recipview </font>= "+ (getViewChoice().equals("user")? "Users": getViewChoice().equals("role") ? "Roles": getViewChoice().equals("tree") ? "Users by Role" : getViewChoice().equals("sidebyside") ? "Side-by-Side": getViewChoice().equals("foothill") ? "Scrolling List" : "Tree");
+			m_results2 += "<br/><font color=\"blue\">subjectprefix </font>= "+ (getSubjectPrefix().trim().equals("")!=true && getSubjectPrefix()!=null ? getSubjectPrefix() : getConfigParam("subjectprefix"));
 //			m_results2 += "<br/>reply-to="+ (isReplyToSender() ? "sender(default)" : isReplyToOther() ? getReplyToOtherEmail() : "no");
-			m_results2 += "<br/>reply-to="+ (getReplyToSelected().trim().toLowerCase().equals("yes") ? "sender(default)" : getReplyToSelected().trim().toLowerCase().equals("no") ? "no reply" : getReplyToOtherEmail());			
-			m_results2 += "<br/>message format="+(getTextFormat().trim().toLowerCase().equals("htmltext") ? "enhanced formatting": "plain text");
+			m_results2 += "<br/><font color=\"blue\">reply-to</font>="+ (getReplyToSelected().trim().toLowerCase().equals("yes") ? "sender(default)" : getReplyToSelected().trim().toLowerCase().equals("no") ? "no reply" : getReplyToOtherEmail());			
+			m_results2 += "<br/><font color=\"blue\">message format</font>="+(getTextFormat().trim().toLowerCase().equals("htmltext") ? "Enhanced formatting": "Plain text");
 			
 			while (iter.hasNext()){
 				c=(Configuration) iter.next();
 				//setConfigParam("role"+i+"id", c.getRoleId()); // should not be changed
 				//setConfigParam("role"+i+"realmid", c.getRealmid()); // should not be changed. So not shown in options
-				m_results2 += "<br/>role"+i+"singular = "+ (c.getSingularNew().trim().equals("")!=true && c.getSingularNew()!=null ? c.getSingularNew(): getConfigParam("role" + i + "singular"));
-				m_results2 += "<br/>role"+i+"plural = "+ (c.getPluralNew().trim().equals("")!=true && c.getPluralNew()!=null ? c.getPluralNew(): getConfigParam("role" + i + "plural"));
+				m_results2 += "<br/><font color=\"blue\">role"+i+"singular </font>= "+ (c.getSingularNew().trim().equals("")!=true && c.getSingularNew()!=null ? c.getSingularNew(): getConfigParam("role" + i + "singular"));
+				m_results2 += "<br/><font color=\"blue\">role"+i+"plural </font>= "+ (c.getPluralNew().trim().equals("")!=true && c.getPluralNew()!=null ? c.getPluralNew(): getConfigParam("role" + i + "plural"));
 				i++;
 			}
 			
@@ -1542,6 +1542,8 @@ public class Mailtool
 			else{
 				setConfigParam("messageformat", "plaintext");
 			}
+			
+			ToolManager.getCurrentPlacement().save(); 
 			
 			// reset Mailtool (with updated options)
 			ToolSession ts = SessionManager.getCurrentSession().getToolSession(ToolManager.getCurrentPlacement().getId());
