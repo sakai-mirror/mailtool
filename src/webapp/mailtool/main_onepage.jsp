@@ -136,14 +136,14 @@
 					<h:panelGroup rendered="#{Mailtool.textFormat=='htmltext'}">
 						<sakai:rich_text_area  rows="10" columns="70" value="#{Mailtool.messageBody}"/>
 					</h:panelGroup>
-					<h:panelGroup rendered="#{Mailtool.richTextFormat=='plaintext'}">
+					<h:panelGroup rendered="#{Mailtool.textFormat=='plaintext'}">
 						<h:inputTextarea rows="10" cols="70" value="#{Mailtool.messageBody}"/>
 						<f:verbatim><br/></f:verbatim>
 					</h:panelGroup>
 		</h:panelGroup>
 		<h:panelGroup rendered="#{Mailtool.archiveMessageInOptions}" >
 			<h:selectBooleanCheckbox value="#{Mailtool.archiveMessage}" />
-			<h:outputText value="#{msgs.append_to_email_archive}" />
+			<h:outputText value="Add to Email Archive" />
 		</h:panelGroup>
 		<h:panelGroup rendered="#{Mailtool.sendMeCopyInOptions}" >
 			<f:verbatim><br/></f:verbatim>
