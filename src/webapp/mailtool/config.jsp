@@ -68,12 +68,13 @@ Settings chosen on this page will become the default settings for this site.</fo
 </h:panelGroup>
 
 <h:outputText value="Reply-to " />
+<%--
 <h:panelGroup>
-	<h:selectBooleanCheckbox value="#{Mailtool.replyToSender}" onclick="submit()" required="false" immediate="true" valueChangeListener="#{Mailtool.processReplyToSender}"/>
+	<h:selectBooleanCheckbox value="#{Mailtool.replyToSender}" valueChangeListener="#{Mailtool.processReplyTo}"/>
 	<h:outputText value="Sender" />
-	
+
 	<f:verbatim><br/></f:verbatim>
-	<h:selectBooleanCheckbox value="#{Mailtool.replyToOther}" onclick="submit()" required="false"  immediate="true"  valueChangeListener="#{Mailtool.processReplyToOther}"/>
+	<h:selectBooleanCheckbox value="#{Mailtool.replyToOther}" valueChangeListener="#{Mailtool.processReplyTo}"/>
 	<h:outputText value="Other " />
 
 	<h:panelGroup rendered="#{Mailtool.replyToOther}">
@@ -83,8 +84,21 @@ Settings chosen on this page will become the default settings for this site.</fo
 	</h:panelGroup>
 
 	<f:verbatim><br/></f:verbatim>	
-	<h:selectBooleanCheckbox value="#{Mailtool.doNotReply}" onclick="submit()" required="false"  immediate="true"  valueChangeListener="#{Mailtool.processDoNotReply}"/>
+	<h:selectBooleanCheckbox value="#{Mailtool.doNotReply}" valueChangeListener="#{Mailtool.processReplyTo}"/>
 	<h:outputText value="Do not reply" />
+</h:panelGroup>
+--%>
+<h:panelGroup>
+<h:selectOneRadio value="#{Mailtool.replyToSelected }" onclick="submit()" valueChangeListener="#{Mailtool.processReplyTo2}">
+<f:selectItem itemLabel="Reply to sender" itemValue="yes"/>
+<f:selectItem itemLabel="Reply to other" itemValue="otheremail"/>
+<f:selectItem itemLabel="Do not reply" itemValue="no"/> 
+</h:selectOneRadio>
+<h:panelGroup rendered="#{Mailtool.replyToSelected == 'otheremail'}">
+		<f:verbatim><br/></f:verbatim>	
+		<h:outputText value="Reply-to: " />
+		<h:inputText value="#{Mailtool.replyToOtherEmail }" size="20" />
+</h:panelGroup>
 </h:panelGroup>
 
 <%--
