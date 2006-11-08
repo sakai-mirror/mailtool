@@ -671,10 +671,20 @@ public class Mailtool
 			String toDisplay = euser.getDisplayname(); // u.getDisplayName();
 			//String toString = toDisplay + " <" + toEmail + ">";
 
-			recipientsString+=toEmail;
-
-	   		/////message.addRecipients(Message.RecipientType.TO, toEmail);
+			// if AllUsers are selected, do not add current user's email to recipients
+			//	recipientsString+=toEmail; // former line
+			if (isAllUsersSelected() && getCurrentUser().getEmail().equals(toEmail)){
+				// don't add sender to recipients
+			}
+			else {
+				recipientsString+=toEmail;
+				m_results += toDisplay + (i.hasNext() ? "/" : "");
+			}
+//			recipientsString += isAllUsersSelected() && getCurrentUser().getEmail().equals(toEmail) ? "" : toEmail;
+//			m_results += toDisplay + (i.hasNext() ? "/" : "");
 	   		
+			///message.addRecipients(Message.RecipientType.TO, toEmail);
+/****	   		
 			if (i.hasNext())
 			{
 				m_results += toDisplay + "/ ";
@@ -683,7 +693,7 @@ public class Mailtool
 			{
 				m_results += toDisplay;
 			}
-			
+****/
 		}
 		if (m_otheremails.equals("")!=true){
 			//
