@@ -249,7 +249,8 @@ public class Mailtool
 		
 		initializeCurrentRoles(); /* this initialization solves SAK-6810 */
 		
-		setMessageSubject(getSubjectPrefix().trim().equals("")?getSubjectPrefixFromConfig():getSubjectPrefix());
+		setMessageSubject(getSubjectPrefix().equals("")?getSubjectPrefixFromConfig():getSubjectPrefix());
+		setSubjectPrefix(getSubjectPrefixFromConfig());
 
 		String reply=getConfigParam("replyto").trim().toLowerCase();
 		if (reply.equals("") || reply.equals("yes")){
@@ -1058,8 +1059,12 @@ public class Mailtool
 				c.setRealmid("/site/"+siteid);
 				c.setSingular(rolename);
 				c.setPlural(rolename+"s");
-				c.setSingularNew("");
-				c.setPluralNew("");
+//				c.setSingularNew("");
+//				c.setPluralNew("");
+				
+				c.setSingularNew(getConfigParam("role"+(num_role_id+1)+"singular"));
+				c.setPluralNew(getConfigParam("role"+(num_role_id+1)+"plural"));
+
 				renamedRoles.add(c);
 				num_role_id++;
 				num_roles_renamed++;
@@ -1478,23 +1483,38 @@ public class Mailtool
 			int i=1;
 			Configuration c=null;
 			Iterator iter = renamedRoles.iterator();
+			String star="<font color=\"red\">*</font>";
 
-			m_results2 += "<br/><font color=\"blue\">Show \"Send me a copy\" button</font>= "+ (isSendMeCopyInOptions() ? " yes": " no");
-			m_results2 += " (Default: "+(isSendMeCopy() ? "checked": "unchecked")+")";
-			m_results2 += "<br/><font color=\"blue\">Show \"Add to Email Archive\" button</font>= "+ (isArchiveMessageInOptions() ? " yes": " no");
-			m_results2 += " (Default: "+(isArchiveMessage() ? "checked": "unchecked")+")";
-			m_results2 += "<br/><font color=\"blue\">recipview </font>= "+ (getViewChoice().equals("user")? "Users": getViewChoice().equals("role") ? "Roles": getViewChoice().equals("tree") ? "Users by Role" : getViewChoice().equals("sidebyside") ? "Side-by-Side": getViewChoice().equals("foothill") ? "Scrolling List" : "Tree");
-			m_results2 += "<br/><font color=\"blue\">subjectprefix </font>= "+ (getSubjectPrefix().trim().equals("")!=true && getSubjectPrefix()!=null ? getSubjectPrefix() : getConfigParam("subjectprefix"));
+			m_results2 += "<br/><font color=\"blue\">Show \"Send me a copy\" button</font> = "+ (isSendMeCopyInOptions() ? " yes": " no");
+			m_results2 += " (Default: "+(isSendMeCopy() ? "checked": "unchecked")+")"
+							+ ((getConfigParam("sendmecopy").equals("") && isSendMeCopyInOptions()) || !getConfigParam("sendmecopy").equals((isSendMeCopy() ? "yes": "no")) ? star : "");
+			m_results2 += "<br/><font color=\"blue\">Show \"Add to Email Archive\" button</font> = "+ (isArchiveMessageInOptions() ? " yes": " no");
+			m_results2 += " (Default: "+(isArchiveMessage() ? "checked": "unchecked")+")"
+							+ ((getConfigParam("emailarchive").equals("") && isArchiveMessageInOptions()) || !getConfigParam("emailarchive").equals((isArchiveMessage() ? "yes": "no")) ? star : "");
+			m_results2 += "<br/><font color=\"blue\">recipview </font> = "+ (getViewChoice().equals("user")? "Users": getViewChoice().equals("role") ? "Roles": getViewChoice().equals("tree") ? "Users by Role" : getViewChoice().equals("sidebyside") ? "Side-by-Side": getViewChoice().equals("foothill") ? "Scrolling List" : "Tree")
+							+ (getConfigParam("recipview").equals(getViewChoice()) ? "" : star);
+			m_results2 += "<br/><font color=\"blue\">subjectprefix </font>= "+ (getSubjectPrefix().trim().equals("")!=true && getSubjectPrefix()!=null ? getSubjectPrefix() : getConfigParam("subjectprefix"))
+							+ (getConfigParam("subjectprefix").equals(getSubjectPrefix()) || getSubjectPrefix().trim().equals("") ? "" : star);
 //			m_results2 += "<br/>reply-to="+ (isReplyToSender() ? "sender(default)" : isReplyToOther() ? getReplyToOtherEmail() : "no");
-			m_results2 += "<br/><font color=\"blue\">reply-to</font>="+ (getReplyToSelected().trim().toLowerCase().equals("yes") ? "sender(default)" : getReplyToSelected().trim().toLowerCase().equals("no") ? "no reply" : getReplyToOtherEmail());			
-			m_results2 += "<br/><font color=\"blue\">message format</font>="+(getTextFormat().trim().toLowerCase().equals("htmltext") ? "Enhanced formatting": "Plain text");
+			m_results2 += "<br/><font color=\"blue\">reply-to</font> = "+ (getReplyToSelected().trim().toLowerCase().equals("yes") ? "sender" : getReplyToSelected().trim().toLowerCase().equals("no") ? "no reply" : getReplyToOtherEmail());
+			if (getReplyToSelected().equals("yes") || getReplyToSelected().equals("no")){
+				m_results2 += getConfigParam("replyto").equals(getReplyToSelected()) ? "" : star;
+			}
+			else if (getReplyToSelected().equals("otheremail")){
+				m_results2 += getConfigParam("replyto").equals(getReplyToOtherEmail().trim()) ? "" : star;
+			}
+			m_results2 += "<br/><font color=\"blue\">message format</font> = "+(getTextFormat().trim().toLowerCase().equals("htmltext") ? "Enhanced formatting": "Plain text")
+							+ (getConfigParam("messageformat").equals(getTextFormat()) ? "" : star);
+			
 			
 			while (iter.hasNext()){
 				c=(Configuration) iter.next();
 				//setConfigParam("role"+i+"id", c.getRoleId()); // should not be changed
 				//setConfigParam("role"+i+"realmid", c.getRealmid()); // should not be changed. So not shown in options
-				m_results2 += "<br/><font color=\"blue\">role"+i+"singular </font>= "+ (c.getSingularNew().trim().equals("")!=true && c.getSingularNew()!=null ? c.getSingularNew(): getConfigParam("role" + i + "singular"));
-				m_results2 += "<br/><font color=\"blue\">role"+i+"plural </font>= "+ (c.getPluralNew().trim().equals("")!=true && c.getPluralNew()!=null ? c.getPluralNew(): getConfigParam("role" + i + "plural"));
+				m_results2 += "<br/><font color=\"blue\">role"+i+"singular </font>= "+ (c.getSingularNew().trim().equals("")!=true && c.getSingularNew()!=null ? c.getSingularNew(): getConfigParam("role" + i + "singular"))
+							+ (getConfigParam("role"+i+"singular").equals(c.getSingularNew()) || c.getSingularNew().trim().equals("") ? "" : star);
+				m_results2 += "<br/><font color=\"blue\">role"+i+"plural </font>= "+ (c.getPluralNew().trim().equals("")!=true && c.getPluralNew()!=null ? c.getPluralNew(): getConfigParam("role" + i + "plural"))
+							+ (getConfigParam("role"+i+"plural").equals(c.getPluralNew()) || c.getPluralNew().trim().equals("") ? "" : star);
 				i++;
 			}
 			
@@ -1511,8 +1531,8 @@ public class Mailtool
 				c=(Configuration) iter.next();
 				//setConfigParam("role"+i+"id", c.getRoleId()); // should not be changed
 				//setConfigParam("role"+i+"realmid", c.getRealmid()); // should not be changed. So not shown in options
-				if (c.getSingularNew().equals("")!=true && c.getSingularNew()!=null) setConfigParam("role"+i+"singular", c.getSingularNew());
-				if (c.getPluralNew().equals("")!=true && c.getPluralNew()!=null) setConfigParam("role"+i+"plural", c.getPluralNew());
+				if (c.getSingularNew().trim().equals("")!=true && c.getSingularNew()!=null) setConfigParam("role"+i+"singular", c.getSingularNew());
+				if (c.getPluralNew().trim().equals("")!=true && c.getPluralNew()!=null) setConfigParam("role"+i+"plural", c.getPluralNew());
 				i++;
 			}
 			if (getSubjectPrefix().equals("")!=true && getSubjectPrefix()!=null){
@@ -1551,7 +1571,7 @@ public class Mailtool
 			} else if (reply.equals("no")){
 				setConfigParam("replyto", "no");
 			} else if (reply.equals("otheremail")){
-				setConfigParam("replyto", getReplyToOtherEmail());
+				setConfigParam("replyto", getReplyToOtherEmail().trim());
 			}
 			if (getTextFormat().trim().toLowerCase().equals("htmltext")){
 				setConfigParam("messageformat", "htmltext");
