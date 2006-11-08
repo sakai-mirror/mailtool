@@ -1,23 +1,36 @@
 <%-- HTML JSF tag libary --%>
-<%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %>
+<%@ taglib uri="http://java.sun.com/jsf/html" prefix="h"%>
 <%-- Core JSF tag library --%>
-<%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
+<%@ taglib uri="http://java.sun.com/jsf/core" prefix="f"%>
 <%-- Main Sakai tag library --%>
-<%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
+<%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai"%>
 
-<STYLE TYPE="text/css" MEDIA=screen>
+<f:view>
+<f:loadBundle basename="org.sakaiproject.tool.mailtool.Messages" var="msgs" />
+
+<f:verbatim>
+<!DOCTYPE html
+ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+</f:verbatim>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Mailtool</title>
+<%= request.getAttribute("sakai.html.head.css.base") %>
+<%= request.getAttribute("sakai.html.head.css.skin") %>
+<%= request.getAttribute("sakai.html.head.js") %>
+
+<STYLE TYPE="text/css" MEDIA="screen">
 <!--
 .mail-header { vertical-align: top; font-weight: bold }
 .mail-inputs { text-align:left}
 -->
 </STYLE>
+</head>
 
-<f:view>
-	<f:loadBundle basename="org.sakaiproject.tool.mailtool.Messages" var="msgs" />
-<sakai:view_container title="Configuration">
+<body onload="<%=request.getAttribute("sakai.html.body.onload")%>;">
 
-<h:form>
-<sakai:view_content>
+<h:form id="optionsForm">
 
 <sakai:tool_bar>
         <sakai:tool_bar_item value="Compose" action="compose" immediate="true" />
@@ -96,7 +109,7 @@ Settings chosen on this page will become the default settings for this site.</fo
 </h:selectOneRadio>
 <h:panelGroup rendered="#{Mailtool.replyToSelected == 'otheremail'}">
 		<h:outputText value="Reply-to email: " />
-		<h:inputText value="#{Mailtool.replyToOtherEmail }" size="20" />
+		<h:inputText value="#{Mailtool.replyToOtherEmail }" size="20"  validator="#{Mailtool.validateEmail}" id="replyemail"/>
 </h:panelGroup>
 </h:panelGroup>
 
@@ -220,8 +233,8 @@ Settings chosen on this page will become the default settings for this site.</fo
 		immediate="false" />
 </sakai:button_bar>
 
-</sakai:view_content>
 </h:form>
-</sakai:view_container>
 
+</body>
+</html>
 </f:view>

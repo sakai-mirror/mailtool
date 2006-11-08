@@ -87,11 +87,12 @@
 
 		<h:outputText value="Other(s): "/>
 		<h:panelGrid columns="1">
-		<%--
+
 		<h:inputText value="#{Mailtool.otherEmails}" size="50" validator="#{Mailtool.validateEmail}" id="email"/>
+		<%--
 		<h:message for="email" />
-		--%>		
 		<h:inputText value="#{Mailtool.otherEmails}" size="50" />
+		--%>		
 		<h:outputText value="Type additional email addresses above: use commas to separate addresses."/>
 		</h:panelGrid>
 
