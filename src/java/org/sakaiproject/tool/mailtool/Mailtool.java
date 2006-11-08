@@ -689,7 +689,7 @@ public class Mailtool
 			// multiple email validation is needed here
 			//
 			recipientsString+=m_otheremails;
-			m_results += "//"+m_otheremails;
+			m_results += "<br/>"+m_otheremails;
 		}
 		if (m_sendmecopy) message.addRecipients(Message.RecipientType.CC, fromEmail);
 
