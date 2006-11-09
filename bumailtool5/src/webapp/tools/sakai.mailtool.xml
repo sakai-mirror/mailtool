@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<registration>
+
+	<tool	id="sakai.mailtool"
+			title="Mailtool"
+			description="Send mail to groups in your course.(HTMLArea Wysiwyg editor+Custom button added by BU SMG ">
+			
+		<category name="course" />
+		<category name="project" />
+		<!--
+			This parameter determines how recipients will be selected
+				role
+				user
+				tree
+				sidebyside   wireframe from Kristol
+				foothill      wireframe from Vivie
+		-->
+		<configuration name="recipview" value="tree" />
+		
+		<configuration name="subjectprefix" value="" />
+		
+		<!-- idea from Shelby -->
+		<!-- <configuration name="allow_outside_recipients" value="no" /> -->
+		
+		<!-- <configuration name="allow_attachments" value="no" /> -->
+		
+		<!-- <configuration name="replyto" value="" /> -->
+		
+		<!-- requested by Cheryl -->
+		<!-- This should be "yes" or "no" -->
+		<configuration name="displayinvalidemailaddrs" value="no" />
+		
+		<!-- <configuration name="alpha_by" value="display" /> -->
+		
+		<configuration name="emailarchive" value=""/>
+		
+		<configuration name="mail.newlock.siteid" value=""/>
+		
+		<!-- all the roles -->
+		<configuration name="role1realmid" value="" />
+		<configuration name="role1id" value="" />
+		<configuration name="role1singular" value="" />
+		<configuration name="role1plural" value="" />
+		
+		<configuration name="role2realmid" value="" />
+		<configuration name="role2id" value="" />
+		<configuration name="role2singular" value="" />
+		<configuration name="role2plural" value="" />
+		
+		<configuration name="role3realmid" value="" />
+		<configuration name="role3id" value="" />
+		<configuration name="role3singular" value="" />
+		<configuration name="role3plural" value="" />
+		
+		<configuration name="wysiwygeditor" value="" />
+</tool>
+	
+</registration>

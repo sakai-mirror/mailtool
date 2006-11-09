@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="robots" content="noindex">
+<title>Insert/Modify DocLink | HTMLArea</title>
+<script type="text/javascript" src="popup.js"></script>
+<script language="JavaScript" type="text/javascript">
+<!--
+window.resizeTo(400, 300);
+
+function doChooseLink(title, unid){
+      document.getElementById("f_href").value = unid;
+      document.getElementById("f_title").value = title;
+      doChooseLinkAgain();
+}
+
+function doChooseLinkAgain(){
+      parent.document.getElementById("f_href").value = document.getElementById("f_href").value;
+      parent.document.getElementById("f_title").value = document.getElementById("f_title").value;
+}
+function doChooseLink2(title, unid){
+      parent.document.getElementById("f_href").value = unid;
+      parent.document.getElementById("f_title").value = title;
+}
+// -->
+</script>
+
+<script language="JavaScript" type="text/javascript">
+function getget(name) {
+  var q = document.location.search;
+  var i = q.indexOf(name + '=');
+
+  if (i == -1) {
+    return false;
+  }
+
+  var r = q.substr(i + name.length + 1, q.length - i - name.length - 1);
+
+  i = r.indexOf('&');
+
+  if (i != -1) {
+    r = r.substr(0, i);
+  }
+
+  return r.replace(/\+/g, ' ');
+}</script>
+
+</head>
+<style type="text/css">
+html, body {
+  background: ButtonFace;
+  color: ButtonText;
+  font: 11px Tahoma,Verdana,sans-serif;
+  margin: 0px;
+  padding: 0px;
+}
+body { padding: 5px; }
+table {
+  font: 11px Tahoma,Verdana,sans-serif;
+}
+select, input, button { font: 11px Tahoma,Verdana,sans-serif; }
+button { width: 70px; }
+table .label { text-align: right; width: 8em; }
+.title { background: #ddf; color: #000; font-weight: bold; font-size: 120%; padding: 3px 10px; margin-bottom: 10px;
+border-bottom: 1px solid black; letter-spacing: 2px;
+}
+#buttons {
+      margin-top: 1em; border-top: 1px solid #999;
+      padding: 2px; text-align: right;
+}
+</style>
+
+<body text="#000000" bgcolor="#FFFFFF">
+
+<div class="title">Browse/Insert a link in your Site's Resouces</div>
+
+<script language="JavaScript" type="text/javascript">
+	for (i = 0; i < window.parent.frames['frame1'].document.links.length; ++i){
+		var a = window.parent.frames['frame1'].document.links[i];
+		document.write("<a href=JavaScript:doChooseLink2('"+a.innerText+"','"+a.href+"');>"+a.innerText+"</a><br />")
+	}
+</script>
+
+<P>This form uses a customised HTMLArea. When in edit mode you should see a
+button with this icon <IMG src="disk.gif">. This icon lets
+you link to other documents in this database.</P>
+<UL>
+  <LI>Type &amp; select/Select some text in the editor and press the icon
+  <LI>Choose a document from the list and click on it.
+  <LI>Press Ok
+  <LI>Press the "Save Document" button at the bottom of the form</LI></UL>
+<P>If all goes well it will save a document that contains a link to another
+document that uses this same form. You can then open another document, edit it,
+link to another document ad infinitum, Great for intranets!!</P>
+
+<!-- 
+<table border="0" style="width: 100%;">
+  <tr>
+    <td class="label">URL:</td>
+    <td><input type="text" id="f_href" style="width: 90%" /></td>
+  </tr>
+  <tr>
+    <td class="label">Title (tooltip):</td>
+    <td><input type="text" id="f_title" style="width: 90%" /></td>
+  </tr>
+
+  <tr>
+    <td class="label">Target:</td>
+    <td><select id="f_target">
+      <option value="">None (use implicit)</option>
+      <option value="_blank">New window (_blank)</option>
+      <option value="_self">Same frame (_self)</option>
+      <option value="_top">Top frame (_top)</option>
+    </select>
+    <input type="text" name="f_other_target" id="f_other_target" size="10" style="visibility: hidden" />
+    </td>
+  </tr>
+</table>
+--->
+<!-- 
+<p><div id="buttons">
+  <button type="button" name="siteid" onclick="alert('Hello: '+getget('siteid'));">siteid</button>
+  <button type="button" name="ok" onclick="return onOK();">OK</button>
+  <button type="button" name="cancel" onclick="return onCancel();">Cancel</button>
+ <button type="button" name="select" onclick="javascript:doChooseLinkAgain();">Select</button>
+</div>
+-->
+
+</body>
+</html>
