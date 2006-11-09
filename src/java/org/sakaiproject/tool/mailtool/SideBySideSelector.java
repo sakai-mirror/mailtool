@@ -25,6 +25,8 @@ package org.sakaiproject.tool.mailtool;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.model.DataModel;
+
 
 public class SideBySideSelector implements RecipientSelector {
 	List /* emailgroups */ m_initialgroups = null;
@@ -88,5 +90,9 @@ public class SideBySideSelector implements RecipientSelector {
 	{
 		m_model.actionSink();
 		return "main";
+	}
+	public DataModel getDataModel()
+	{
+		return null;
 	}
 }

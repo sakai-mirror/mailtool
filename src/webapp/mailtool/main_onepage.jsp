@@ -35,9 +35,11 @@
 <sakai:view_content>
 <sakai:messages />
 
+<h:panelGroup rendered="#{Mailtool.allowedToSend}">
 <sakai:tool_bar>
         <sakai:tool_bar_item value="Options" action="configure" immediate="true" />
 </sakai:tool_bar>
+</h:panelGroup>
 
 <h:panelGroup rendered="#{not Mailtool.allowedToSend}">
 	<f:verbatim><br/></f:verbatim>
@@ -45,6 +47,9 @@
 </h:panelGroup>
 
 <h:panelGrid columns="2" rendered="#{Mailtool.allowedToSend}" cellspacing="0" cellpadding="3" columnClasses="mail-header, mail-inputs">
+
+		<h:outputText value="From: "/>
+		<h:outputText value="#{Mailtool.currentUser.displayname} <#{Mailtool.currentUser.email}>"/>
 
 		<h:outputText escape="false" value="View: "/>
 		<h:selectOneListbox onchange="submit(); return false;" size="1" id="viewChoice" value="#{Mailtool.viewChoice}">

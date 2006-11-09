@@ -120,7 +120,7 @@ public class Mailtool
 
 	private String m_recipJSPfrag = "";
 	private boolean m_buildNewView = false;
-	private String m_changedViewChoice = getRecipview(); /* this initialization solves SAK-6810 */
+	private String m_changedViewChoice = "";
 
 	/** For Results.jsp **/
 	protected String m_results = "";
@@ -144,7 +144,14 @@ public class Mailtool
 //	protected int MAXFILE=readMAXFILE();
 	
 	private List attachedFiles = new ArrayList();
-	private List configurations = new ArrayList();
+	private List renamedRoles = new ArrayList();
+	private int num_roles_renamed=0;
+	private int num_role_id=0;
+	private int MaxNumRoles=15; // should be same as number of roles in tools/sakai.mailtool.xml
+	private String roleid="";
+	private String singular="";
+	private String plural="";
+	private boolean already_configured=false;
 	
 	private int MaxNumAttachment=readMaxNumAttachment();
 	private String filename="";
@@ -208,6 +215,9 @@ public class Mailtool
 	
 	public Mailtool()
 	{
+		m_changedViewChoice = getRecipview();  /* this initialization solves SAK-6810 */
+		initializeCurrentRoles();
+		
 		log.debug("Constructor");
 		//System.out.println("site title="+getSiteTitle());
 		//System.out.println("site type="+getSiteType());
@@ -221,6 +231,28 @@ public class Mailtool
 	{
 		this.filename=filename;
 	}
+	public String getRoleID(){
+		return roleid;		
+	}
+	public void setRoleID(String r)
+	{
+		this.roleid=r;
+	}
+	public String getSingular(){
+		return singular;		
+	}
+	public void setSingular(String s)
+	{
+		this.singular=s;
+	}
+	public String getPlural(){
+		return plural;		
+	}
+	public void setPlural(String p)
+	{
+		this.plural=p;
+	}
+	
 	public int getnum_files()
 	{
 		return this.num_files;
@@ -820,6 +852,7 @@ public class Mailtool
 		
 		List /* EmailRole */ theroles = new ArrayList();
 		String siteid=getSiteID();
+		String realmid="/site/"+siteid;
 		//String sitetype=getSiteType();
 /*		
 		if (sitetype.equals("project")){
@@ -837,7 +870,6 @@ public class Mailtool
 			theroles.add(emailrole3);
 		}
 */
-		boolean already_configured=false;
 		for (int i = 1; i < (NUMBER_ROLES+1); i++)
 		{
 			String rolerealm = this.getConfigParam("role" + i + "realmid");
@@ -854,26 +886,47 @@ public class Mailtool
 				theroles.add(emailrole);
 				already_configured=true;
 			}
-			if (rolename!=null && rolename.equals("")){
-				Configuration cfg = new Configuration();
-				cfg.setRealmid(rolerealm);
-				cfg.setSingular(rolesingular);
-				cfg.setPlural(roleplural);
-				cfg.setId(rolename);
-				configurations.add(cfg);
-			}
-		}	
+		} // for
 		if (already_configured==false){
-			String realmid="/site/"+siteid;
 			try{
-			arole=m_realmService.getAuthzGroup(realmid);
+				arole=m_realmService.getAuthzGroup(realmid);
 			} catch (Exception e){}
 			for (Iterator i = arole.getRoles().iterator(); i.hasNext(); ) {
+					Role r = (Role) i.next();
+					String rolename=r.getId();
+					EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, rolename, rolename);
+					theroles.add(emailrole);
+			}				
+		}
+
+		return theroles;
+	}
+	
+	public void initializeCurrentRoles()
+	{
+		String siteid=getSiteID();
+		String realmid="/site/"+siteid;
+		try{
+			arole=m_realmService.getAuthzGroup(realmid);
+		} catch (Exception e){}
+		for (Iterator i = arole.getRoles().iterator(); i.hasNext(); ) {
 				Role r = (Role) i.next();
 				String rolename=r.getId();
-				EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, rolename, rolename);
-				theroles.add(emailrole);
-			}
+//				EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, rolename, rolename);
+	//			theroles.add(emailrole);
+
+				// initialize "rename roles" in options
+				Configuration c=new Configuration();
+				c.setId(num_role_id);
+				c.setRoleId(rolename);
+				c.setRealmid("/site/"+siteid);
+				c.setSingular(rolename);
+				c.setPlural(rolename);
+				renamedRoles.add(c);
+				num_role_id++;
+				num_roles_renamed++;
+
+		}
 /*			this is for detection group. it should be done in getEmailGroups()
  * 
 			try{
@@ -888,10 +941,8 @@ public class Mailtool
 			      theroles.add(emailrole2);
 			}
 			*/
-		}
-		return theroles;
 	}
-	
+
 	public boolean isEmailArchived()
 	{
 		
@@ -1111,21 +1162,9 @@ public class Mailtool
 	    }
 		} // end if
 	}	
-
-	public List getAllAttachments() {
-
-	return attachedFiles;	
-	}
-	public List getConfigurations() {
-
-		return configurations;	
-	}	
-	public static String getFacesParamValue(FacesContext fc, String name) {
-	        return (String) fc.getCurrentInstance().getExternalContext().getRequestParameterMap().get(name);
-	}
-
-	    public void processRemoveFile()
-	    {
+	
+	public void processRemoveFile()
+	{
 	    	String id = getFacesParamValue(facesContext, "id");
 //	    	int index=Integer.parseInt(id);
 //	    	System.out.println("index="+index);
@@ -1142,10 +1181,10 @@ public class Mailtool
 			}
 			attachedFiles.remove(aForRemoval);
 	    	num_files--;
-	    }
+	 }
 
-	    public boolean isNotAlreadyUploaded(String s, List attachedFiles)
-	    {
+	 public boolean isNotAlreadyUploaded(String s, List attachedFiles)
+	 {
 	    	Attachment a=null;
 	    	Iterator iter = attachedFiles.iterator();
 			while(iter.hasNext()) {
@@ -1155,10 +1194,70 @@ public class Mailtool
 				}
 			}
 	    	return false;
-	    }	    
-	    public void toggle_attachClicked()
-	    {
+	  }	    
+	  public void toggle_attachClicked()
+	  {
 	    	attachClicked  = attachClicked ? false: true;
-	    }
-}
+	  }
 
+	public List getAllAttachments() {
+
+	return attachedFiles;	
+	}
+	public List getRenamedRoles() {
+
+		return renamedRoles;	
+	}	
+	public static String getFacesParamValue(FacesContext fc, String name) {
+	        return (String) fc.getCurrentInstance().getExternalContext().getRequestParameterMap().get(name);
+	}
+	public void processRenameRole()
+	{
+		
+		Configuration r = new Configuration();
+
+		if (num_roles_renamed < MaxNumRoles){
+
+			if (isNotAlreadyAdded(roleid, renamedRoles)==false)
+			{
+				r.setId(num_role_id);
+				r.setRoleId(roleid);
+				r.setSingular(singular);
+				r.setPlural(plural);
+				num_roles_renamed++;
+				num_role_id++;
+				
+				renamedRoles.add(r);
+			}
+    		
+		} // end if
+	}	
+	 public boolean isNotAlreadyAdded(String s, List renamedRoles)
+	 {
+	    	Configuration c=null;
+	    	Iterator iter = renamedRoles.iterator();
+			while(iter.hasNext()) {
+				c = (Configuration) iter.next();
+				if(s.equals(c.getRoleId())) {
+					return true;
+				}
+			}
+	    	return false;
+	  }
+		public void processRemoveRole()
+		{
+		    	String id = getFacesParamValue(facesContext, "rid");
+		    	
+		    	Configuration c=null;
+		    	Configuration cForRemoval=null;
+		    	Iterator iter = renamedRoles.iterator();
+				while(iter.hasNext()) {
+					c = (Configuration) iter.next();
+					if(id.equals(c.getRoleId())) {
+						cForRemoval=c;
+					}
+				}
+				renamedRoles.remove(cForRemoval);
+		    	num_roles_renamed--;
+		 }	 
+}
