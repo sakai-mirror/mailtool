@@ -1,0 +1,50 @@
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>HTMLArea example</title>
+
+      <!-- htmlarea includes -->
+	<script type="text/javascript" src="./htmlarea/htmlarea.js"></script>
+	<script type="text/javascript" src="./htmlarea/lang/en.js"></script>
+	<script type="text/javascript" src="./htmlarea/dialog.js"></script>
+	<script type="text/javascript" src="./htmlarea/popupwin.js"></script>
+	<!-- load the TableOperations plugin files -->
+	<script type="text/javascript" src="./htmlarea/plugins/TableOperations/table-operations.js"></script>
+	<script type="text/javascript" src="./htmlarea/plugins/TableOperations/lang/en.js"></script>
+	<style type="text/css">@import url(./htmlarea/htmlarea.css);</style>
+      <!-- end of htmlarea includes -->
+
+</head>
+<body>
+
+<!-- here is the form, with the textarea (named "content") to be replaced -->
+<form id="edit" name="edit" action="youraction.php" method="post">
+	<textarea id="content" name="content" rows="30" cols="80">
+		&lt;h1&gt;html source to be edited here&lt;/h1&gt;
+	</textarea>
+	<input type="submit" name="submit" value="Save" />
+</form>
+
+<!-- and here is the script which initializes and configures the editor -->
+<script type="text/javascript">
+    var config = new HTMLArea.Config();
+    config.editorURL = './htmlarea/';
+
+    // uncomment the following if you wish to apply a stylesheet to the html that is being edited
+    // config.pageStyle = "@import url(/optional/stylesheet.css);";
+
+    // create the editor
+    editor = new HTMLArea("content", config);
+
+    // register the TableOperations plugin with the editor
+    editor.registerPlugin("TableOperations");
+
+    editor.generate();
+</script>
+<!-- end of initialization script -->
+
+</body>
+</html>

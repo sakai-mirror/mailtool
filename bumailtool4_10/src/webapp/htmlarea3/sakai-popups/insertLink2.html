@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="robots" content="noindex">
+<title>Insert/Modify DocLink | HTMLArea</title>
+<script type="text/javascript" src="popup.js"></script>
+<script language="JavaScript" type="text/javascript">
+<!--
+window.resizeTo(400, 300);
+
+function doChooseLink(title, unid){
+      document.getElementById("f_href").value = unid;
+      document.getElementById("f_title").value = title;
+      doChooseLinkAgain();
+}
+
+function doChooseLinkAgain(){
+      parent.document.getElementById("f_href").value = document.getElementById("f_href").value;
+      parent.document.getElementById("f_title").value = document.getElementById("f_title").value;
+}
+function doChooseLink2(title, unid){
+      parent.document.getElementById("f_href").value = unid;
+      parent.document.getElementById("f_title").value = title;
+}
+// -->
+</script>
+
+<script language="JavaScript" type="text/javascript">
+function getget(name) {
+  var q = document.location.search;
+  var i = q.indexOf(name + '=');
+
+  if (i == -1) {
+    return false;
+  }
+
+  var r = q.substr(i + name.length + 1, q.length - i - name.length - 1);
+
+  i = r.indexOf('&');
+
+  if (i != -1) {
+    r = r.substr(0, i);
+  }
+
+  return r.replace(/\+/g, ' ');
+}
+
+function get_link()
+{
+	var siteid=getget('siteid');
+	var fulllink="/access/content/group/"+siteid+"/";
+	return fulllink;
+}
+
+function redirect_site(s_url)
+{
+  window.parent.frames[0].location.replace(s_url);
+  return false;
+}
+function filelists(){
+	for (i = 0; i < window.frames[0].document.links.length; ++i){
+		var a = window.frames[0].document.links[i];
+		document.write("<a href=JavaScript:doChooseLink2('"+a.innerText+"','"+a.href+"');>"+a.innerText+"</a><br />")
+	}
+}
+</script>
+
+</head>
+
+<style type="text/css">
+html, body {
+  background: ButtonFace;
+  color: ButtonText;
+  font: 11px Tahoma,Verdana,sans-serif;
+  margin: 0px;
+  padding: 0px;
+}
+body { padding: 5px; }
+table {
+  font: 11px Tahoma,Verdana,sans-serif;
+}
+select, input, button { font: 11px Tahoma,Verdana,sans-serif; }
+button { width: 70px; }
+table .label { text-align: right; width: 8em; }
+.title { background: #ddf; color: #000; font-weight: bold; font-size: 120%; padding: 3px 10px; margin-bottom: 10px;
+border-bottom: 1px solid black; letter-spacing: 2px;
+}
+#buttons {
+      margin-top: 1em; border-top: 1px solid #999;
+      padding: 2px; text-align: right;
+}
+</style>
+
+<body text="#000000" bgcolor="#FFFFFF">
+<form>
+<div class="title">Browse/Insert a link in your Site's Resouces</div>
+<iframe id="frame1" name="frame1" src="" width=400 height=150></iframe>
+<script language="JavaScript" type="text/javascript">
+document.write("SiteID="+getget('siteid')+"<br><br>");
+
+var site=get_link();
+
+document.write("SiteResourceURL="+site+"<br><br>");
+
+redirect_site(site);
+document.write("window.frames[0].document.URL ="+window.frames[0].document.URL +"<br><br>")
+filelists()
+
+</script>
+
+    <button type="button" name="ok" onclick="return onOK();">OK</button><br>
+    <button type="button" name="cancel" onclick="return onCancel();">Cancel</button>
+
+</form>
+</body>
+</html>
