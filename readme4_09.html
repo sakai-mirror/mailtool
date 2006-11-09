@@ -1,0 +1,185 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:st1="urn:schemas-microsoft-com:office:smarttags"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=us-ascii">
+
+<title>BU Mailtool Setup Instructions for Sakai 2</title>
+</head>
+
+<body lang=EN-US link=blue vlink=blue style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<div>
+
+<p class=MsoNormal><strong><span style='font-size:13.5pt'>BU <span
+class=SpellE>Mailtool</span> Setup Instructions for <st1:City w:st="on"><st1:place
+ w:st="on">Sakai</st1:place></st1:City> 2.1.2</span></strong></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><strong><span style='font-size:13.5pt'>Requirements</span></strong></p>
+
+</div>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l12 level1 lfo1;tab-stops:list .5in'><st1:City w:st="on"><st1:place
+      w:st="on">Sakai</st1:place></st1:City> 2.1.x</li>
+</ul>
+
+<div>
+
+<p class=MsoNormal><strong><span style='font-size:13.5pt'>Features</span></strong></p>
+
+</div>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l6 level1 lfo2;tab-stops:list .5in'>Basically original <span
+     class=SpellE>Mailtool</span> + <span class=SpellE>Wysiwyg</span> HTML
+     editors </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l6 level1 lfo2;tab-stops:list .5in'>Support two popular <span
+     class=SpellE>Wysiwyg</span> editors: <span class=SpellE>HTMLArea</span>
+     and <span class=SpellE>FCKeditor</span> </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l6 level1 lfo2;tab-stops:list .5in'>File linking in <span
+     class=SpellE>HTMLArea</span> (Insert Image/Link buttons) </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l6 level1 lfo2;tab-stops:list .5in'>Messages are encoded in HTML
+     (text/html) </li>
+</ul>
+
+<div>
+<br/>
+<p class=MsoNormal><strong><span style='font-size:13.5pt'>Build &amp;
+Installation (Windows XP)</span></strong></p>
+
+</div>
+
+<ol start=1 type=1>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l8 level1 lfo6;tab-stops:list .5in'>Edit <span class=SpellE>build.properties</span>
+     (Change the location of tomcat &amp; repositories if needed) </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l8 level1 lfo6;tab-stops:list .5in'>Stop Tomcat. </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l8 level1 lfo6;tab-stops:list .5in'>Run &quot;maven&quot; in the
+     top of the source directories </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l8 level1 lfo6;tab-stops:list .5in'>IF &quot;BUILD
+     SUCESSFUL&quot;, Now it's ready. </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l8 level1 lfo6;tab-stops:list .5in'>If &quot;BUILD FAIL&quot;,
+     check error messages and location of java compiler/library/repositories. </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l8 level1 lfo6;tab-stops:list .5in'>Restart tomcat (Sakai
+     Server). </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l8 level1 lfo6;tab-stops:list .5in'>(If you want to add <span
+     class=SpellE>Mailtool</span> as a new tool) </li>
+</ol>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l13 level1 lfo7;tab-stops:list .5in'>Go to My
+     Workspace-&gt;Worksite setup-&gt;Check a box which you want to add the
+     tool-&gt;Click &quot;Revise&quot;-&gt;Click &quot;Edit Tools&quot; </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l13 level1 lfo7;tab-stops:list .5in'>-&gt;Check <span
+     class=SpellE>Mailtool</span>-&gt;Click &quot;Continue&quot; then
+     &quot;Finish&quot;. (See &quot;Configuration&quot; below) </li>
+</ul>
+
+<ol start=1 type=1>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l10 level1 lfo8;tab-stops:list .5in'>(If you already added <span
+     class=SpellE>Mailtool</span>) do nothing. (See &quot;Configuration&quot;
+     below) </li>
+</ol>
+
+<div>
+
+<p class=MsoNormal><strong><span style='font-size:13.5pt'>Configuration</span></strong></p>
+
+</div>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l9 level1 lfo9;tab-stops:list .5in'>Set editor-type (You should
+     be able to maintain the site) </li>
+</ul>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l1 level1 lfo10;tab-stops:list .5in'>My
+     Workspace-&gt;Sites-&gt;Click a site id-&gt; Click &quot;Pages&quot;
+     box-&gt; Click the site id of <span class=SpellE>Mailtool</span>-&gt;Click
+     tool ID </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l1 level1 lfo10;tab-stops:list .5in'>Fill in &quot;<span
+     class=SpellE>wysiwygeditor</span>&quot; with &quot;<span class=SpellE>FCKeditor</span>&quot;
+     or &quot;<span class=SpellE>HTMLArea</span>&quot; (case-insensitive).
+     Other string will be ignored(default: plain text editor) </li>
+</ul>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l11 level1 lfo11;tab-stops:list .5in'>For general configuration
+     of <span class=SpellE>mailtool</span> </li>
+</ul>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l4 level1 lfo12;tab-stops:list .5in'><a
+     href="http://bug.sakaiproject.org/confluence/display/MAILTOOL/Home"
+     target=rwikiexternal>http://bug.sakaiproject.org/confluence/display/MAILTOOL/Home</a>
+     </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l4 level1 lfo12;tab-stops:list .5in'><a
+     href="http://bug.sakaiproject.org/confluence/pages/viewpage.action?pageId=10181"
+     target=rwikiexternal>http://bug.sakaiproject.org/confluence/pages/viewpage.action?pageId=10181</a>
+     </li>
+</ul>
+
+<div>
+<br/>
+<p class=MsoNormal><strong><span style='font-size:13.5pt'>Usage</span></strong></p>
+
+</div>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l2 level1 lfo13;tab-stops:list .5in'><a
+     href="http://www.htmlarea.com/" target=rwikiexternal>http://www.htmlarea.com</a>
+     </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l2 level1 lfo13;tab-stops:list .5in'><a
+     href="http://www.fckeditor.net/" target=rwikiexternal>http://www.fckeditor.net</a>
+     </li>
+</ul>
+
+<div>
+
+<p class=MsoNormal><strong><span style='font-size:13.5pt'>Others</span></strong></p>
+
+</div>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l3 level1 lfo14;tab-stops:list .5in'>Future version will support
+     file uploading and multipart mail messages. </li>
+</ul>
+
+</div>
+
+</body>
+
+</html>
