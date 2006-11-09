@@ -7,6 +7,13 @@
 			
 		<category name="course" />
 		<category name="project" />
+		<!-- 
+		see http://bugs.sakaiproject.org/jira/browse/SAK-4120
+		for the following "functions.require" parameter
+		 -->
+		<configuration name="functions.require" value="mailtool.send" />
+		
+		
 		<!--
 			This parameter determines how recipients will be selected
 				role
@@ -118,5 +125,6 @@
 </tool>
 
 <function name="mailtool.admin" />
+<function name="mailtool.send" />
 	
 </registration>

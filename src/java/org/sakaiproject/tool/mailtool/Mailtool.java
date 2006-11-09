@@ -894,7 +894,8 @@ public class Mailtool
 		***/
 		String siteid="/site/"+getSiteID();
 		//return m_realmService.unlock(this.getCurrentUser().getUserid(), "mail.new", siteid);
-		return m_realmService.isAllowed(this.getCurrentUser().getUserid(), "mail.new", siteid);
+		//return m_realmService.isAllowed(this.getCurrentUser().getUserid(), "mail.new", siteid); // nov 09, 2006 by SK
+		return m_realmService.isAllowed(this.getCurrentUser().getUserid(), "mailtool.send", siteid);
 
 	}
 	public boolean isAllowedToConfigure()
