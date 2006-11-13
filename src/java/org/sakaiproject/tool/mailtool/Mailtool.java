@@ -360,6 +360,16 @@ public class Mailtool
 		
 		return uploaddirectoryDefault;
 	}
+	public boolean isShowRenamingRoles()
+	{
+		String rename=ServerConfigurationService.getString("mailtool.show.renaming.roles");
+		if (rename!="" && rename!=null)
+		{
+			return (rename.trim().toLowerCase().equals("yes") ? true : false); 
+		}
+		return false;
+		
+	}	
 	public void setEditorType(String editor)
 	{
 		m_editortype = editor;
@@ -695,12 +705,13 @@ public class Mailtool
 			}
 ****/
 		}
-		if (m_otheremails.equals("")!=true){
+		if (m_otheremails.trim().equals("")!=true){
 			//
 			// multiple email validation is needed here
 			//
-			recipientsString+=m_otheremails;
-			m_results += "<br/>"+m_otheremails;
+			String refinedOtherEmailAddresses = m_otheremails.trim().replace(';', ',');
+			recipientsString+=refinedOtherEmailAddresses;
+			m_results += "<br/>"+refinedOtherEmailAddresses;
 		}
 		if (m_sendmecopy) message.addRecipients(Message.RecipientType.CC, fromEmail);
 
@@ -1534,25 +1545,31 @@ public class Mailtool
 		// this function resets current tool and saves changes.
 		public String processUpdateOptions()
 		{
-			int i=1;
-			Configuration c=null;
-			Iterator iter = renamedRoles.iterator();
-			
-			while (iter.hasNext()){
-				c=(Configuration) iter.next();
-				//setConfigParam("role"+i+"id", c.getRoleId()); // should not be changed
-				//setConfigParam("role"+i+"realmid", c.getRealmid()); // should not be changed. So not shown in options
-				if (c.getSingularNew().trim().equals("")!=true && c.getSingularNew()!=null) setConfigParam("role"+i+"singular", c.getSingularNew());
-				if (c.getPluralNew().trim().equals("")!=true && c.getPluralNew()!=null) setConfigParam("role"+i+"plural", c.getPluralNew());
-				i++;
+			if (isShowRenamingRoles()){
+				int i=1;
+				Configuration c=null;
+				Iterator iter = renamedRoles.iterator();
+				
+				while (iter.hasNext()){
+					c=(Configuration) iter.next();
+					//setConfigParam("role"+i+"id", c.getRoleId()); // should not be changed
+					//setConfigParam("role"+i+"realmid", c.getRealmid()); // should not be changed. So not shown in options
+					if (c.getSingularNew().trim().equals("")!=true && c.getSingularNew()!=null) setConfigParam("role"+i+"singular", c.getSingularNew());
+					if (c.getPluralNew().trim().equals("")!=true && c.getPluralNew()!=null) setConfigParam("role"+i+"plural", c.getPluralNew());
+					i++;
+				}
 			}
+/*****			
 			if (getSubjectPrefix().equals("")!=true && getSubjectPrefix()!=null){
 				//setMessageSubject(getSubjectPrefix());
 				setConfigParam("subjectprefix", getSubjectPrefix());
 
 			}
+*****/			
 			//setViewChoice(getViewChoice());
 			setConfigParam("recipview", getViewChoice());
+
+/***			
 			if (isSendMeCopyInOptions()){
 				setConfigParam("sendmecopy", isSendMeCopy() ? "yes": "no");
 			}
@@ -1565,6 +1582,9 @@ public class Mailtool
 			else {
 				setConfigParam("emailarchive", "");
 			}
+***/			
+			setConfigParam("sendmecopy", isSendMeCopy() ? "yes": "no");
+			setConfigParam("emailarchive", isArchiveMessage() ? "yes": "no");
 /*			
 			if (isReplyToSender()){
 				setConfigParam("replyto", "yes");
@@ -1597,7 +1617,7 @@ public class Mailtool
 			ToolSession ts = SessionManager.getCurrentSession().getToolSession(ToolManager.getCurrentPlacement().getId());
 			ts.clearAttributes();
 			
-			return "save"; // go to Compose
+			return "compose"; // go to Compose
 		}
 
 		public void validateEmail(FacesContext context, UIComponent toValidate, Object value)  throws ValidatorException{

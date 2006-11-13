@@ -32,9 +32,8 @@
 
 <h:form id="mainForm" enctype="multipart/form-data">
 
-<sakai:view_content>
-
 <h:panelGroup rendered="#{Mailtool.allowedToConfigure}">
+
 <sakai:tool_bar>
         <sakai:tool_bar_item value="Options" action="configure" immediate="true" />
 </sakai:tool_bar>
@@ -51,7 +50,7 @@
 <f:facet name="header">
 <f:verbatim>
 <div style="text-align:left; font-weight: normal; font-variant: small-caps ">
-<h2>Compose Mail</h2>
+<h2>Compose</h2>
 </div>
 </f:verbatim>
 </f:facet>
@@ -64,20 +63,20 @@
 			<h:outputText rendered="#{Mailtool.replyToSelected == 'otheremail' }" value="#{Mailtool.replyToOtherEmail}"/>
 			<h:outputText rendered="#{Mailtool.replyToSelected == 'no' }" value="No Reply"/>
 		</h:panelGroup>
-
+<%--
 		<h:outputText escape="false" value="View: "/>
 		<h:selectOneListbox onchange="submit(); return false;" size="1" id="viewChoice" value="#{Mailtool.viewChoice}">
 			<f:selectItems value="#{Mailtool.viewChoiceDropdown}" />
 		</h:selectOneListbox>
-
+--%>
 		<h:outputText escape="false" value="#{msgs.send_mail_to}: "/>
 		<h:panelGroup>
-
+<%--
 			<h:panelGrid columns="2" >
 					<h:selectBooleanCheckbox value="#{Mailtool.allUsersSelected }" />
 					<h:outputText value="All Users" style="font-weight: bold" />
 			</h:panelGrid>
-	
+--%>	
 			<f:subview id="selectByUser" rendered="#{Mailtool.selectByUser}"><jsp:include page="selectByUser.jsp" /></f:subview>
 			<f:subview id="selectByRole" rendered="#{Mailtool.selectByRole}"><jsp:include page="selectByRole.jsp" /></f:subview>
 			<f:subview id="selectByTree" rendered="#{Mailtool.selectByTree}"><jsp:include page="selectByTree.jsp" /></f:subview>
@@ -85,7 +84,9 @@
 			<f:subview id="selectByFoothill" rendered="#{Mailtool.selectByFoothill}"><jsp:include page="selectByFoothill.jsp" /></f:subview>
 		</h:panelGroup>
 
-		<h:outputText value="Other(s): "/>
+<h:outputText value="" />
+<h:panelGroup>
+		<h:outputText value="Other Recipient(s): "/>
 		<h:panelGrid columns="1">
 
 		<h:inputText value="#{Mailtool.otherEmails}" size="50" validator="#{Mailtool.validateEmail}" id="email"/>
@@ -93,8 +94,9 @@
 		<h:message for="email" />
 		<h:inputText value="#{Mailtool.otherEmails}" size="50" />
 		--%>		
-		<h:outputText value="Type additional email addresses above: use commas to separate addresses."/>
+		<h:outputText value="Separate additional email addresses with commas or semicolons."/>
 		</h:panelGrid>
+</h:panelGroup>
 
 		<h:outputText value="#{msgs.message_subject}: "/>
 		<h:panelGrid columns="2">
@@ -148,15 +150,17 @@
 						<f:verbatim><br/></f:verbatim>
 					</h:panelGroup>
 		</h:panelGroup>
-		<h:panelGroup rendered="#{Mailtool.archiveMessageInOptions}" >
-			<h:selectBooleanCheckbox value="#{Mailtool.archiveMessage}" />
-			<h:outputText value="Add to Email Archive" />
-		</h:panelGroup>
-		<h:panelGroup rendered="#{Mailtool.sendMeCopyInOptions}" >
+		<h:panelGroup>
 			<f:verbatim><br/></f:verbatim>
 			<h:selectBooleanCheckbox value="#{Mailtool.sendMeCopy}" />
 			<h:outputText value="Send me a copy" />
+			<f:verbatim><br/></f:verbatim>
 		</h:panelGroup>
+		<h:panelGroup>
+			<h:selectBooleanCheckbox value="#{Mailtool.archiveMessage}" />
+			<h:outputText value="Add to Email Archive, visible to all site participants" />
+		</h:panelGroup>
+
 		<h:panelGroup>
 			<sakai:button_bar>
 					<sakai:button_bar_item action="#{Mailtool.processSendEmail}" value="#{msgs.send_mail_button}" rendered="#{Mailtool.allowedToSend}" immediate="false" />
@@ -167,8 +171,6 @@
 	</f:facet>
 
 </h:panelGrid>
-
-</sakai:view_content>
 
 </h:form>
 

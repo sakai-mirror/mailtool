@@ -13,6 +13,7 @@
  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 </f:verbatim>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Mailtool</title>
@@ -49,22 +50,30 @@ Settings chosen on this page will become the default settings for this site.</fo
 </f:verbatim>
 </f:facet>
 
-<h:outputText value="Show buttons" />
+<h:outputText value="Copies" />
 <h:panelGroup>
+<%--
         <h:selectBooleanCheckbox  required="false" immediate="true" onclick="submit(); return false;" value="#{Mailtool.sendMeCopyInOptions}" />
         <h:outputText value="Show 'Send me a copy'" />
+
                 <h:panelGroup rendered="#{Mailtool.sendMeCopyInOptions}" >
+--%>
+                <h:panelGroup>
                         <f:verbatim><br/></f:verbatim>
                         <h:selectBooleanCheckbox value="#{Mailtool.sendMeCopy}"/>
-                        <h:outputText value="If checked, default is (Send me a copy=true)" />
+                        <h:outputText value="Send me a copy" />
                 </h:panelGroup>
                 <f:verbatim><br/></f:verbatim>
+<%--                
         <h:selectBooleanCheckbox value="#{Mailtool.archiveMessageInOptions}"  required="false" immediate="true" onclick="submit(); return false;" />
         <h:outputText value="Show 'Add to Email Archive' (Visible only if Email Archive is added)"/>
                 <h:panelGroup rendered="#{Mailtool.archiveMessageInOptions}" >
+--%>
+
+                <h:panelGroup>
                         <f:verbatim><br/></f:verbatim>
                         <h:selectBooleanCheckbox value="#{Mailtool.archiveMessage}"/>
-                        <h:outputText value="If checked, default is (Append to Archive=true)" />
+                        <h:outputText value="Add to Email Archive, visible to all site participants" />
                 </h:panelGroup>
 </h:panelGroup>
 
@@ -81,36 +90,21 @@ Settings chosen on this page will become the default settings for this site.</fo
 </h:panelGroup>
 
 <h:outputText value="Reply-to " />
-<%--
 <h:panelGroup>
-	<h:selectBooleanCheckbox value="#{Mailtool.replyToSender}" valueChangeListener="#{Mailtool.processReplyTo}"/>
-	<h:outputText value="Sender" />
-
-	<f:verbatim><br/></f:verbatim>
-	<h:selectBooleanCheckbox value="#{Mailtool.replyToOther}" valueChangeListener="#{Mailtool.processReplyTo}"/>
-	<h:outputText value="Other " />
-
-	<h:panelGroup rendered="#{Mailtool.replyToOther}">
-		<f:verbatim><br/></f:verbatim>	
-		<h:outputText value="Reply-to: " />
-		<h:inputText value="#{Mailtool.replyToOtherEmail }" size="20" />
-	</h:panelGroup>
-
-	<f:verbatim><br/></f:verbatim>	
-	<h:selectBooleanCheckbox value="#{Mailtool.doNotReply}" valueChangeListener="#{Mailtool.processReplyTo}"/>
-	<h:outputText value="Do not reply" />
-</h:panelGroup>
---%>
-<h:panelGroup>
-<h:selectOneRadio value="#{Mailtool.replyToSelected }" onclick="submit()">
+<h:selectOneRadio layout="pageDirection" value="#{Mailtool.replyToSelected }" onclick="submit()">
 <f:selectItem itemLabel="Reply to sender" itemValue="yes"/>
-<f:selectItem itemLabel="Reply to other" itemValue="otheremail"/>
+<f:verbatim><br/></f:verbatim>
 <f:selectItem itemLabel="Do not reply" itemValue="no"/> 
+</h:selectOneRadio>
+<%--
+<f:selectItem itemLabel="Reply to other" itemValue="otheremail"/>
+
 </h:selectOneRadio>
 <h:panelGroup rendered="#{Mailtool.replyToSelected == 'otheremail'}">
 		<h:outputText value="Reply-to email: " />
 		<h:inputText value="#{Mailtool.replyToOtherEmail }" size="20"  validator="#{Mailtool.validateEmail}" id="replyemail"/>
 </h:panelGroup>
+--%>
 </h:panelGroup>
 
 <%--
@@ -125,26 +119,29 @@ Settings chosen on this page will become the default settings for this site.</fo
 
 <h:outputText value="Message format " />
 <h:panelGroup>
-	<h:selectOneRadio value="#{Mailtool.textFormat}" onclick="submit()">
+	<h:selectOneRadio layout="pageDirection" value="#{Mailtool.textFormat}" onclick="submit()">
 		<f:selectItem itemLabel="Plain text (text/plain)" itemValue="plaintext"/>
-		<f:selectItem itemLabel="Enhanced formatting (text/html)" itemValue="htmltext"/>
+		<f:verbatim><br/></f:verbatim>
+		<f:selectItem itemLabel="HTML formatting (text/html)" itemValue="htmltext"/>
 	</h:selectOneRadio>
-	
+<%--
 	<h:panelGroup rendered="{Mailtool.textFormat == 'plaintext'}">
 		<h:outputText value="Message will be formatted in Plain text." />
 	</h:panelGroup>
 	<h:panelGroup rendered="{Mailtool.textFormat == 'htmltext'}">
 		<h:outputText value="Message will be formatted in HTML." />	
 	</h:panelGroup>	
+--%>		
 </h:panelGroup>
-
+<%--
 <h:outputText value="Subject Prefix " />
 <h:panelGroup>
 <h:inputText size="50" value="#{Mailtool.subjectPrefix}"/>
 <f:verbatim><br/></f:verbatim>
 <h:outputText value="(Current Prefix: #{Mailtool.subjectPrefixFromConfig})" />
 </h:panelGroup>
-
+--%>
+<h:panelGroup rendered="#{Mailtool.showRenamingRoles }">
 <h:panelGroup>
 	<f:verbatim><br/></f:verbatim>
 	<h:outputText value="Rename roles (Max: 15)" />
@@ -160,30 +157,15 @@ Settings chosen on this page will become the default settings for this site.</fo
 	</f:verbatim>
 	<h:dataTable value="#{Mailtool.renamedRoles}" var="role"  cellspacing="0" cellpadding="3">
 			<h:column>
-<%--
-				<f:facet name="header">
-				<h:outputLabel value="Role ID"/>
-				</f:facet>
---%>				
 				<h:outputText value="#{role.roleId}: " style="font-weight:bold; font-style: italic"/>
 				<h:outputText value="show this role as "/>
 			</h:column>
 			<h:column>
-<%--
-				<f:facet name="header">
-				<h:outputLabel value="Singular"/>
-				</f:facet>		
---%>				
 				<h:inputText size="20" value="#{role.singularNew}" />
 				<f:verbatim><br/></f:verbatim>
 				<h:outputText value="e.g. #{role.singular }" />
 			</h:column>
 			<h:column>
-<%--
-				<f:facet name="header">
-				<h:outputLabel value="Plural"/>
-				</f:facet>
---%>
 				<h:inputText size="20" value="#{role.pluralNew}" />
 				<f:verbatim><br/></f:verbatim>
 				<h:outputText value="e.g. #{role.plural }" />
@@ -191,39 +173,14 @@ Settings chosen on this page will become the default settings for this site.</fo
 	</h:dataTable>
 </h:panelGroup>
 </f:facet>
-
-<%--
-<h:panelGroup>
-		<h:panelGrid columns="4" cellspacing="0" cellpadding="3">
-			<h:outputText value="Role ID" />
-			<h:outputText value="Singular" />
-			<h:outputText value="Plural" />
-			<h:outputText value="" />
-			<h:inputText size="20" value="#{Mailtool.roleID}" />
-			<h:inputText size="20" value="#{Mailtool.singular}" />
-			<h:inputText size="20" value="#{Mailtool.plural}" />
-			<h:commandButton value="Update" action="#{Mailtool.processRenameRole}" />
-		</h:panelGrid>
-		
-		<h:outputText value="Curent Roles " />
-		<h:dataTable value="#{Mailtool.renamedRoles}" var="role"  cellspacing="0" cellpadding="3">
-				<h:column><h:outputText value="#{role.roleId} "/></h:column>
-				<h:column><h:outputText value="#{role.singular}"/></h:column>
-				<h:column><h:outputText value="#{role.plural}"/></h:column>
-				<h:column><h:commandLink action="#{Mailtool.processRemoveRole}"><h:outputText value="remove" />
-				<f:param name="rid" value="#{role.roleId}" />
-				</h:commandLink>
-				</h:column>
-		</h:dataTable>
 </h:panelGroup>
---%>
 
 </h:panelGrid>
 
 <sakai:button_bar>
 	<sakai:button_bar_item
-		action="#{Mailtool.processSeeChanges}"
-		value="See changes"
+		action="#{Mailtool.processUpdateOptions}"
+		value="Update Defaults"
 		rendered="true"
 		immediate="false" />
 	<sakai:button_bar_item
