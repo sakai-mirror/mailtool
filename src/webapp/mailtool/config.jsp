@@ -16,7 +16,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Mailtool</title>
+<title>Options</title>
 <%= request.getAttribute("sakai.html.head.css.base") %>
 <%= request.getAttribute("sakai.html.head.css.skin") %>
 <%= request.getAttribute("sakai.html.head.js") %>
@@ -50,7 +50,24 @@ Settings chosen on this page will become the default settings for this site.</fo
 </f:verbatim>
 </f:facet>
 
-<h:outputText value="Copies" />
+<h:panelGroup>
+	<h:outputText value="Choose selection view" />
+	<f:verbatim><br/></f:verbatim>
+	<h:outputText value="Current view:" style="font-weight:normal" />
+</h:panelGroup>
+<h:panelGroup>
+		<f:verbatim><br/></f:verbatim>
+		<h:selectOneListbox onchange="submit(); return false;" size="1" id="viewChoice" value="#{Mailtool.viewChoice}">
+				<f:selectItems value="#{Mailtool.viewChoiceDropdown}" />
+		</h:selectOneListbox>
+		<f:subview id="selectByRole" rendered="#{Mailtool.selectByRole}"><jsp:include page="selectByRole.jsp" /></f:subview>
+		<f:subview id="selectByUser" rendered="#{Mailtool.selectByUser}"><jsp:include page="selectByUser.jsp" /></f:subview>
+		<f:subview id="selectByTree" rendered="#{Mailtool.selectByTree}"><jsp:include page="selectByTree.jsp" /></f:subview>
+		<f:subview id="selectSideBySide" rendered="#{Mailtool.selectSideBySide}"><jsp:include page="selectSideBySide.jsp" /></f:subview>
+		<f:subview id="selectByFoothill" rendered="#{Mailtool.selectByFoothill}"><jsp:include page="selectByFoothill.jsp" /></f:subview>
+</h:panelGroup>
+
+<h:outputText value="Copies:" />
 <h:panelGroup>
 <%--
         <h:selectBooleanCheckbox  required="false" immediate="true" onclick="submit(); return false;" value="#{Mailtool.sendMeCopyInOptions}" />
@@ -59,11 +76,9 @@ Settings chosen on this page will become the default settings for this site.</fo
                 <h:panelGroup rendered="#{Mailtool.sendMeCopyInOptions}" >
 --%>
                 <h:panelGroup>
-                        <f:verbatim><br/></f:verbatim>
                         <h:selectBooleanCheckbox value="#{Mailtool.sendMeCopy}"/>
                         <h:outputText value="Send me a copy" />
                 </h:panelGroup>
-                <f:verbatim><br/></f:verbatim>
 <%--                
         <h:selectBooleanCheckbox value="#{Mailtool.archiveMessageInOptions}"  required="false" immediate="true" onclick="submit(); return false;" />
         <h:outputText value="Show 'Add to Email Archive' (Visible only if Email Archive is added)"/>
@@ -76,25 +91,14 @@ Settings chosen on this page will become the default settings for this site.</fo
                         <h:outputText value="Add to Email Archive, visible to all site participants" />
                 </h:panelGroup>
 </h:panelGroup>
-
-<h:outputText value="Choose selection view" />
 <h:panelGroup>
-<h:selectOneListbox onchange="submit(); return false;" size="1" id="viewChoice" value="#{Mailtool.viewChoice}">
-		<f:selectItems value="#{Mailtool.viewChoiceDropdown}" />
-		</h:selectOneListbox>
-		<f:subview id="selectByRole" rendered="#{Mailtool.selectByRole}"><jsp:include page="selectByRole.jsp" /></f:subview>
-		<f:subview id="selectByUser" rendered="#{Mailtool.selectByUser}"><jsp:include page="selectByUser.jsp" /></f:subview>
-		<f:subview id="selectByTree" rendered="#{Mailtool.selectByTree}"><jsp:include page="selectByTree.jsp" /></f:subview>
-		<f:subview id="selectSideBySide" rendered="#{Mailtool.selectSideBySide}"><jsp:include page="selectSideBySide.jsp" /></f:subview>
-		<f:subview id="selectByFoothill" rendered="#{Mailtool.selectByFoothill}"><jsp:include page="selectByFoothill.jsp" /></f:subview>
+	<h:outputText value="Reply-to:" />
+	<f:verbatim><br/></f:verbatim>
 </h:panelGroup>
-
-<h:outputText value="Reply-to " />
 <h:panelGroup>
 <h:selectOneRadio layout="pageDirection" value="#{Mailtool.replyToSelected }" onclick="submit()">
-<f:selectItem itemLabel="Reply to sender" itemValue="yes"/>
-<f:verbatim><br/></f:verbatim>
-<f:selectItem itemLabel="Do not reply" itemValue="no"/> 
+<f:selectItem itemLabel="Sender" itemValue="yes"/>
+<f:selectItem itemLabel="Do not allow reply" itemValue="no"/> 
 </h:selectOneRadio>
 <%--
 <f:selectItem itemLabel="Reply to other" itemValue="otheremail"/>
@@ -107,49 +111,27 @@ Settings chosen on this page will become the default settings for this site.</fo
 --%>
 </h:panelGroup>
 
-<%--
-<h:outputText value="Subject Prefix"/>
-<h:panelGrid columns="2" cellpadding="3" cellspacing="0">
-	<h:inputText value="" size="25"/>
-	<f:verbatim><br/>Default: site/course title</f:verbatim>
-	<h:outputText value="#{Mailtool.subjectPrefix}"/>
-	<h:commandLink action="#{Mailtool.processUpdateSubject}"><h:outputText value="update" /></h:commandLink>
-</h:panelGrid>
---%>
-
-<h:outputText value="Message format " />
+<h:panelGroup>
+	<h:outputText value="Message format:" />
+	<f:verbatim><br/></f:verbatim>
+</h:panelGroup>
 <h:panelGroup>
 	<h:selectOneRadio layout="pageDirection" value="#{Mailtool.textFormat}" onclick="submit()">
-		<f:selectItem itemLabel="Plain text (text/plain)" itemValue="plaintext"/>
-		<f:verbatim><br/></f:verbatim>
-		<f:selectItem itemLabel="HTML formatting (text/html)" itemValue="htmltext"/>
+		<f:selectItem itemLabel="HTML formatting" itemValue="htmltext"/>
+		<f:selectItem itemLabel="Plain text" itemValue="plaintext"/>
 	</h:selectOneRadio>
-<%--
-	<h:panelGroup rendered="{Mailtool.textFormat == 'plaintext'}">
-		<h:outputText value="Message will be formatted in Plain text." />
-	</h:panelGroup>
-	<h:panelGroup rendered="{Mailtool.textFormat == 'htmltext'}">
-		<h:outputText value="Message will be formatted in HTML." />	
-	</h:panelGroup>	
---%>		
+	
 </h:panelGroup>
-<%--
-<h:outputText value="Subject Prefix " />
-<h:panelGroup>
-<h:inputText size="50" value="#{Mailtool.subjectPrefix}"/>
-<f:verbatim><br/></f:verbatim>
-<h:outputText value="(Current Prefix: #{Mailtool.subjectPrefixFromConfig})" />
-</h:panelGroup>
---%>
+
 <h:panelGroup rendered="#{Mailtool.showRenamingRoles }">
 <h:panelGroup>
 	<f:verbatim><br/></f:verbatim>
 	<h:outputText value="Rename roles (Max: 15)" />
 </h:panelGroup>
-<h:panelGroup>
+
 </h:panelGroup>
 <f:facet name="footer">
-<h:panelGroup>
+<h:panelGroup rendered="#{Mailtool.showRenamingRoles }">
 	<f:verbatim>
 	<div style="font-weight: normal; font-variant: small-caps">
 	<font color="blue">Choose names that will appear in the "Roles" listing on the "To" menu. See example above.</font>
@@ -173,7 +155,7 @@ Settings chosen on this page will become the default settings for this site.</fo
 	</h:dataTable>
 </h:panelGroup>
 </f:facet>
-</h:panelGroup>
+
 
 </h:panelGrid>
 
