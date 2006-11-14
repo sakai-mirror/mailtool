@@ -13,7 +13,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 			<h:selectBooleanCheckbox id="selectAllCheckbox" rendered="#{row.collapsed}" value="#{row.allSelected}" />
 			<h:outputLabel for="selectAllCheckbox" rendered="#{row.collapsed}" value="#{msgs.all_prefix} #{row.pluralRolename} "  style="font-weight:bold;" />
 
-			<h:commandLink rendered="#{row.collapsed}" actionListener="#{row.actionExpand}" onmouseup="submit()" value="#{msgs.select_individuals_button}" />
+			<h:commandLink rendered="#{row.collapsed}" actionListener="#{row.actionExpand}" onmouseup="submit()" value="#{msgs.select_individuals_button} #{row.pluralRolename}" />
 
 			<h:outputText rendered="#{not row.collapsed}" value="#{msgs.select_individual_prefix} " />
 			<h:outputText rendered="#{not row.collapsed}" value="#{row.pluralRolename} "  style="font-weight:bold;" />

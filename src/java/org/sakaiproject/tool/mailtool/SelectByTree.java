@@ -56,7 +56,11 @@ public class SelectByTree {
 		{
 			return m_emailrole.getRoleplural();
 		}
-		
+		public String getSingularRolename()
+		{
+			return m_emailrole.getRolesingular();
+		}
+
 		public boolean isCollapsed()
 		{
 			return m_collapsed;

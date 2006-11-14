@@ -50,13 +50,14 @@ Settings chosen on this page will become the default settings for this site.</fo
 </f:verbatim>
 </f:facet>
 
+<h:outputText value="Choose selection view" />
+<h:outputText value="" />
+
 <h:panelGroup>
-	<h:outputText value="Choose selection view" />
-	<f:verbatim><br/></f:verbatim>
-	<h:outputText value="Current view:" style="font-weight:normal" />
+	<h:graphicImage alt="blank" url="/images/blank.gif" width="65" height="15"/>
+	<h:outputText value="Current view:" />
 </h:panelGroup>
 <h:panelGroup>
-		<f:verbatim><br/></f:verbatim>
 		<h:selectOneListbox onchange="submit(); return false;" size="1" id="viewChoice" value="#{Mailtool.viewChoice}">
 				<f:selectItems value="#{Mailtool.viewChoiceDropdown}" />
 		</h:selectOneListbox>

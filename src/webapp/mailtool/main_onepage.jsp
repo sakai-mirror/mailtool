@@ -84,19 +84,13 @@
 			<f:subview id="selectByFoothill" rendered="#{Mailtool.selectByFoothill}"><jsp:include page="selectByFoothill.jsp" /></f:subview>
 		</h:panelGroup>
 
-<h:outputText value="" />
-<h:panelGroup>
-		<h:outputText value="Other Recipient(s): "/>
-		<h:panelGrid columns="1">
-
-		<h:inputText value="#{Mailtool.otherEmails}" size="50" validator="#{Mailtool.validateEmail}" id="email"/>
-		<%--
-		<h:message for="email" />
-		<h:inputText value="#{Mailtool.otherEmails}" size="50" />
-		--%>		
-		<h:outputText value="Separate additional email addresses with commas or semicolons."/>
-		</h:panelGrid>
-</h:panelGroup>
+		<h:outputText value="" />
+		<h:panelGroup>
+		<h:outputText value="Other Recipient(s): " style="font-weight:bold" />
+			<h:inputText value="#{Mailtool.otherEmails}" size="40" validator="#{Mailtool.validateEmail}" id="email"/>
+			<f:verbatim><br/></f:verbatim>
+			<h:outputText value="Separate additional email addresses with commas or semicolons."/>
+		</h:panelGroup>
 
 		<h:outputText value="#{msgs.message_subject}: "/>
 		<h:panelGrid columns="2">
@@ -104,7 +98,7 @@
 				<h:outputText value="#{Mailtool.subjectPrefix}"/>
 		--%>
 				
-		<h:inputText value="#{Mailtool.messageSubject}"	size="50"/>
+		<h:inputText value="#{Mailtool.messageSubject}"	size="60"/>
 		</h:panelGrid>
 
 	<h:panelGroup rendered="#{not Mailtool.attachClicked and Mailtool.maxNumAttachment!=0}">

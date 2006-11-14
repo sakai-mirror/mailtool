@@ -7,7 +7,7 @@
 
 	<h:panelGrid columns="1" cellspacing="0" cellpadding="3">
 
-		<h:selectManyListbox id="selectTo" size="5" value="#{Mailtool.recipientSelector.selectedItems}">
+		<h:selectManyListbox id="selectTo" size="10" value="#{Mailtool.recipientSelector.selectedItems}">
 	  		<f:selectItems value="#{Mailtool.recipientSelector.listbox}"/>
 		</h:selectManyListbox>
 	</h:panelGrid>

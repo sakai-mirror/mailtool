@@ -121,6 +121,7 @@ public class Mailtool
 	protected String m_body = "";
 	protected String m_editortype="";
 	protected String m_replyto="";
+	protected String m_sitetype="";
 	
 	protected boolean is_fckeditor=false;
 	protected boolean is_htmlarea=false;
@@ -211,7 +212,7 @@ public class Mailtool
 		return id;
 	}
 	protected String getSiteType()
-	{
+	{/*
 		String sid=getSiteID();
 		String type="";
 		try{
@@ -221,7 +222,10 @@ public class Mailtool
 		{		
 		}
 		return type;
+		*/
+		return m_sitetype;
 	}
+
 	protected String getSiteTitle()
 	{
 		String sid=getSiteID();
@@ -245,6 +249,16 @@ public class Mailtool
 	
 	public Mailtool()
 	{
+		
+
+		try{
+			String sid=getSiteID();
+			m_sitetype=SiteService.getSite(sid).getType();
+		}
+		catch(Exception e)
+		{		
+		}
+		
 		m_changedViewChoice = getRecipview();  
 		
 		initializeCurrentRoles(); /* this initialization solves SAK-6810 */
@@ -1036,6 +1050,7 @@ public class Mailtool
 			String rolesingular = this.getConfigParam("role" + i + "singular");
 			String roleplural = this.getConfigParam("role" + i + "plural");
 			
+
 			if ((rolerealm != null && rolerealm != "")  &&
 				(rolename != null && rolename != "") &&
 				(rolesingular != null && rolesingular != "") &&
@@ -1053,7 +1068,19 @@ public class Mailtool
 			for (Iterator i = arole.getRoles().iterator(); i.hasNext(); ) {
 					Role r = (Role) i.next();
 					String rolename=r.getId();
-					EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, rolename, rolename);
+					String singular="";
+					String plural="";
+					
+					if (rolename.equals("maintain") || rolename.equals("access")){
+						singular = rolename;
+						plural = rolename+" users";
+					}
+					else {
+						singular = rolename;
+						plural = rolename+"s";
+					}
+					
+					EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, singular, plural);
 					theroles.add(emailrole);
 			}				
 		}
