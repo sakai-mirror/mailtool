@@ -25,6 +25,7 @@
 <!--
 .mail-header { vertical-align: top; font-weight: bold }
 .mail-inputs { text-align:left}
+.gray-out {color: #777 }
 -->
 </STYLE>
 </head>
@@ -34,7 +35,7 @@
 <h:form id="optionsForm">
 
 <sakai:tool_bar>
-        <sakai:tool_bar_item value="Compose" action="compose" immediate="true" />
+        <sakai:tool_bar_item value="Compose" action="#{Mailtool.processGoToCompose}" immediate="true" />
 </sakai:tool_bar>
 
 <sakai:messages />
@@ -134,7 +135,7 @@ Settings chosen on this page will become the default settings for this site.</fo
 <f:facet name="footer">
 <h:panelGroup rendered="#{Mailtool.showRenamingRoles }">
 	<f:verbatim>
-	<div style="font-weight: normal; font-variant: small-caps">
+	<div style="font-weight: normal">
 	<font color="blue">Choose names that will appear in the "Roles" listing on the "To" menu. See example above.</font>
 	</div>
 	</f:verbatim>
@@ -167,7 +168,7 @@ Settings chosen on this page will become the default settings for this site.</fo
 		rendered="true"
 		immediate="false" />
 	<sakai:button_bar_item
-		action="cancel"
+		action="#{Mailtool.processGoToCompose}"
 		value="Cancel"
 		rendered="true"
 		immediate="false" />

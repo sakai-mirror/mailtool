@@ -35,7 +35,7 @@
 <h:panelGroup rendered="#{Mailtool.allowedToConfigure}">
 
 <sakai:tool_bar>
-        <sakai:tool_bar_item value="Options" action="configure" immediate="true" />
+        <sakai:tool_bar_item value="Options" action="#{Mailtool.processGoToOptions}" immediate="true" />
 </sakai:tool_bar>
 </h:panelGroup>
 

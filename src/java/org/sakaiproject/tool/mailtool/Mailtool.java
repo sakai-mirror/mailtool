@@ -122,6 +122,7 @@ public class Mailtool
 	protected String m_editortype="";
 	protected String m_replyto="";
 	protected String m_sitetype="";
+	protected String m_mode="";
 	
 	protected boolean is_fckeditor=false;
 	protected boolean is_htmlarea=false;
@@ -250,7 +251,7 @@ public class Mailtool
 	public Mailtool()
 	{
 		
-
+		setCurrentMode("compose");
 		m_sitetype=getSiteType();
 		
 		m_changedViewChoice = getRecipview();  
@@ -290,6 +291,24 @@ public class Mailtool
 		//System.out.println("site type="+getSiteType());
 		//System.out.println("site id="+getSiteID());
 	}
+	
+	public String getCurrentMode()
+	{
+		return m_mode;
+	}
+	public void setCurrentMode(String m)
+	{
+		this.m_mode=m;
+	}
+	
+	public String processGoToOptions(){
+		setCurrentMode("options");
+		return "configure";
+	}
+	public String processGoToCompose(){
+		setCurrentMode("compose");
+		return "compose";
+	}	
 	public String getfilename()
 	{
 		return filename;
@@ -1651,7 +1670,7 @@ public class Mailtool
 			// reset Mailtool (with updated options)
 			ToolSession ts = SessionManager.getCurrentSession().getToolSession(ToolManager.getCurrentPlacement().getId());
 			ts.clearAttributes();
-			
+			setCurrentMode("compose");
 			return "compose"; // go to Compose
 		}
 
