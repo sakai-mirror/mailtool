@@ -212,18 +212,17 @@ public class Mailtool
 		return id;
 	}
 	protected String getSiteType()
-	{/*
+	{
 		String sid=getSiteID();
 		String type="";
 		try{
 		type=SiteService.getSite(sid).getType();
 		}
 		catch(Exception e)
-		{		
+		{	
+			log.debug("Exception: Mailtool.getSiteType(), " + e.getMessage());
 		}
 		return type;
-		*/
-		return m_sitetype;
 	}
 
 	protected String getSiteTitle()
@@ -235,6 +234,7 @@ public class Mailtool
 		}
 		catch (Exception e)
 		{
+			log.debug("Exception: Mailtool.getSiteTitle(), " + e.getMessage());
 		}
 		return title;
 		
@@ -251,13 +251,7 @@ public class Mailtool
 	{
 		
 
-		try{
-			String sid=getSiteID();
-			m_sitetype=SiteService.getSite(sid).getType();
-		}
-		catch(Exception e)
-		{		
-		}
+		m_sitetype=getSiteType();
 		
 		m_changedViewChoice = getRecipview();  
 		
@@ -349,6 +343,7 @@ public class Mailtool
 		}
 		catch (NumberFormatException e)
 		{
+			log.debug("Exception: Mailtool Max Num. of attachment is set to 10000, " + e.getMessage());
 			return 10000; // Actually this means "unlimited if not set or invalid"
 		}
 	}
@@ -738,7 +733,7 @@ public class Mailtool
 			//logger.debug("SWG Exception while trying to send the email: " + e.getMessage());
 			// by SK 6/30/2006
 			
-			log.debug("SWG Exception while trying to send the email: " + e.getMessage());
+			log.debug("Mailtool Exception while trying to send the email: " + e.getMessage());
 		}
 		
 		//	Clear the Subject and Body of the Message
@@ -1064,7 +1059,9 @@ public class Mailtool
 		if (already_configured==false){
 			try{
 				arole=m_realmService.getAuthzGroup(realmid);
-			} catch (Exception e){}
+			} catch (Exception e){
+				log.debug("Exception: Mailtool.getEmailRoles(), " + e.getMessage());
+			}
 			for (Iterator i = arole.getRoles().iterator(); i.hasNext(); ) {
 					Role r = (Role) i.next();
 					String rolename=r.getId();
@@ -1094,7 +1091,9 @@ public class Mailtool
 		String realmid="/site/"+siteid;
 		try{
 			arole=m_realmService.getAuthzGroup(realmid);
-		} catch (Exception e){}
+		} catch (Exception e){
+			log.debug("Exception: Mailtool.initializeCurrentRoles(), " + e.getMessage());
+		}
 		for (Iterator i = arole.getRoles().iterator(); i.hasNext(); ) {
 				Role r = (Role) i.next();
 				String rolename=r.getId();
@@ -1221,7 +1220,9 @@ public class Mailtool
 			try {
 				//therealm = m_realmService.getRealm(realmid);
 				therealm = m_realmService.getAuthzGroup(realmid);
-			} catch (Exception e) {}
+			} catch (Exception e) {
+				log.debug("Exception: Mailtool.getEmailGroups() #1, " + e.getMessage());
+			}
 			
 			//Set users = therealm.getUsersWithRole(emailrole.getRoleid());
 			Set users = therealm.getUsersHasRole(emailrole.getRoleid());
@@ -1233,7 +1234,9 @@ public class Mailtool
 					User theuser = m_userDirectoryService.getUser(userid);
 					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
 					mailusers.add(emailuser);
-				} catch (Exception e) {}
+				} catch (Exception e) {
+					log.debug("Exception: Mailtool.getEmailGroups() #2, " + e.getMessage());
+				}
 			}
 			Collections.sort(mailusers);
 			EmailGroup thegroup = new EmailGroup(emailrole, mailusers);
@@ -1260,7 +1263,7 @@ public class Mailtool
 		{
 			//logger.debug("Exception: MailtoolBackend.getCurrentUser, " + e.getMessage());
 //			 by SK 6/30/2006
-			log.debug("Exception: MailtoolBackend.getCurrentUser, " + e.getMessage());
+			log.debug("Exception: Mailtool.getCurrentUser(), " + e.getMessage());
 
 		}
 		
@@ -1276,8 +1279,9 @@ public class Mailtool
 		{
 			channel = MailArchiveService.getMailArchiveChannel(channelRef);
 		}
-		catch (Exception goOn)
+		catch (Exception e)
 		{
+			log.debug("Exception: Mailtool.appendToArchive() #1, " + e.getMessage());
 			return false;
 		}
 		
@@ -1328,6 +1332,8 @@ public class Mailtool
 		}
 		catch (Exception e)
 		{
+			log.debug("Exception: Mailtool.appendToArchive() #2, " + e.getMessage());
+
 			return false;
 		}
 		return true;
@@ -1416,8 +1422,10 @@ public class Mailtool
 			}
     		
 	    }
-	    catch (Exception ex)
+	    catch (Exception e)
 	    {
+			log.debug("Exception: Mailtool.processFileUpload(), " + e.getMessage());
+
 	        // handle exception
 	    }
 		} // end if
