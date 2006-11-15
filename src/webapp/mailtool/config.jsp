@@ -43,7 +43,7 @@
 <h:panelGrid rendered="#{Mailtool.allowedToConfigure}" columns="2" border="0" cellspacing="0" cellpadding="3" columnClasses="mail-header, mail-inputs">
 <f:facet name="header">
 <f:verbatim>
-<div style="text-align:left; font-weight: normal; font-variant: small-caps ">
+<div style="text-align:left; font-weight: normal">
 <h2>Options</h2>
 <font color="blue">You are currently choosing options for Email.<br/>
 Settings chosen on this page will become the default settings for this site.</font>
