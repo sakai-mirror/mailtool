@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL: https://source.sakaiproject.org/contrib/mailtool/branches/2.3-004/src/java/org/sakaiproject/tool/mailtool/Mailtool.java $
-* $Id: Mailtool.java 2336 2006-10-13 19:43:07Z kimsooil@bu.edu $
+* $URL: $
+* $Id: $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
