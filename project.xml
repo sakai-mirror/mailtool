@@ -8,7 +8,7 @@
     <id>mailtool</id>
     <currentVersion>${sakai.version}</currentVersion>
     <organization>
-    		<name>Sakai Project-BU SMG ITS</name>
+    		<name>Sakai Project</name>
     		<url>http://sakaiproject.org/</url>
     </organization>
     <inceptionYear>2006</inceptionYear>
