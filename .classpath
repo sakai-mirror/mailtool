@@ -1,5 +1,4 @@
 <classpath>
-	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry kind="src" path="src/webapp/WEB-INF"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jspapi/jars/jsp-api-2.0.jar"/>
@@ -25,7 +24,6 @@
 	<classpathentry kind="src" path="/db-api"/>
 	<classpathentry kind="src" path="/component-api"/>
 	<classpathentry kind="src" path="/email-api"/>
-	<classpathentry kind="src" path="/gradebook"/>
 	<classpathentry kind="src" path="/entity-api"/>
 	<classpathentry kind="src" path="/util-util"/>
 	<classpathentry kind="src" path="/mailarchive-api"/>
