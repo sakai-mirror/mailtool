@@ -40,13 +40,14 @@
 </h:panelGroup>
 
 <sakai:messages />
-
+<%--
 <h:panelGroup rendered="#{not Mailtool.allowedToSend}">
 	<f:verbatim><br/></f:verbatim>
 	<h:outputText escape="false" value="#{msgs.no_mail_permission}<br/>" />
 </h:panelGroup>
-
 <h:panelGrid columns="2" rendered="#{Mailtool.allowedToSend}" cellspacing="0" cellpadding="3" columnClasses="mail-header, mail-inputs">
+--%>
+<h:panelGrid columns="2" cellspacing="0" cellpadding="3" columnClasses="mail-header, mail-inputs">
 <f:facet name="header">
 <f:verbatim>
 <div style="text-align:left; font-weight: normal; font-variant: small-caps ">
