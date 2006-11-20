@@ -14,10 +14,9 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 			<h:selectBooleanCheckbox id="selectAllCheckbox" rendered="#{row.collapsed}" value="#{row.allSelected}" />
 			<h:outputLabel for="selectAllCheckbox" rendered="#{row.collapsed}" value="#{msgs.all_prefix} #{row.pluralRolename} "  style="font-weight:bold;" />
 
-			<h:commandLink rendered="#{row.collapsed}" actionListener="#{row.actionExpand}" onmouseup="submit()" value="#{msgs.select_individuals_button} #{row.pluralRolename}" />
+			<h:commandLink rendered="#{row.collapsed}" actionListener="#{row.actionExpand}" onmouseup="submit()" value="#{msgs.select_individuals_button} #{row.pluralRolename} " />
 
-			<h:outputText rendered="#{not row.collapsed}" value="#{msgs.select_individual_prefix} " />
-			<h:outputText rendered="#{not row.collapsed}" value="#{row.pluralRolename} "/>
+			<h:outputText rendered="#{not row.collapsed}" value="#{msgs.select_individual_prefix} #{row.pluralRolename}" style="font-weight:bold"/>
 			<h:commandLink rendered="#{not row.collapsed}" actionListener="#{row.actionCollapse}" onmouseup="submit()" value="#{msgs.collapse_button}" />
 
 			<h:dataTable rendered="#{not row.collapsed}" value="#{row.userTable}" var="user_row" >
@@ -47,8 +46,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 
 			<h:commandLink rendered="#{row.collapsed}" actionListener="#{row.actionExpand}" onmouseup="submit()" value="#{msgs.select_individuals_button} #{row.pluralRolename}" />
 
-			<h:outputText rendered="#{not row.collapsed}" value="#{msgs.select_individual_prefix} " />
-			<h:outputText rendered="#{not row.collapsed}" value="#{row.pluralRolename} "  style="color:#777" />
+			<h:outputText rendered="#{not row.collapsed}" value="#{msgs.select_individual_prefix} #{row.pluralRolename} "  style="color:#777; font-weight:bold" />
 			<h:commandLink rendered="#{not row.collapsed}" actionListener="#{row.actionCollapse}" onmouseup="submit()" value="#{msgs.collapse_button}" />
 
 			<h:dataTable rendered="#{not row.collapsed}" value="#{row.userTable}" var="user_row" columnClasses="gray-out, gray-out, gray-out, gray-out">

@@ -34,12 +34,6 @@
 <h:form>
 <sakai:messages />
 
-<h:outputText escape="false" value="#{Mailtool.results}" />
-<h:panelGroup rendered="#{Mailtool.sendMeCopy}">
-<h:outputText escape="false" value="(Copy sent to the sender)" />
-<f:verbatim><br/></f:verbatim>
-</h:panelGroup>
-
 		<sakai:button_bar>
 			<sakai:button_bar_item
 				action="main_onepage"
@@ -48,6 +42,11 @@
 				immediate="false" />
 		</sakai:button_bar>	
 	
+<h:outputText escape="false" value="#{Mailtool.results}" />
+<h:panelGroup rendered="#{Mailtool.sendMeCopy}">
+<h:outputText escape="false" value="(Copy sent to the sender)" />
+<f:verbatim><br/></f:verbatim>
+</h:panelGroup>
 
 </h:form>
 

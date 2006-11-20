@@ -26,6 +26,8 @@ public class EmailUser implements Comparable {
 	String m_userid = "";
 	String m_displayname = "";
 	String m_email = "";
+	String m_firstname ="";
+	String m_lastname="";
 	
 	public EmailUser(String userid, String displayname, String email)
 	{
@@ -33,7 +35,15 @@ public class EmailUser implements Comparable {
 		m_displayname = displayname;
 		m_email = email;
 	}
-	
+
+	public EmailUser(String userid, String firstname, String lastname, String email)
+	{
+		m_userid = userid;
+		m_displayname = firstname+" "+lastname;
+		m_firstname=firstname;
+		m_lastname=lastname;
+		m_email = email;
+	}
 	public boolean equals(EmailUser user)
 	{
 		if (user.getUserid().equals(m_userid) &&
@@ -46,7 +56,18 @@ public class EmailUser implements Comparable {
 		
 	}
 	
-	
+	public String getFirstname() {
+		return m_firstname;
+	}
+	public void setFirstname(String m_firstname) {
+		this.m_firstname = m_firstname;
+	}
+	public String getLastname() {
+		return m_lastname;
+	}
+	public void setLastname(String m_lastname) {
+		this.m_lastname = m_lastname;
+	}	
 	public String getDisplayname() {
 		return m_displayname;
 	}

@@ -716,7 +716,7 @@ public class Mailtool
 			}
 			else {
 				recipientsString+=toEmail;
-				m_results += toDisplay + (i.hasNext() ? "/" : "");
+				m_results += toDisplay + (i.hasNext() ? "<br/>" : "");
 			}
 //			recipientsString += isAllUsersSelected() && getCurrentUser().getEmail().equals(toEmail) ? "" : toEmail;
 //			m_results += toDisplay + (i.hasNext() ? "/" : "");
@@ -1251,7 +1251,8 @@ public class Mailtool
 				String userid = (String) j.next();
 				try {
 					User theuser = m_userDirectoryService.getUser(userid);
-					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
+//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
+					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
 					mailusers.add(emailuser);
 				} catch (Exception e) {
 					log.debug("Exception: Mailtool.getEmailGroups() #2, " + e.getMessage());
