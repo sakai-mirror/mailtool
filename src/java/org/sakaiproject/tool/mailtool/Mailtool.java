@@ -27,6 +27,7 @@
  */
 package org.sakaiproject.tool.mailtool;
 
+import java.lang.Thread;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -96,7 +97,20 @@ import org.sakaiproject.tool.mailtool.Attachment;
 
 public class Mailtool
 {
-	
+/*
+	public void startProcessSendEmail(){
+		Thread t = new Thread(this);
+		t.start();
+	}
+	public void run(){
+		processSendEmail();
+		processGoToResults();
+	}
+
+	public String processGoToResults(){
+		return "results";
+	}
+*/	
 	private final Log log = LogFactory.getLog(this.getClass());
 
 	protected FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -548,7 +562,7 @@ public class Mailtool
 		this.m_body = "";
 		num_files=0;
 		attachedFiles.clear();
-		return "main_twopage";
+		return "cancel";
 	}
 //	public String processSendEmail(){ return "results";}
 	
@@ -647,113 +661,102 @@ public class Mailtool
     		  InternetAddress from = new InternetAddress(fromString);
     		  message.setFrom(from);
     		  String reply = getReplyToSelected().trim().toLowerCase();
-		  if (reply.equals("yes")){
-			  // "reply to sender" is default. So do nothing
-		  } else if (reply.equals("no")){
-			  String noreply=getSiteTitle()+" <noreply@"+smtp_server+">";
-			  InternetAddress noreplyemail=new InternetAddress(noreply);
-			  message.setFrom(noreplyemail);
-		  }
-		  else if (reply.equals("otheremail") && getReplyToOtherEmail().equals("")!=true){
-			  // need input(email) validation
-			  InternetAddress replytoList[] = {new InternetAddress(getConfigParam("replyto").trim()) };
-			  
-			  message.setReplyTo(replytoList);
-		  }
+			  if (reply.equals("yes")){
+				  // "reply to sender" is default. So do nothing
+			  } else if (reply.equals("no")){
+				  String noreply=getSiteTitle()+" <noreply@"+smtp_server+">";
+				  InternetAddress noreplyemail=new InternetAddress(noreply);
+				  message.setFrom(noreplyemail);
+			  }
+			  else if (reply.equals("otheremail") && getReplyToOtherEmail().equals("")!=true){
+				  // need input(email) validation
+				  InternetAddress replytoList[] = {new InternetAddress(getConfigParam("replyto").trim()) };
+				  
+				  message.setReplyTo(replytoList);
+			  }
     		  
-//    		  String toAddresses = toEmail;
- //   		  message.addRecipients(Message.RecipientType.TO, toAddresses);
     		  message.setSubject(subject);
     		  String text = m_body;
-    		 String attachmentdirectory=getUploadDirectory();
+    		  String attachmentdirectory=getUploadDirectory();
     		 
-		  		// Create the message part
-  			BodyPart messageBodyPart = new MimeBodyPart();
+		  	  // Create the message part
+  			  BodyPart messageBodyPart = new MimeBodyPart();
 
-  			// Fill the message
-			String messagetype="";
-			//if (isFCKeditor() || isHTMLArea()){
-			if (getTextFormat().equals("htmltext")){
+  			  // Fill the message
+			  String messagetype="";
+			  
+ 			  if (getTextFormat().equals("htmltext")){
 				messagetype="text/html";
-			}
-			else{
+			  }
+			  else{
 				messagetype="text/plain";
-			}
-			messageBodyPart.setContent(text, messagetype);
-			Multipart multipart = new MimeMultipart();
-			multipart.addBodyPart(messageBodyPart);
+			  }
+			  messageBodyPart.setContent(text, messagetype);
+			  Multipart multipart = new MimeMultipart();
+			  multipart.addBodyPart(messageBodyPart);
 
-			// Part two is attachment
-			Attachment a=null;
-	    	Iterator iter = attachedFiles.iterator();
-			while(iter.hasNext()) {
+			  // Part two is attachment
+			  Attachment a=null;
+	    	  Iterator iter = attachedFiles.iterator();
+			  while(iter.hasNext()) {
 				a = (Attachment) iter.next();
     			messageBodyPart = new MimeBodyPart();
     			DataSource source = new FileDataSource(attachmentdirectory + this.getCurrentUser().getUserid()+"-"+a.getFilename());
     			messageBodyPart.setDataHandler(new DataHandler(source));
     			messageBodyPart.setFileName(a.getFilename());
     			multipart.addBodyPart(messageBodyPart);
-    		}
-			message.setContent(multipart);
-
-
+    		  }
+			  message.setContent(multipart);
 		
-		//Send the emails
-		String recipientsString="";
-		for (Iterator i = emailusers.iterator(); i.hasNext();recipientsString+=",")
-		{
-
-			EmailUser euser = (EmailUser) i.next();
+				//Send the emails
+				String recipientsString="";
+				for (Iterator i = emailusers.iterator(); i.hasNext();recipientsString+=",")
+				{
+		
+					EmailUser euser = (EmailUser) i.next();
+					
+					String toEmail = euser.getEmail(); // u.getEmail();
+					String toDisplay = euser.getDisplayname(); // u.getDisplayName();
+					// if AllUsers are selected, do not add current user's email to recipients
+					if (isAllUsersSelected() && getCurrentUser().getEmail().equals(toEmail)){
+						// don't add sender to recipients
+					}
+					else {
+						recipientsString+=toEmail;
+						m_results += toDisplay + (i.hasNext() ? "<br/>" : "");
+					}
+//					InternetAddress to[] = {new InternetAddress(toEmail) };
+//					Transport.send(message,to);
+				}
+				if (m_otheremails.trim().equals("")!=true){
+					//
+					// multiple email validation is needed here
+					//
+					String refinedOtherEmailAddresses = m_otheremails.trim().replace(';', ',');
+					recipientsString+=refinedOtherEmailAddresses;
+					m_results += "<br/>"+refinedOtherEmailAddresses;
+//					InternetAddress to[] = {new InternetAddress(refinedOtherEmailAddresses) };
+//					Transport.send(message, to);
+				}
+				if (m_sendmecopy){
+					/////message.addRecipients(Message.RecipientType.CC, fromEmail);
+					recipientsString+=fromEmail;
+//					InternetAddress to[] = {new InternetAddress(fromEmail) };
+//					Transport.send(message, to);
+				}
+		
+//				message.addRecipients(Message.RecipientType.TO, recipientsString);
+				message.addRecipients(Message.RecipientType.BCC, recipientsString);
 			
-			String toEmail = euser.getEmail(); // u.getEmail();
-			String toDisplay = euser.getDisplayname(); // u.getDisplayName();
-			//String toString = toDisplay + " <" + toEmail + ">";
-
-			// if AllUsers are selected, do not add current user's email to recipients
-			//	recipientsString+=toEmail; // former line
-			if (isAllUsersSelected() && getCurrentUser().getEmail().equals(toEmail)){
-				// don't add sender to recipients
+				Transport.send(message);		
 			}
-			else {
-				recipientsString+=toEmail;
-				m_results += toDisplay + (i.hasNext() ? "<br/>" : "");
-			}
-//			recipientsString += isAllUsersSelected() && getCurrentUser().getEmail().equals(toEmail) ? "" : toEmail;
-//			m_results += toDisplay + (i.hasNext() ? "/" : "");
-	   		
-			///message.addRecipients(Message.RecipientType.TO, toEmail);
-/****	   		
-			if (i.hasNext())
+			catch (Exception e)
 			{
-				m_results += toDisplay + "/ ";
+				//logger.debug("SWG Exception while trying to send the email: " + e.getMessage());
+				// by SK 6/30/2006
+				
+				log.debug("Mailtool Exception while trying to send the email: " + e.getMessage());
 			}
-			else
-			{
-				m_results += toDisplay;
-			}
-****/
-		}
-		if (m_otheremails.trim().equals("")!=true){
-			//
-			// multiple email validation is needed here
-			//
-			String refinedOtherEmailAddresses = m_otheremails.trim().replace(';', ',');
-			recipientsString+=refinedOtherEmailAddresses;
-			m_results += "<br/>"+refinedOtherEmailAddresses;
-		}
-		if (m_sendmecopy) message.addRecipients(Message.RecipientType.CC, fromEmail);
-
-		message.addRecipients(Message.RecipientType.TO, recipientsString);
-	
-		Transport.send(message);		
-		}
-		catch (Exception e)
-		{
-			//logger.debug("SWG Exception while trying to send the email: " + e.getMessage());
-			// by SK 6/30/2006
-			
-			log.debug("Mailtool Exception while trying to send the email: " + e.getMessage());
-		}
 		
 		//	Clear the Subject and Body of the Message
 		m_subject = "";

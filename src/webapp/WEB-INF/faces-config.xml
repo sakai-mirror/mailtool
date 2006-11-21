@@ -35,6 +35,11 @@
       	<redirect/>
 		</navigation-case>
 		<navigation-case>
+			<from-outcome>cancel</from-outcome>
+			<to-view-id>/mailtool/main_onepage.jsp</to-view-id>
+      	<redirect/>
+		</navigation-case>		
+		<navigation-case>
 			<from-outcome>configure</from-outcome>
 			<to-view-id>/mailtool/config.jsp</to-view-id>
       	<redirect/>
