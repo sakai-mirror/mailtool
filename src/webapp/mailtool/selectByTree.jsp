@@ -16,7 +16,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 
 			<h:commandLink rendered="#{row.collapsed}" actionListener="#{row.actionExpand}" onmouseup="submit()" value="#{msgs.select_individuals_button} #{row.pluralRolename} " />
 
-			<h:outputText rendered="#{not row.collapsed}" value="#{msgs.select_individual_prefix} #{row.pluralRolename}" style="font-weight:bold"/>
+			<h:outputText rendered="#{not row.collapsed}" value="#{msgs.select_individual_prefix} #{row.pluralRolename} " style="font-weight:bold"/>
 			<h:commandLink rendered="#{not row.collapsed}" actionListener="#{row.actionCollapse}" onmouseup="submit()" value="#{msgs.collapse_button}" />
 
 			<h:dataTable rendered="#{not row.collapsed}" value="#{row.userTable}" var="user_row" >
