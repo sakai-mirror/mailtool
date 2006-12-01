@@ -44,6 +44,7 @@
 	
 <h:outputText escape="false" value="#{Mailtool.results}" />
 <h:panelGroup rendered="#{Mailtool.sendMeCopy}">
+<f:verbatim><br/></f:verbatim>
 <h:outputText escape="false" value="(Copy sent to the sender)" />
 <f:verbatim><br/></f:verbatim>
 </h:panelGroup>

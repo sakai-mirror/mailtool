@@ -22,7 +22,7 @@
 /*
  * Created Apr 15, 2005 by Steven Githens (s-githens@northwestern.edu)
  *
- * Modified/Expanded Aug, 2006 by SOO IL KIM (kimsooil@bu.edu)
+ * Modified/Expanded by SOO IL KIM (kimsooil@bu.edu)
  * 
  */
 package org.sakaiproject.tool.mailtool;
