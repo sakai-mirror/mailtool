@@ -785,7 +785,6 @@ public class Mailtool
 					badnames.add(user.getDisplayname());
 				}
 			}
-			
 			if (badnames.size() > 0)
 			{
 				m_results += "The following users do not have valid email addresses:<br/>";
@@ -800,7 +799,6 @@ public class Mailtool
 				}
 			}
 		}
-		
 		return "results";
 	}
 	

@@ -33,7 +33,6 @@
 
 <h:form>
 <sakai:messages />
-
 		<sakai:button_bar>
 			<sakai:button_bar_item
 				action="main_onepage"
