@@ -1675,7 +1675,13 @@ public class Mailtool
 			setCurrentMode("compose");
 			return "compose"; // go to Compose
 		}
-
+		public String processResetAndReturnToMain()
+		{
+			ToolSession ts = SessionManager.getCurrentSession().getToolSession(ToolManager.getCurrentPlacement().getId());
+			ts.clearAttributes();
+			return "main_onepage"; // go to Compose
+			
+		}
 		public void validateEmail(FacesContext context, UIComponent toValidate, Object value)  throws ValidatorException{
 				  
 	        String enteredEmail = (String)value;

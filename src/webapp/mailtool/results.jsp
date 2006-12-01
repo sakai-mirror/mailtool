@@ -35,7 +35,7 @@
 <sakai:messages />
 		<sakai:button_bar>
 			<sakai:button_bar_item
-				action="main_onepage"
+				action="#{Mailtool.processResetAndReturnToMain}"
 				value="#{msgs.ok_button}"
 				rendered="true"
 				immediate="false" />
