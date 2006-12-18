@@ -1255,7 +1255,9 @@ public class Mailtool
 				try {
 					User theuser = m_userDirectoryService.getUser(userid);
 //					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
-					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
+//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
+					// trying to fix SAK-7356 (Guests are not included in recipient lists)
+					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName().equals("") ? theuser.getEmail() : theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
 					mailusers.add(emailuser);
 				} catch (Exception e) {
 					log.debug("Exception: Mailtool.getEmailGroups() #2, " + e.getMessage());
