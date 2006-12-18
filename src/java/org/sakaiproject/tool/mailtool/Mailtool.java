@@ -739,8 +739,10 @@ public class Mailtool
 //					Transport.send(message, to);
 				}
 				if (m_sendmecopy){
-					/////message.addRecipients(Message.RecipientType.CC, fromEmail);
-					recipientsString+=fromEmail;
+					
+					message.addRecipients(Message.RecipientType.CC, fromEmail);
+					///// trying to solve SAK-7410
+					/////recipientsString+=fromEmail;
 //					InternetAddress to[] = {new InternetAddress(fromEmail) };
 //					Transport.send(message, to);
 				}
