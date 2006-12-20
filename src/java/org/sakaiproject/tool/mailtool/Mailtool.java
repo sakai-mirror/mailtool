@@ -1167,7 +1167,7 @@ public class Mailtool
 		String sid=getSiteID();
 		try{
 			Site site=SiteService.getSite(sid);
-			for (Iterator iPages = site.getPages().iterator();iPages.hasNext();)
+/*			for (Iterator iPages = site.getPages().iterator();iPages.hasNext();)
 			{
 				SitePage page = (SitePage) iPages.next();
 				for (Iterator iTools = page.getTools().iterator(); iTools.hasNext();)
@@ -1178,13 +1178,12 @@ public class Mailtool
 						hasEmailArchive=true;
 						break;
 					}
+*/
 					Collection toolsInSite = site.getTools(toolid);
 					if (!toolsInSite.isEmpty())
 					{
 						hasEmailArchive=true;
 					}
-				}
-			}			
 		}
 		catch(Exception e)
 		{	
