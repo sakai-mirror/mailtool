@@ -156,6 +156,7 @@ public class Mailtool
 	protected boolean m_donotreply = false;
 	protected boolean m_replytoother = false;
 	protected boolean m_allusers = false;
+	protected boolean EmailArchiveInSite=false;
 	
 	protected String m_textformat = "";
 
@@ -275,6 +276,7 @@ public class Mailtool
 		
 		setMessageSubject(getSubjectPrefix().equals("")?getSubjectPrefixFromConfig():getSubjectPrefix());
 		setSubjectPrefix(getSubjectPrefixFromConfig());
+		setEmailArchiveInSite(isEmailArchiveAddedToSite());
 
 		String reply=getConfigParam("replyto").trim().toLowerCase();
 		if (reply.equals("") || reply.equals("yes")){
@@ -617,7 +619,7 @@ public class Mailtool
 		/////String emailarchive = this.getConfigParam("emailarchive");
 		String emailarchive="/mailarchive/channel/"+getSiteID()+"/main";
 		/////if ((emailarchive != "") && (m_archiveMessage))
-		if (m_archiveMessage && isEmailArchiveAddedToSite())
+		if (m_archiveMessage && isEmailArchiveInSite())
 		{
 			String attachment_info="<br/>";
 			Attachment a=null;
@@ -1160,6 +1162,7 @@ public class Mailtool
 	public boolean isEmailArchiveAddedToSite()
 	{
 		boolean hasEmailArchive =false;
+		String toolid="sakai.mailbox";
 
 		String sid=getSiteID();
 		try{
@@ -1170,7 +1173,13 @@ public class Mailtool
 				for (Iterator iTools = page.getTools().iterator(); iTools.hasNext();)
 				{
 					ToolConfiguration tool = (ToolConfiguration) iTools.next();
-					if ("sakai.mailbox".equals(tool.getTool().getId()))
+					if (toolid.equals(tool.getTool().getId()))
+					{
+						hasEmailArchive=true;
+						break;
+					}
+					Collection toolsInSite = site.getTools(toolid);
+					if (!toolsInSite.isEmpty())
 					{
 						hasEmailArchive=true;
 					}
@@ -1741,5 +1750,11 @@ public class Mailtool
 		}
 		public void setReplyToSelected(String r) {
 		    this.m_replyto = r;
+		}
+		public boolean isEmailArchiveInSite() {
+			return EmailArchiveInSite;
+		}
+		public void setEmailArchiveInSite(boolean emailArchiveInSite) {
+			EmailArchiveInSite = emailArchiveInSite;
 		} 		
 }
