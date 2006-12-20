@@ -109,30 +109,23 @@
 						</h:panelGroup>
 						<f:facet name="footer">
 							<h:panelGrid rendered="#{Mailtool.showRenamingRoles }" columns="1" styleClass="jsfFormTable itemSummary">
-								<h:outputText value="Choose names that will appear in the Roles listing on the To menu. See example above."  styleClass="instruction" style="display: block;"/>
-								<h:dataTable value="#{Mailtool.renamedRoles}" var="role"  cellspacing="0" cellpadding="0"  width="100%" styleClass="listHier lines nolines" style="margin:0" >
+								<h:outputLabel value="Choose names that will appear in the Roles listing on the To menu. See example above."  styleClass="instruction" style="display: block;"/>
+								<h:dataTable value="#{Mailtool.renamedRoles}" var="role"  cellspacing="0" cellpadding="0"  width="100%" >
 									<h:column>
-										<h:panelGroup>
-											<f:verbatim><h5></f:verbatim>
-												<h:outputText value="#{role.roleId}: "/>
-											<f:verbatim></h5><br/></f:verbatim>
-										</h:panelGroup>
-										<h:panelGroup styleClass="instruction" style="display: block;">
-											<h:outputText value="show this role as -- singular form"/>
-											<f:verbatim><br/></f:verbatim>
-											<h:inputText size="20" value="#{role.singularNew}" />
-											<f:verbatim><br/></f:verbatim>
-											<h:outputText value="e.g. #{role.singular }" />
-											<f:verbatim><br/><br/></f:verbatim>
-										</h:panelGroup>
-										<h:panelGroup styleClass="instruction" style="display: block;">
-											<h:outputText value="show this role as -- plural form"/>
-											<f:verbatim><br/></f:verbatim>
-											<h:inputText size="20" value="#{role.pluralNew}" />
-											<f:verbatim><br/></f:verbatim>
-											<h:outputText value="e.g. #{role.plural }" />
-											<f:verbatim><br/><br/></f:verbatim>
-										</h:panelGroup>
+										<f:verbatim><h5></f:verbatim>
+											<h:outputText value="#{role.roleId}: "/>
+										<f:verbatim></h5></f:verbatim>
+										<h:outputLabel value="show role as -- singular form" for="rolesingular"/>
+										<f:verbatim><br/></f:verbatim>
+										<h:inputText size="20" value="#{role.singularNew}" id="rolesingular"/>
+										<f:verbatim><br/></f:verbatim>
+										<h:outputText value="e.g. #{role.singular }" styleClass="instruction" style="display: block;"/>
+										<f:verbatim><br/></f:verbatim>
+										<h:outputLabel value="show role as -- plural form" for="roleplural"/>
+										<f:verbatim><br/></f:verbatim>
+										<h:inputText size="20" value="#{role.pluralNew}" id="roleplural"/>
+										<f:verbatim><br/></f:verbatim>
+										<h:outputText value="e.g. #{role.plural }" styleClass="instruction" style="display: block;"/>
 									</h:column>
 								</h:dataTable>
 							</h:panelGrid>
