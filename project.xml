@@ -3,12 +3,12 @@
 <project>
     <pomVersion>3</pomVersion>
     <extend>../master/project.xml</extend>
-    <name>Sakai-BU-Mailtool</name>
+    <name>Sakai-Mailtool</name>
     <groupId>sakaiproject</groupId>
     <id>mailtool</id>
     <currentVersion>${sakai.version}</currentVersion>
     <organization>
-    		<name>Sakai Project-BU SMG ITS</name>
+    		<name>Sakai Project</name>
     		<url>http://sakaiproject.org/</url>
     </organization>
     <inceptionYear>2006</inceptionYear>

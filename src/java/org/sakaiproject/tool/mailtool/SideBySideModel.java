@@ -69,6 +69,9 @@ public class SideBySideModel {
 		{
 			m_data = group;
 			m_label = "All " + group.getEmailrole().getRoleplural();
+
+	//		String rolename=group.getEmailrole().getRoleplural();
+	//		m_label +=(rolename.equals("maintain") || rolename.equals("access")) ? " Users" : "s";
 			m_isgroup = true;
 		}
 		

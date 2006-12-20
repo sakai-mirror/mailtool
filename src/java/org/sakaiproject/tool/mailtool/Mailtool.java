@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL: https://source.sakaiproject.org/contrib/mailtool/branches/2.3-004/src/java/org/sakaiproject/tool/mailtool/Mailtool.java $
-* $Id: Mailtool.java 2336 2006-10-13 19:43:07Z kimsooil@bu.edu $
+* $URL: $
+* $Id: $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -22,11 +22,12 @@
 /*
  * Created Apr 15, 2005 by Steven Githens (s-githens@northwestern.edu)
  *
- * Modified/Expanded Aug, 2006 by SOO IL KIM (kimsooil@bu.edu)
+ * Modified/Expanded by SOO IL KIM (kimsooil@bu.edu)
  * 
  */
 package org.sakaiproject.tool.mailtool;
 
+import java.lang.Thread;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,6 +63,7 @@ import org.sakaiproject.mailarchive.api.MailArchiveMessageEdit;
 import org.sakaiproject.mailarchive.api.MailArchiveMessageHeaderEdit;
 import org.sakaiproject.mailarchive.cover.MailArchiveService;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.site.api.SitePage;
 
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
@@ -96,7 +98,20 @@ import org.sakaiproject.tool.mailtool.Attachment;
 
 public class Mailtool
 {
-	
+/*
+	public void startProcessSendEmail(){
+		Thread t = new Thread(this);
+		t.start();
+	}
+	public void run(){
+		processSendEmail();
+		processGoToResults();
+	}
+
+	public String processGoToResults(){
+		return "results";
+	}
+*/	
 	private final Log log = LogFactory.getLog(this.getClass());
 
 	protected FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -121,6 +136,8 @@ public class Mailtool
 	protected String m_body = "";
 	protected String m_editortype="";
 	protected String m_replyto="";
+	protected String m_sitetype="";
+	protected String m_mode="";
 	
 	protected boolean is_fckeditor=false;
 	protected boolean is_htmlarea=false;
@@ -218,10 +235,12 @@ public class Mailtool
 		type=SiteService.getSite(sid).getType();
 		}
 		catch(Exception e)
-		{		
+		{	
+			log.debug("Exception: Mailtool.getSiteType(), " + e.getMessage());
 		}
 		return type;
 	}
+
 	protected String getSiteTitle()
 	{
 		String sid=getSiteID();
@@ -231,6 +250,7 @@ public class Mailtool
 		}
 		catch (Exception e)
 		{
+			log.debug("Exception: Mailtool.getSiteTitle(), " + e.getMessage());
 		}
 		return title;
 		
@@ -245,6 +265,10 @@ public class Mailtool
 	
 	public Mailtool()
 	{
+		
+		setCurrentMode("compose");
+		m_sitetype=getSiteType();
+		
 		m_changedViewChoice = getRecipview();  
 		
 		initializeCurrentRoles(); /* this initialization solves SAK-6810 */
@@ -282,6 +306,24 @@ public class Mailtool
 		//System.out.println("site type="+getSiteType());
 		//System.out.println("site id="+getSiteID());
 	}
+	
+	public String getCurrentMode()
+	{
+		return m_mode;
+	}
+	public void setCurrentMode(String m)
+	{
+		this.m_mode=m;
+	}
+	
+	public String processGoToOptions(){
+		setCurrentMode("options");
+		return "configure";
+	}
+	public String processGoToCompose(){
+		setCurrentMode("compose");
+		return "compose";
+	}	
 	public String getfilename()
 	{
 		return filename;
@@ -335,6 +377,7 @@ public class Mailtool
 		}
 		catch (NumberFormatException e)
 		{
+			log.debug("Exception: Mailtool Max Num. of attachment is set to 10000, " + e.getMessage());
 			return 10000; // Actually this means "unlimited if not set or invalid"
 		}
 	}
@@ -360,6 +403,16 @@ public class Mailtool
 		
 		return uploaddirectoryDefault;
 	}
+	public boolean isShowRenamingRoles()
+	{
+		String rename=ServerConfigurationService.getString("mailtool.show.renaming.roles");
+		if (rename!="" && rename!=null)
+		{
+			return (rename.trim().toLowerCase().equals("yes") || rename.trim().toLowerCase().equals("true") ? true : false); 
+		}
+		return false;
+		
+	}	
 	public void setEditorType(String editor)
 	{
 		m_editortype = editor;
@@ -510,7 +563,7 @@ public class Mailtool
 		this.m_body = "";
 		num_files=0;
 		attachedFiles.clear();
-		return "main_twopage";
+		return "cancel";
 	}
 //	public String processSendEmail(){ return "results";}
 	
@@ -564,7 +617,7 @@ public class Mailtool
 		/////String emailarchive = this.getConfigParam("emailarchive");
 		String emailarchive="/mailarchive/channel/"+getSiteID()+"/main";
 		/////if ((emailarchive != "") && (m_archiveMessage))
-		if (m_archiveMessage)
+		if (m_archiveMessage && isEmailArchiveAddedToSite())
 		{
 			String attachment_info="<br/>";
 			Attachment a=null;
@@ -609,112 +662,104 @@ public class Mailtool
     		  InternetAddress from = new InternetAddress(fromString);
     		  message.setFrom(from);
     		  String reply = getReplyToSelected().trim().toLowerCase();
-		  if (reply.equals("yes")){
-			  // "reply to sender" is default. So do nothing
-		  } else if (reply.equals("no")){
-			  String noreply=getSiteTitle()+" <noreply@"+smtp_server+">";
-			  InternetAddress noreplyemail=new InternetAddress(noreply);
-			  message.setFrom(noreplyemail);
-		  }
-		  else if (reply.equals("otheremail") && getReplyToOtherEmail().equals("")!=true){
-			  // need input(email) validation
-			  InternetAddress replytoList[] = {new InternetAddress(getConfigParam("replyto").trim()) };
-			  
-			  message.setReplyTo(replytoList);
-		  }
+			  if (reply.equals("yes")){
+				  // "reply to sender" is default. So do nothing
+			  } else if (reply.equals("no")){
+				  String noreply=getSiteTitle()+" <noreply@"+smtp_server+">";
+				  InternetAddress noreplyemail=new InternetAddress(noreply);
+				  message.setFrom(noreplyemail);
+			  }
+			  else if (reply.equals("otheremail") && getReplyToOtherEmail().equals("")!=true){
+				  // need input(email) validation
+				  InternetAddress replytoList[] = {new InternetAddress(getConfigParam("replyto").trim()) };
+				  
+				  message.setReplyTo(replytoList);
+			  }
     		  
-//    		  String toAddresses = toEmail;
- //   		  message.addRecipients(Message.RecipientType.TO, toAddresses);
     		  message.setSubject(subject);
     		  String text = m_body;
-    		 String attachmentdirectory=getUploadDirectory();
+    		  String attachmentdirectory=getUploadDirectory();
     		 
-		  		// Create the message part
-  			BodyPart messageBodyPart = new MimeBodyPart();
+		  	  // Create the message part
+  			  BodyPart messageBodyPart = new MimeBodyPart();
 
-  			// Fill the message
-			String messagetype="";
-			//if (isFCKeditor() || isHTMLArea()){
-			if (getTextFormat().equals("htmltext")){
+  			  // Fill the message
+			  String messagetype="";
+			  
+ 			  if (getTextFormat().equals("htmltext")){
 				messagetype="text/html";
-			}
-			else{
+			  }
+			  else{
 				messagetype="text/plain";
-			}
-			messageBodyPart.setContent(text, messagetype);
-			Multipart multipart = new MimeMultipart();
-			multipart.addBodyPart(messageBodyPart);
+			  }
+			  messageBodyPart.setContent(text, messagetype);
+			  Multipart multipart = new MimeMultipart();
+			  multipart.addBodyPart(messageBodyPart);
 
-			// Part two is attachment
-			Attachment a=null;
-	    	Iterator iter = attachedFiles.iterator();
-			while(iter.hasNext()) {
+			  // Part two is attachment
+			  Attachment a=null;
+	    	  Iterator iter = attachedFiles.iterator();
+			  while(iter.hasNext()) {
 				a = (Attachment) iter.next();
     			messageBodyPart = new MimeBodyPart();
     			DataSource source = new FileDataSource(attachmentdirectory + this.getCurrentUser().getUserid()+"-"+a.getFilename());
     			messageBodyPart.setDataHandler(new DataHandler(source));
     			messageBodyPart.setFileName(a.getFilename());
     			multipart.addBodyPart(messageBodyPart);
-    		}
-			message.setContent(multipart);
-
-
+    		  }
+			  message.setContent(multipart);
 		
-		//Send the emails
-		String recipientsString="";
-		for (Iterator i = emailusers.iterator(); i.hasNext();recipientsString+=",")
-		{
-
-			EmailUser euser = (EmailUser) i.next();
+				//Send the emails
+				String recipientsString="";
+				for (Iterator i = emailusers.iterator(); i.hasNext();recipientsString+=",")
+				{
+		
+					EmailUser euser = (EmailUser) i.next();
+					
+					String toEmail = euser.getEmail(); // u.getEmail();
+					String toDisplay = euser.getDisplayname(); // u.getDisplayName();
+					// if AllUsers are selected, do not add current user's email to recipients
+					if (isAllUsersSelected() && getCurrentUser().getEmail().equals(toEmail)){
+						// don't add sender to recipients
+					}
+					else {
+						recipientsString+=toEmail;
+						m_results += toDisplay + (i.hasNext() ? "<br/>" : "");
+					}
+//					InternetAddress to[] = {new InternetAddress(toEmail) };
+//					Transport.send(message,to);
+				}
+				if (m_otheremails.trim().equals("")!=true){
+					//
+					// multiple email validation is needed here
+					//
+					String refinedOtherEmailAddresses = m_otheremails.trim().replace(';', ',');
+					recipientsString+=refinedOtherEmailAddresses;
+					m_results += "<br/>"+refinedOtherEmailAddresses;
+//					InternetAddress to[] = {new InternetAddress(refinedOtherEmailAddresses) };
+//					Transport.send(message, to);
+				}
+				if (m_sendmecopy){
+					
+					message.addRecipients(Message.RecipientType.CC, fromEmail);
+					///// trying to solve SAK-7410
+					/////recipientsString+=fromEmail;
+//					InternetAddress to[] = {new InternetAddress(fromEmail) };
+//					Transport.send(message, to);
+				}
+		
+//				message.addRecipients(Message.RecipientType.TO, recipientsString);
+				message.addRecipients(Message.RecipientType.BCC, recipientsString);
 			
-			String toEmail = euser.getEmail(); // u.getEmail();
-			String toDisplay = euser.getDisplayname(); // u.getDisplayName();
-			//String toString = toDisplay + " <" + toEmail + ">";
-
-			// if AllUsers are selected, do not add current user's email to recipients
-			//	recipientsString+=toEmail; // former line
-			if (isAllUsersSelected() && getCurrentUser().getEmail().equals(toEmail)){
-				// don't add sender to recipients
+				Transport.send(message);		
 			}
-			else {
-				recipientsString+=toEmail;
-				m_results += toDisplay + (i.hasNext() ? "/" : "");
-			}
-//			recipientsString += isAllUsersSelected() && getCurrentUser().getEmail().equals(toEmail) ? "" : toEmail;
-//			m_results += toDisplay + (i.hasNext() ? "/" : "");
-	   		
-			///message.addRecipients(Message.RecipientType.TO, toEmail);
-/****	   		
-			if (i.hasNext())
+			catch (Exception e)
 			{
-				m_results += toDisplay + "/ ";
+				//logger.debug("SWG Exception while trying to send the email: " + e.getMessage());
+				// by SK 6/30/2006
+				
+				log.debug("Mailtool Exception while trying to send the email: " + e.getMessage());
 			}
-			else
-			{
-				m_results += toDisplay;
-			}
-****/
-		}
-		if (m_otheremails.equals("")!=true){
-			//
-			// multiple email validation is needed here
-			//
-			recipientsString+=m_otheremails;
-			m_results += "<br/>"+m_otheremails;
-		}
-		if (m_sendmecopy) message.addRecipients(Message.RecipientType.CC, fromEmail);
-
-		message.addRecipients(Message.RecipientType.TO, recipientsString);
-	
-		Transport.send(message);		
-		}
-		catch (Exception e)
-		{
-			//logger.debug("SWG Exception while trying to send the email: " + e.getMessage());
-			// by SK 6/30/2006
-			
-			log.debug("SWG Exception while trying to send the email: " + e.getMessage());
-		}
 		
 		//	Clear the Subject and Body of the Message
 		m_subject = "";
@@ -743,7 +788,6 @@ public class Mailtool
 					badnames.add(user.getDisplayname());
 				}
 			}
-			
 			if (badnames.size() > 0)
 			{
 				m_results += "The following users do not have valid email addresses:<br/>";
@@ -758,7 +802,6 @@ public class Mailtool
 				}
 			}
 		}
-		
 		return "results";
 	}
 	
@@ -894,7 +937,8 @@ public class Mailtool
 		***/
 		String siteid="/site/"+getSiteID();
 		//return m_realmService.unlock(this.getCurrentUser().getUserid(), "mail.new", siteid);
-		return m_realmService.isAllowed(this.getCurrentUser().getUserid(), "mail.new", siteid);
+		//return m_realmService.isAllowed(this.getCurrentUser().getUserid(), "mail.new", siteid); // nov 09, 2006 by SK
+		return m_realmService.isAllowed(this.getCurrentUser().getUserid(), "mailtool.send", siteid);
 
 	}
 	public boolean isAllowedToConfigure()
@@ -1024,6 +1068,7 @@ public class Mailtool
 			String rolesingular = this.getConfigParam("role" + i + "singular");
 			String roleplural = this.getConfigParam("role" + i + "plural");
 			
+
 			if ((rolerealm != null && rolerealm != "")  &&
 				(rolename != null && rolename != "") &&
 				(rolesingular != null && rolesingular != "") &&
@@ -1037,11 +1082,25 @@ public class Mailtool
 		if (already_configured==false){
 			try{
 				arole=m_realmService.getAuthzGroup(realmid);
-			} catch (Exception e){}
+			} catch (Exception e){
+				log.debug("Exception: Mailtool.getEmailRoles(), " + e.getMessage());
+			}
 			for (Iterator i = arole.getRoles().iterator(); i.hasNext(); ) {
 					Role r = (Role) i.next();
 					String rolename=r.getId();
-					EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, rolename, rolename);
+					String singular="";
+					String plural="";
+					
+					if (rolename.equals("maintain") || rolename.equals("access")){
+						singular = rolename;
+						plural = rolename+" users";
+					}
+					else {
+						singular = rolename;
+						plural = rolename+"s";
+					}
+					
+					EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, singular, plural);
 					theroles.add(emailrole);
 			}				
 		}
@@ -1055,7 +1114,9 @@ public class Mailtool
 		String realmid="/site/"+siteid;
 		try{
 			arole=m_realmService.getAuthzGroup(realmid);
-		} catch (Exception e){}
+		} catch (Exception e){
+			log.debug("Exception: Mailtool.initializeCurrentRoles(), " + e.getMessage());
+		}
 		for (Iterator i = arole.getRoles().iterator(); i.hasNext(); ) {
 				Role r = (Role) i.next();
 				String rolename=r.getId();
@@ -1096,6 +1157,34 @@ public class Mailtool
 			*/
 	}
 
+	public boolean isEmailArchiveAddedToSite()
+	{
+		boolean hasEmailArchive =false;
+
+		String sid=getSiteID();
+		try{
+			Site site=SiteService.getSite(sid);
+			for (Iterator iPages = site.getPages().iterator();iPages.hasNext();)
+			{
+				SitePage page = (SitePage) iPages.next();
+				for (Iterator iTools = page.getTools().iterator(); iTools.hasNext();)
+				{
+					ToolConfiguration tool = (ToolConfiguration) iTools.next();
+					if ("sakai.mailbox".equals(tool.getTool().getId()))
+					{
+						hasEmailArchive=true;
+					}
+				}
+			}			
+		}
+		catch(Exception e)
+		{	
+			log.debug("Exception: Mailtool.isEmailArchiveAddedToSite(), " + e.getMessage());
+		}
+		return hasEmailArchive;
+
+	}
+	
 	public boolean isEmailArchived()
 	{
 		
@@ -1182,7 +1271,9 @@ public class Mailtool
 			try {
 				//therealm = m_realmService.getRealm(realmid);
 				therealm = m_realmService.getAuthzGroup(realmid);
-			} catch (Exception e) {}
+			} catch (Exception e) {
+				log.debug("Exception: Mailtool.getEmailGroups() #1, " + e.getMessage());
+			}
 			
 			//Set users = therealm.getUsersWithRole(emailrole.getRoleid());
 			Set users = therealm.getUsersHasRole(emailrole.getRoleid());
@@ -1192,9 +1283,14 @@ public class Mailtool
 				String userid = (String) j.next();
 				try {
 					User theuser = m_userDirectoryService.getUser(userid);
-					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
+//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
+//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
+					// trying to fix SAK-7356 (Guests are not included in recipient lists)
+					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName().equals("") ? theuser.getEmail() : theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
 					mailusers.add(emailuser);
-				} catch (Exception e) {}
+				} catch (Exception e) {
+					log.debug("Exception: Mailtool.getEmailGroups() #2, " + e.getMessage());
+				}
 			}
 			Collections.sort(mailusers);
 			EmailGroup thegroup = new EmailGroup(emailrole, mailusers);
@@ -1221,7 +1317,7 @@ public class Mailtool
 		{
 			//logger.debug("Exception: MailtoolBackend.getCurrentUser, " + e.getMessage());
 //			 by SK 6/30/2006
-			log.debug("Exception: MailtoolBackend.getCurrentUser, " + e.getMessage());
+			log.debug("Exception: Mailtool.getCurrentUser(), " + e.getMessage());
 
 		}
 		
@@ -1237,8 +1333,9 @@ public class Mailtool
 		{
 			channel = MailArchiveService.getMailArchiveChannel(channelRef);
 		}
-		catch (Exception goOn)
+		catch (Exception e)
 		{
+			log.debug("Exception: Mailtool.appendToArchive() #1, " + e.getMessage());
 			return false;
 		}
 		
@@ -1289,6 +1386,8 @@ public class Mailtool
 		}
 		catch (Exception e)
 		{
+			log.debug("Exception: Mailtool.appendToArchive() #2, " + e.getMessage());
+
 			return false;
 		}
 		return true;
@@ -1377,8 +1476,10 @@ public class Mailtool
 			}
     		
 	    }
-	    catch (Exception ex)
+	    catch (Exception e)
 	    {
+			log.debug("Exception: Mailtool.processFileUpload(), " + e.getMessage());
+
 	        // handle exception
 	    }
 		} // end if
@@ -1533,25 +1634,31 @@ public class Mailtool
 		// this function resets current tool and saves changes.
 		public String processUpdateOptions()
 		{
-			int i=1;
-			Configuration c=null;
-			Iterator iter = renamedRoles.iterator();
-			
-			while (iter.hasNext()){
-				c=(Configuration) iter.next();
-				//setConfigParam("role"+i+"id", c.getRoleId()); // should not be changed
-				//setConfigParam("role"+i+"realmid", c.getRealmid()); // should not be changed. So not shown in options
-				if (c.getSingularNew().trim().equals("")!=true && c.getSingularNew()!=null) setConfigParam("role"+i+"singular", c.getSingularNew());
-				if (c.getPluralNew().trim().equals("")!=true && c.getPluralNew()!=null) setConfigParam("role"+i+"plural", c.getPluralNew());
-				i++;
+			if (isShowRenamingRoles()){
+				int i=1;
+				Configuration c=null;
+				Iterator iter = renamedRoles.iterator();
+				
+				while (iter.hasNext()){
+					c=(Configuration) iter.next();
+					//setConfigParam("role"+i+"id", c.getRoleId()); // should not be changed
+					//setConfigParam("role"+i+"realmid", c.getRealmid()); // should not be changed. So not shown in options
+					if (c.getSingularNew().trim().equals("")!=true && c.getSingularNew()!=null) setConfigParam("role"+i+"singular", c.getSingularNew());
+					if (c.getPluralNew().trim().equals("")!=true && c.getPluralNew()!=null) setConfigParam("role"+i+"plural", c.getPluralNew());
+					i++;
+				}
 			}
+/*****			
 			if (getSubjectPrefix().equals("")!=true && getSubjectPrefix()!=null){
 				//setMessageSubject(getSubjectPrefix());
 				setConfigParam("subjectprefix", getSubjectPrefix());
 
 			}
+*****/			
 			//setViewChoice(getViewChoice());
 			setConfigParam("recipview", getViewChoice());
+
+/***			
 			if (isSendMeCopyInOptions()){
 				setConfigParam("sendmecopy", isSendMeCopy() ? "yes": "no");
 			}
@@ -1564,6 +1671,9 @@ public class Mailtool
 			else {
 				setConfigParam("emailarchive", "");
 			}
+***/			
+			setConfigParam("sendmecopy", isSendMeCopy() ? "yes": "no");
+			setConfigParam("emailarchive", isArchiveMessage() ? "yes": "no");
 /*			
 			if (isReplyToSender()){
 				setConfigParam("replyto", "yes");
@@ -1595,10 +1705,16 @@ public class Mailtool
 			// reset Mailtool (with updated options)
 			ToolSession ts = SessionManager.getCurrentSession().getToolSession(ToolManager.getCurrentPlacement().getId());
 			ts.clearAttributes();
-			
-			return "save"; // go to Compose
+			setCurrentMode("compose");
+			return "compose"; // go to Compose
 		}
-
+		public String processResetAndReturnToMain()
+		{
+			ToolSession ts = SessionManager.getCurrentSession().getToolSession(ToolManager.getCurrentPlacement().getId());
+			ts.clearAttributes();
+			return "main_onepage"; // go to Compose
+			
+		}
 		public void validateEmail(FacesContext context, UIComponent toValidate, Object value)  throws ValidatorException{
 				  
 	        String enteredEmail = (String)value;
