@@ -407,7 +407,7 @@ public class Mailtool
 		String rename=ServerConfigurationService.getString("mailtool.show.renaming.roles");
 		if (rename!="" && rename!=null)
 		{
-			return (rename.trim().toLowerCase().equals("yes") ? true : false); 
+			return (rename.trim().toLowerCase().equals("yes") || rename.trim().toLowerCase().equals("true") ? true : false); 
 		}
 		return false;
 		

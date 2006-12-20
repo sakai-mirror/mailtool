@@ -82,7 +82,10 @@
 						<%--
 								<h:outputText value="#{Mailtool.subjectPrefix}"/>
 						--%>
-						<h:inputText value="#{Mailtool.messageSubject}"	size="60"/>
+					<h:inputText value="#{Mailtool.messageSubject}"	size="60" required="true">
+						<f:validateLength minimum="1"/>
+					</h:inputText>
+
 					</h:panelGrid>
 					<h:panelGroup rendered="#{not Mailtool.attachClicked and Mailtool.maxNumAttachment!=0}" style="height:100%;display:block;overflow:hidden;vertical-align: middle;padding:.2em .5em 0 0">
 						<h:graphicImage alt="attachment_img" url="/images/paperclip.gif"  width="15" height="15"  style="float:right;vertical-align: middle;" />
@@ -124,7 +127,11 @@
 						<h:outputText value="#{msgs.message_body}"/>
 						<h:panelGroup>
 							<h:panelGroup rendered="#{Mailtool.textFormat=='htmltext'}">
+
 								<sakai:rich_text_area  rows="10" columns="70" value="#{Mailtool.messageBody}"/>
+<%--
+								<sakai:inputRichText rows="25" cols="70" value="#{Mailtool.messageBody}"/>
+--%>
 							</h:panelGroup>
 							<h:panelGroup rendered="#{Mailtool.textFormat=='plaintext'}">
 								<h:inputTextarea rows="10" cols="70" value="#{Mailtool.messageBody}"/>
@@ -141,13 +148,17 @@
 									<h:outputLabel for ="addtoarchive" value="Add to Email Archive, visible to all site participants" />
 								</h:panelGroup>
 							</h:panelGrid>	
+							<h:panelGrid columns="2" cellspacing="5" cellpadding="0" border="0" styleClass="act">
+								<sakai:button_bar>
+									<sakai:button_bar_item action="#{Mailtool.processSendEmail}" value="#{msgs.send_mail_button}" rendered="#{Mailtool.allowedToSend}" immediate="false" styleClass="active" />
+								</sakai:button_bar>	
+								<sakai:button_bar>
+									<sakai:button_bar_item action="#{Mailtool.processCancelEmail}" value="#{msgs.cancel_mail_button}" rendered="#{Mailtool.allowedToSend}" immediate="false" />
+								</sakai:button_bar>
+							</h:panelGrid>							
 						</h:panelGroup>
 					</h:panelGroup>	
 				</h:panelGrid>
-				<sakai:button_bar>
-						<sakai:button_bar_item action="#{Mailtool.processSendEmail}" value="#{msgs.send_mail_button}" rendered="#{Mailtool.allowedToSend}" immediate="false" styleClass="active" />
-						<sakai:button_bar_item action="#{Mailtool.processCancelEmail}" value="#{msgs.cancel_mail_button}" rendered="#{Mailtool.allowedToSend}" immediate="false" />
-				</sakai:button_bar>
 			</h:form>
 		</div>	
 		</body>

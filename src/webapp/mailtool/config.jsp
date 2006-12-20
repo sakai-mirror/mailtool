@@ -29,7 +29,7 @@
 					<sakai:view_title  value="Options" />
 					<h:outputText value="You are currently choosing options for Email. 	Settings chosen on this page will become the default settings for this site."  styleClass="instruction" style="display: block;"/>
 					<h:panelGrid rendered="#{Mailtool.allowedToConfigure}" columns="2" border="0" cellspacing="0" cellpadding="0"  styleClass="jsfFormTable itemSummary">
-						<h:panelGroup>
+						<h:panelGroup styleClass="msgAdvSearch">
 							<h:outputLabel value="Choose selection view:" for="viewChoice"/>
 						</h:panelGroup>
 						<h:panelGroup>
@@ -42,7 +42,7 @@
 							<f:subview id="selectSideBySide" rendered="#{Mailtool.selectSideBySide}"><jsp:include page="selectSideBySide.jsp" /></f:subview>
 							<f:subview id="selectByFoothill" rendered="#{Mailtool.selectByFoothill}"><jsp:include page="selectByFoothill.jsp" /></f:subview>
 						</h:panelGroup>
-						<h:panelGroup>
+						<h:panelGroup styleClass="msgAdvSearch">
 							<h:outputText value="Copies:" />
 						</h:panelGroup>	
 							<%--
@@ -67,7 +67,7 @@
 							<h:selectBooleanCheckbox value="#{Mailtool.archiveMessage}" id="achiveMessageID"/>
 							<h:outputLabel value="Add to Email Archive, visible to all site participants" for="achiveMessageID" />
 						</h:panelGroup>
-						<h:panelGroup>
+						<h:panelGroup styleClass="msgAdvSearch">
 							<h:outputText value="Reply-to:" />
 						</h:panelGroup>
 						<h:panelGroup>
@@ -85,7 +85,7 @@
 							</h:panelGroup>
 							--%>
 						</h:panelGroup>
-						<h:panelGroup>
+						<h:panelGroup styleClass="msgAdvSearch">
 							<h:outputText value="Message format:" />
 						</h:panelGroup>
 						<h:panelGroup>
@@ -97,33 +97,40 @@
 						<%-- gsilver: unsure of this last panelGroup set, not showing for me  --%>
 						<h:panelGroup rendered="#{Mailtool.showRenamingRoles }">
 							<h:panelGroup>
-								<h:outputText value="Rename roles (Max: 15)" />
+								<f:verbatim><h5></f:verbatim>
+									<h:outputText value="Rename roles" />
+								<f:verbatim></h5></f:verbatim>
 							</h:panelGroup>
 						</h:panelGroup>
 						<f:facet name="footer">
-							<h:panelGroup rendered="#{Mailtool.showRenamingRoles }">
-								<f:verbatim>
-									<div style="font-weight: normal">
-										<font color="blue">Choose names that will appear in the "Roles" listing on the "To" menu. See example above.</font>
-									</div>
-								</f:verbatim>
-								<h:dataTable value="#{Mailtool.renamedRoles}" var="role"  cellspacing="0" cellpadding="3">
+							<h:panelGrid rendered="#{Mailtool.showRenamingRoles }" columns="1" styleClass="jsfFormTable itemSummary">
+								<h:outputText value="Choose names that will appear in the Roles listing on the To menu. See example above."  styleClass="instruction" style="display: block;"/>
+								<h:dataTable value="#{Mailtool.renamedRoles}" var="role"  cellspacing="0" cellpadding="0"  width="100%" styleClass="listHier lines nolines" style="margin:0" >
 									<h:column>
-										<h:outputText value="#{role.roleId}: " style="font-weight:bold; font-style: italic"/>
-										<h:outputText value="show this role as "/>
-									</h:column>
-									<h:column>
-										<h:inputText size="20" value="#{role.singularNew}" />
-										<f:verbatim><br/></f:verbatim>
-										<h:outputText value="e.g. #{role.singular }" />
-									</h:column>
-									<h:column>
-										<h:inputText size="20" value="#{role.pluralNew}" />
-										<f:verbatim><br/></f:verbatim>
-										<h:outputText value="e.g. #{role.plural }" />
+										<h:panelGroup styleClass="instruction" style="display: block;">
+											<f:verbatim><h4></f:verbatim>
+												<h:outputText value="#{role.roleId}: "/>
+											<f:verbatim></h4><br/></f:verbatim>
+										</h:panelGroup>
+										<h:panelGroup styleClass="instruction" style="display: block;">
+											<h:outputText value="show this role as -- singular form"/>
+											<f:verbatim><br/></f:verbatim>
+											<h:inputText size="20" value="#{role.singularNew}" />
+											<f:verbatim><br/></f:verbatim>
+											<h:outputText value="e.g. #{role.singular }" />
+											<f:verbatim><br/><br/></f:verbatim>
+										</h:panelGroup>
+										<h:panelGroup styleClass="instruction" style="display: block;">
+											<h:outputText value="show this role as -- plural form"/>
+											<f:verbatim><br/></f:verbatim>
+											<h:inputText size="20" value="#{role.pluralNew}" />
+											<f:verbatim><br/></f:verbatim>
+											<h:outputText value="e.g. #{role.plural }" />
+											<f:verbatim><br/><br/></f:verbatim>
+										</h:panelGroup>
 									</h:column>
 								</h:dataTable>
-							</h:panelGroup>
+							</h:panelGrid>
 						</f:facet>
 					</h:panelGrid>
 	
