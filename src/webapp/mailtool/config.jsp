@@ -63,11 +63,11 @@
 								<h:outputText value="Show 'Add to Email Archive' (Visible only if Email Archive is added)"/>
 										<h:panelGroup rendered="#{Mailtool.archiveMessageInOptions}" >
 						--%>
-						<h:panelGroup rendered="#{Mailtool.emailArchiveAddedToSite}"styleClass="checkbox">
+						<h:panelGroup rendered="#{Mailtool.emailArchiveInSite}"styleClass="checkbox">
 							<h:selectBooleanCheckbox value="#{Mailtool.archiveMessage}" id="achiveMessageID"/>
 							<h:outputLabel value="Add to Email Archive, visible to all site participants" for="achiveMessageID" />
 						</h:panelGroup>
-						<h:panelGroup rendered="#{not Mailtool.emailArchiveAddedToSite}" style="height:100%;overflow:hidden;display:block;color:#555 !important" styleClass="checkbox">
+						<h:panelGroup rendered="#{not Mailtool.emailArchiveInSite}" style="height:100%;overflow:hidden;display:block;color:#555 !important" styleClass="checkbox">
 							<h:selectBooleanCheckbox disabled="true" value="#{Mailtool.archiveMessage}" id="achiveMessageID2"/>
 							<h:outputLabel value="Add to Email Archive, visible to all site participants" for="achiveMessageID2" style="color:#777;white-space:nowrap"/>
 						</h:panelGroup>
