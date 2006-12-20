@@ -109,7 +109,7 @@
 						</h:panelGroup>
 						<f:facet name="footer">
 							<h:panelGrid rendered="#{Mailtool.showRenamingRoles }" columns="1" styleClass="jsfFormTable itemSummary">
-								<h:outputLabel value="Choose names that will appear in the Roles listing on the To menu. See example above."  styleClass="instruction" style="display: block;"/>
+								<h:outputText value="Choose names that will appear in the Roles listing on the To menu. See example above."  styleClass="instruction" style="display: block;"/>
 								<h:dataTable value="#{Mailtool.renamedRoles}" var="role"  cellspacing="0" cellpadding="0"  width="100%" >
 									<h:column>
 										<f:verbatim><h5></f:verbatim>
