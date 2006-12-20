@@ -63,10 +63,15 @@
 								<h:outputText value="Show 'Add to Email Archive' (Visible only if Email Archive is added)"/>
 										<h:panelGroup rendered="#{Mailtool.archiveMessageInOptions}" >
 						--%>
-						<h:panelGroup styleClass="checkbox">
+						<h:panelGroup rendered="#{Mailtool.emailArchiveAddedToSite}"styleClass="checkbox">
 							<h:selectBooleanCheckbox value="#{Mailtool.archiveMessage}" id="achiveMessageID"/>
 							<h:outputLabel value="Add to Email Archive, visible to all site participants" for="achiveMessageID" />
 						</h:panelGroup>
+						<h:panelGroup rendered="#{not Mailtool.emailArchiveAddedToSite}" style="height:100%;overflow:hidden;display:block;color:#555 !important" styleClass="checkbox">
+							<h:selectBooleanCheckbox disabled="true" value="#{Mailtool.archiveMessage}" id="achiveMessageID2"/>
+							<h:outputLabel value="Add to Email Archive, visible to all site participants" for="achiveMessageID2" style="color:#777;white-space:nowrap"/>
+						</h:panelGroup>
+
 						<h:panelGroup style="padding: 0pt; overflow: hidden; display: block; height: 100%; float: right;">
 							<h:outputText value="Reply-to:" />
 						</h:panelGroup>
@@ -107,7 +112,7 @@
 								<h:outputText value="Choose names that will appear in the Roles listing on the To menu. See example above."  styleClass="instruction" style="display: block;"/>
 								<h:dataTable value="#{Mailtool.renamedRoles}" var="role"  cellspacing="0" cellpadding="0"  width="100%" styleClass="listHier lines nolines" style="margin:0" >
 									<h:column>
-										<h:panelGroup styleClass="instruction" style="display: block;">
+										<h:panelGroup>
 											<f:verbatim><h5></f:verbatim>
 												<h:outputText value="#{role.roleId}: "/>
 											<f:verbatim></h5><br/></f:verbatim>

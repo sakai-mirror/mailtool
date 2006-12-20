@@ -63,6 +63,7 @@ import org.sakaiproject.mailarchive.api.MailArchiveMessageEdit;
 import org.sakaiproject.mailarchive.api.MailArchiveMessageHeaderEdit;
 import org.sakaiproject.mailarchive.cover.MailArchiveService;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.site.api.SitePage;
 
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
@@ -616,7 +617,7 @@ public class Mailtool
 		/////String emailarchive = this.getConfigParam("emailarchive");
 		String emailarchive="/mailarchive/channel/"+getSiteID()+"/main";
 		/////if ((emailarchive != "") && (m_archiveMessage))
-		if (m_archiveMessage)
+		if (m_archiveMessage && isEmailArchiveAddedToSite())
 		{
 			String attachment_info="<br/>";
 			Attachment a=null;
@@ -1156,6 +1157,34 @@ public class Mailtool
 			*/
 	}
 
+	public boolean isEmailArchiveAddedToSite()
+	{
+		boolean hasEmailArchive =false;
+
+		String sid=getSiteID();
+		try{
+			Site site=SiteService.getSite(sid);
+			for (Iterator iPages = site.getPages().iterator();iPages.hasNext();)
+			{
+				SitePage page = (SitePage) iPages.next();
+				for (Iterator iTools = page.getTools().iterator(); iTools.hasNext();)
+				{
+					ToolConfiguration tool = (ToolConfiguration) iTools.next();
+					if ("sakai.mailbox".equals(tool.getTool().getId()))
+					{
+						hasEmailArchive=true;
+					}
+				}
+			}			
+		}
+		catch(Exception e)
+		{	
+			log.debug("Exception: Mailtool.isEmailArchiveAddedToSite(), " + e.getMessage());
+		}
+		return hasEmailArchive;
+
+	}
+	
 	public boolean isEmailArchived()
 	{
 		
