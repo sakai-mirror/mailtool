@@ -29,7 +29,7 @@
 					<sakai:view_title  value="Options" />
 					<h:outputText value="You are currently choosing options for Email. 	Settings chosen on this page will become the default settings for this site."  styleClass="instruction" style="display: block;"/>
 					<h:panelGrid rendered="#{Mailtool.allowedToConfigure}" columns="2" border="0" cellspacing="0" cellpadding="0"  styleClass="jsfFormTable itemSummary">
-						<h:panelGroup styleClass="msgAdvSearch">
+						<h:panelGroup style="padding: 0pt; overflow: hidden; display: block; height: 100%; float: right;">
 							<h:outputLabel value="Choose selection view:" for="viewChoice"/>
 						</h:panelGroup>
 						<h:panelGroup>
@@ -42,7 +42,7 @@
 							<f:subview id="selectSideBySide" rendered="#{Mailtool.selectSideBySide}"><jsp:include page="selectSideBySide.jsp" /></f:subview>
 							<f:subview id="selectByFoothill" rendered="#{Mailtool.selectByFoothill}"><jsp:include page="selectByFoothill.jsp" /></f:subview>
 						</h:panelGroup>
-						<h:panelGroup styleClass="msgAdvSearch">
+						<h:panelGroup style="padding: 0pt; overflow: hidden; display: block; height: 100%; float: right;">
 							<h:outputText value="Copies:" />
 						</h:panelGroup>	
 							<%--
@@ -67,7 +67,7 @@
 							<h:selectBooleanCheckbox value="#{Mailtool.archiveMessage}" id="achiveMessageID"/>
 							<h:outputLabel value="Add to Email Archive, visible to all site participants" for="achiveMessageID" />
 						</h:panelGroup>
-						<h:panelGroup styleClass="msgAdvSearch">
+						<h:panelGroup style="padding: 0pt; overflow: hidden; display: block; height: 100%; float: right;">
 							<h:outputText value="Reply-to:" />
 						</h:panelGroup>
 						<h:panelGroup>
@@ -85,7 +85,7 @@
 							</h:panelGroup>
 							--%>
 						</h:panelGroup>
-						<h:panelGroup styleClass="msgAdvSearch">
+						<h:panelGroup style="padding: 0pt; overflow: hidden; display: block; height: 100%; float: right;">
 							<h:outputText value="Message format:" />
 						</h:panelGroup>
 						<h:panelGroup>
@@ -97,9 +97,9 @@
 						<%-- gsilver: unsure of this last panelGroup set, not showing for me  --%>
 						<h:panelGroup rendered="#{Mailtool.showRenamingRoles }">
 							<h:panelGroup>
-								<f:verbatim><h5></f:verbatim>
+								<f:verbatim><h4></f:verbatim>
 									<h:outputText value="Rename roles" />
-								<f:verbatim></h5></f:verbatim>
+								<f:verbatim></h4></f:verbatim>
 							</h:panelGroup>
 						</h:panelGroup>
 						<f:facet name="footer">
@@ -108,9 +108,9 @@
 								<h:dataTable value="#{Mailtool.renamedRoles}" var="role"  cellspacing="0" cellpadding="0"  width="100%" styleClass="listHier lines nolines" style="margin:0" >
 									<h:column>
 										<h:panelGroup styleClass="instruction" style="display: block;">
-											<f:verbatim><h4></f:verbatim>
+											<f:verbatim><h5></f:verbatim>
 												<h:outputText value="#{role.roleId}: "/>
-											<f:verbatim></h4><br/></f:verbatim>
+											<f:verbatim></h5><br/></f:verbatim>
 										</h:panelGroup>
 										<h:panelGroup styleClass="instruction" style="display: block;">
 											<h:outputText value="show this role as -- singular form"/>
