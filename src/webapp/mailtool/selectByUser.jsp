@@ -4,35 +4,36 @@
 <%-- Users Table --%>
 <%-- var=row is a SelectByUserTable.TableEntry      --%>
 <h:panelGroup rendered="#{Mailtool.currentMode=='compose' }">
-<h:dataTable value="#{Mailtool.recipientSelector.dataModel}" var="row">
+<h:dataTable value="#{Mailtool.recipientSelector.dataModel}" var="row" border="0" styleClass="listHier lines nolines" columnClasses="attach,,attach" style="width:auto;margin-top:0">
 	<h:column>
 		<h:selectBooleanCheckbox id="col1check" value="#{row.selected1}" />
 	</h:column>
 	<h:column>
-		<h:outputLabel value="#{row.user1.displayname}" for="col1check"/>
+		<h:outputLabel value="#{row.user1.displayname}" for="col1check" style="white-space:nowrap"/>
 	</h:column>
 	<h:column>
 		<h:selectBooleanCheckbox rendered="#{row.render2}" value="#{row.selected2}" id="col2check" />
 	</h:column>
 	<h:column>
-		<h:outputLabel rendered="#{row.render2}" value="#{row.user2.displayname}" for="col2check" />
+		<h:outputLabel rendered="#{row.render2}" value="#{row.user2.displayname}" for="col2check" style="white-space:nowrap" />
 	</h:column>
 </h:dataTable>
 </h:panelGroup>
 
-<h:panelGroup rendered="#{Mailtool.currentMode=='options' }">
-<h:dataTable value="#{Mailtool.recipientSelector.dataModel}" var="row" columnClasses="gray-out, gray-out, gray-out, gray-out">
-	<h:column>
-		<h:selectBooleanCheckbox disabled="true" id="col1check" value="#{row.selected1}" />
-	</h:column>
-	<h:column>
-		<h:outputLabel value="#{row.user1.displayname}" for="col1check" style="color:#777" />
-	</h:column>
-	<h:column>
-		<h:selectBooleanCheckbox disabled="true" rendered="#{row.render2}" value="#{row.selected2}" id="col2check" />
-	</h:column>
-	<h:column>
-		<h:outputLabel rendered="#{row.render2}" value="#{row.user2.displayname}" for="col2check"  style="color:#777"/>
-	</h:column>
-</h:dataTable>
-</h:panelGroup>
+	<h:panelGroup rendered="#{Mailtool.currentMode=='options' }" style="height:100%;overflow:hidden;display:block;margin:.5em 0;padding:.3em;color:#555 !important" styleClass="inopPanel" >
+		<h:outputText  value="Preview (inactive)"  style="padding:.5em"/>
+		<h:dataTable value="#{Mailtool.recipientSelector.dataModel}" var="row"  columnClasses="attach,,attach,"  cellpadding="0" cellspacing="0" style="width:auto;font-weight:normal" border="0" styleClass="listHier lines nolines"> 
+			<h:column>
+				<h:selectBooleanCheckbox disabled="true" id="col1check" value="#{row.selected1}" />
+			</h:column>
+			<h:column>
+				<h:outputLabel value="#{row.user1.displayname}" for="col1check" style="color:#777;white-space:nowrap" />
+			</h:column>
+			<h:column>
+				<h:selectBooleanCheckbox disabled="true" rendered="#{row.render2}" value="#{row.selected2}" id="col2check" />
+			</h:column>
+			<h:column>
+				<h:outputLabel rendered="#{row.render2}" value="#{row.user2.displayname}" for="col2check"  style="color:#777;white-space:nowrap"/>
+			</h:column>
+		</h:dataTable>
+	</h:panelGroup>

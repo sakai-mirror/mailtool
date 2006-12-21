@@ -22,11 +22,12 @@
 /*
  * Created Apr 15, 2005 by Steven Githens (s-githens@northwestern.edu)
  *
- * Modified/Expanded Aug, 2006 by SOO IL KIM (kimsooil@bu.edu)
+ * Modified/Expanded by SOO IL KIM (kimsooil@bu.edu)
  * 
  */
 package org.sakaiproject.tool.mailtool;
 
+import java.lang.Thread;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,6 +63,7 @@ import org.sakaiproject.mailarchive.api.MailArchiveMessageEdit;
 import org.sakaiproject.mailarchive.api.MailArchiveMessageHeaderEdit;
 import org.sakaiproject.mailarchive.cover.MailArchiveService;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.site.api.SitePage;
 
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
@@ -96,7 +98,20 @@ import org.sakaiproject.tool.mailtool.Attachment;
 
 public class Mailtool
 {
-	
+/*
+	public void startProcessSendEmail(){
+		Thread t = new Thread(this);
+		t.start();
+	}
+	public void run(){
+		processSendEmail();
+		processGoToResults();
+	}
+
+	public String processGoToResults(){
+		return "results";
+	}
+*/	
 	private final Log log = LogFactory.getLog(this.getClass());
 
 	protected FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -141,6 +156,7 @@ public class Mailtool
 	protected boolean m_donotreply = false;
 	protected boolean m_replytoother = false;
 	protected boolean m_allusers = false;
+	protected boolean EmailArchiveInSite=false;
 	
 	protected String m_textformat = "";
 
@@ -260,6 +276,7 @@ public class Mailtool
 		
 		setMessageSubject(getSubjectPrefix().equals("")?getSubjectPrefixFromConfig():getSubjectPrefix());
 		setSubjectPrefix(getSubjectPrefixFromConfig());
+		setEmailArchiveInSite(isEmailArchiveAddedToSite());
 
 		String reply=getConfigParam("replyto").trim().toLowerCase();
 		if (reply.equals("") || reply.equals("yes")){
@@ -393,7 +410,7 @@ public class Mailtool
 		String rename=ServerConfigurationService.getString("mailtool.show.renaming.roles");
 		if (rename!="" && rename!=null)
 		{
-			return (rename.trim().toLowerCase().equals("yes") ? true : false); 
+			return (rename.trim().toLowerCase().equals("yes") || rename.trim().toLowerCase().equals("true") ? true : false); 
 		}
 		return false;
 		
@@ -548,7 +565,7 @@ public class Mailtool
 		this.m_body = "";
 		num_files=0;
 		attachedFiles.clear();
-		return "main_twopage";
+		return "cancel";
 	}
 //	public String processSendEmail(){ return "results";}
 	
@@ -602,7 +619,7 @@ public class Mailtool
 		/////String emailarchive = this.getConfigParam("emailarchive");
 		String emailarchive="/mailarchive/channel/"+getSiteID()+"/main";
 		/////if ((emailarchive != "") && (m_archiveMessage))
-		if (m_archiveMessage)
+		if (m_archiveMessage && isEmailArchiveInSite())
 		{
 			String attachment_info="<br/>";
 			Attachment a=null;
@@ -647,113 +664,104 @@ public class Mailtool
     		  InternetAddress from = new InternetAddress(fromString);
     		  message.setFrom(from);
     		  String reply = getReplyToSelected().trim().toLowerCase();
-		  if (reply.equals("yes")){
-			  // "reply to sender" is default. So do nothing
-		  } else if (reply.equals("no")){
-			  String noreply=getSiteTitle()+" <noreply@"+smtp_server+">";
-			  InternetAddress noreplyemail=new InternetAddress(noreply);
-			  message.setFrom(noreplyemail);
-		  }
-		  else if (reply.equals("otheremail") && getReplyToOtherEmail().equals("")!=true){
-			  // need input(email) validation
-			  InternetAddress replytoList[] = {new InternetAddress(getConfigParam("replyto").trim()) };
-			  
-			  message.setReplyTo(replytoList);
-		  }
+			  if (reply.equals("yes")){
+				  // "reply to sender" is default. So do nothing
+			  } else if (reply.equals("no")){
+				  String noreply=getSiteTitle()+" <noreply@"+smtp_server+">";
+				  InternetAddress noreplyemail=new InternetAddress(noreply);
+				  message.setFrom(noreplyemail);
+			  }
+			  else if (reply.equals("otheremail") && getReplyToOtherEmail().equals("")!=true){
+				  // need input(email) validation
+				  InternetAddress replytoList[] = {new InternetAddress(getConfigParam("replyto").trim()) };
+				  
+				  message.setReplyTo(replytoList);
+			  }
     		  
-//    		  String toAddresses = toEmail;
- //   		  message.addRecipients(Message.RecipientType.TO, toAddresses);
     		  message.setSubject(subject);
     		  String text = m_body;
-    		 String attachmentdirectory=getUploadDirectory();
+    		  String attachmentdirectory=getUploadDirectory();
     		 
-		  		// Create the message part
-  			BodyPart messageBodyPart = new MimeBodyPart();
+		  	  // Create the message part
+  			  BodyPart messageBodyPart = new MimeBodyPart();
 
-  			// Fill the message
-			String messagetype="";
-			//if (isFCKeditor() || isHTMLArea()){
-			if (getTextFormat().equals("htmltext")){
+  			  // Fill the message
+			  String messagetype="";
+			  
+ 			  if (getTextFormat().equals("htmltext")){
 				messagetype="text/html";
-			}
-			else{
+			  }
+			  else{
 				messagetype="text/plain";
-			}
-			messageBodyPart.setContent(text, messagetype);
-			Multipart multipart = new MimeMultipart();
-			multipart.addBodyPart(messageBodyPart);
+			  }
+			  messageBodyPart.setContent(text, messagetype);
+			  Multipart multipart = new MimeMultipart();
+			  multipart.addBodyPart(messageBodyPart);
 
-			// Part two is attachment
-			Attachment a=null;
-	    	Iterator iter = attachedFiles.iterator();
-			while(iter.hasNext()) {
+			  // Part two is attachment
+			  Attachment a=null;
+	    	  Iterator iter = attachedFiles.iterator();
+			  while(iter.hasNext()) {
 				a = (Attachment) iter.next();
     			messageBodyPart = new MimeBodyPart();
     			DataSource source = new FileDataSource(attachmentdirectory + this.getCurrentUser().getUserid()+"-"+a.getFilename());
     			messageBodyPart.setDataHandler(new DataHandler(source));
     			messageBodyPart.setFileName(a.getFilename());
     			multipart.addBodyPart(messageBodyPart);
-    		}
-			message.setContent(multipart);
-
-
+    		  }
+			  message.setContent(multipart);
 		
-		//Send the emails
-		String recipientsString="";
-		for (Iterator i = emailusers.iterator(); i.hasNext();recipientsString+=",")
-		{
-
-			EmailUser euser = (EmailUser) i.next();
+				//Send the emails
+				String recipientsString="";
+				for (Iterator i = emailusers.iterator(); i.hasNext();recipientsString+=",")
+				{
+		
+					EmailUser euser = (EmailUser) i.next();
+					
+					String toEmail = euser.getEmail(); // u.getEmail();
+					String toDisplay = euser.getDisplayname(); // u.getDisplayName();
+					// if AllUsers are selected, do not add current user's email to recipients
+					if (isAllUsersSelected() && getCurrentUser().getEmail().equals(toEmail)){
+						// don't add sender to recipients
+					}
+					else {
+						recipientsString+=toEmail;
+						m_results += toDisplay + (i.hasNext() ? "<br/>" : "");
+					}
+//					InternetAddress to[] = {new InternetAddress(toEmail) };
+//					Transport.send(message,to);
+				}
+				if (m_otheremails.trim().equals("")!=true){
+					//
+					// multiple email validation is needed here
+					//
+					String refinedOtherEmailAddresses = m_otheremails.trim().replace(';', ',');
+					recipientsString+=refinedOtherEmailAddresses;
+					m_results += "<br/>"+refinedOtherEmailAddresses;
+//					InternetAddress to[] = {new InternetAddress(refinedOtherEmailAddresses) };
+//					Transport.send(message, to);
+				}
+				if (m_sendmecopy){
+					
+					message.addRecipients(Message.RecipientType.CC, fromEmail);
+					///// trying to solve SAK-7410
+					/////recipientsString+=fromEmail;
+//					InternetAddress to[] = {new InternetAddress(fromEmail) };
+//					Transport.send(message, to);
+				}
+		
+//				message.addRecipients(Message.RecipientType.TO, recipientsString);
+				message.addRecipients(Message.RecipientType.BCC, recipientsString);
 			
-			String toEmail = euser.getEmail(); // u.getEmail();
-			String toDisplay = euser.getDisplayname(); // u.getDisplayName();
-			//String toString = toDisplay + " <" + toEmail + ">";
-
-			// if AllUsers are selected, do not add current user's email to recipients
-			//	recipientsString+=toEmail; // former line
-			if (isAllUsersSelected() && getCurrentUser().getEmail().equals(toEmail)){
-				// don't add sender to recipients
+				Transport.send(message);		
 			}
-			else {
-				recipientsString+=toEmail;
-				m_results += toDisplay + (i.hasNext() ? "/" : "");
-			}
-//			recipientsString += isAllUsersSelected() && getCurrentUser().getEmail().equals(toEmail) ? "" : toEmail;
-//			m_results += toDisplay + (i.hasNext() ? "/" : "");
-	   		
-			///message.addRecipients(Message.RecipientType.TO, toEmail);
-/****	   		
-			if (i.hasNext())
+			catch (Exception e)
 			{
-				m_results += toDisplay + "/ ";
+				//logger.debug("SWG Exception while trying to send the email: " + e.getMessage());
+				// by SK 6/30/2006
+				
+				log.debug("Mailtool Exception while trying to send the email: " + e.getMessage());
 			}
-			else
-			{
-				m_results += toDisplay;
-			}
-****/
-		}
-		if (m_otheremails.trim().equals("")!=true){
-			//
-			// multiple email validation is needed here
-			//
-			String refinedOtherEmailAddresses = m_otheremails.trim().replace(';', ',');
-			recipientsString+=refinedOtherEmailAddresses;
-			m_results += "<br/>"+refinedOtherEmailAddresses;
-		}
-		if (m_sendmecopy) message.addRecipients(Message.RecipientType.CC, fromEmail);
-
-		message.addRecipients(Message.RecipientType.TO, recipientsString);
-	
-		Transport.send(message);		
-		}
-		catch (Exception e)
-		{
-			//logger.debug("SWG Exception while trying to send the email: " + e.getMessage());
-			// by SK 6/30/2006
-			
-			log.debug("Mailtool Exception while trying to send the email: " + e.getMessage());
-		}
 		
 		//	Clear the Subject and Body of the Message
 		m_subject = "";
@@ -782,7 +790,6 @@ public class Mailtool
 					badnames.add(user.getDisplayname());
 				}
 			}
-			
 			if (badnames.size() > 0)
 			{
 				m_results += "The following users do not have valid email addresses:<br/>";
@@ -797,7 +804,6 @@ public class Mailtool
 				}
 			}
 		}
-		
 		return "results";
 	}
 	
@@ -1153,6 +1159,40 @@ public class Mailtool
 			*/
 	}
 
+	public boolean isEmailArchiveAddedToSite()
+	{
+		boolean hasEmailArchive =false;
+		String toolid="sakai.mailbox";
+
+		String sid=getSiteID();
+		try{
+			Site site=SiteService.getSite(sid);
+/*			for (Iterator iPages = site.getPages().iterator();iPages.hasNext();)
+			{
+				SitePage page = (SitePage) iPages.next();
+				for (Iterator iTools = page.getTools().iterator(); iTools.hasNext();)
+				{
+					ToolConfiguration tool = (ToolConfiguration) iTools.next();
+					if (toolid.equals(tool.getTool().getId()))
+					{
+						hasEmailArchive=true;
+						break;
+					}
+*/
+					Collection toolsInSite = site.getTools(toolid);
+					if (!toolsInSite.isEmpty())
+					{
+						hasEmailArchive=true;
+					}
+		}
+		catch(Exception e)
+		{	
+			log.debug("Exception: Mailtool.isEmailArchiveAddedToSite(), " + e.getMessage());
+		}
+		return hasEmailArchive;
+
+	}
+	
 	public boolean isEmailArchived()
 	{
 		
@@ -1251,7 +1291,10 @@ public class Mailtool
 				String userid = (String) j.next();
 				try {
 					User theuser = m_userDirectoryService.getUser(userid);
-					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
+//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
+//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
+					// trying to fix SAK-7356 (Guests are not included in recipient lists)
+					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName().equals("") ? theuser.getEmail() : theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
 					mailusers.add(emailuser);
 				} catch (Exception e) {
 					log.debug("Exception: Mailtool.getEmailGroups() #2, " + e.getMessage());
@@ -1673,7 +1716,13 @@ public class Mailtool
 			setCurrentMode("compose");
 			return "compose"; // go to Compose
 		}
-
+		public String processResetAndReturnToMain()
+		{
+			ToolSession ts = SessionManager.getCurrentSession().getToolSession(ToolManager.getCurrentPlacement().getId());
+			ts.clearAttributes();
+			return "main_onepage"; // go to Compose
+			
+		}
 		public void validateEmail(FacesContext context, UIComponent toValidate, Object value)  throws ValidatorException{
 				  
 	        String enteredEmail = (String)value;
@@ -1700,5 +1749,11 @@ public class Mailtool
 		}
 		public void setReplyToSelected(String r) {
 		    this.m_replyto = r;
+		}
+		public boolean isEmailArchiveInSite() {
+			return EmailArchiveInSite;
+		}
+		public void setEmailArchiveInSite(boolean emailArchiveInSite) {
+			EmailArchiveInSite = emailArchiveInSite;
 		} 		
 }

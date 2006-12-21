@@ -3,16 +3,14 @@
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
 
 <h:panelGroup rendered="#{Mailtool.currentMode=='compose' }">
-	<h:panelGrid columns="3" cellspacing="0" cellpadding="3">
-	
-		<h:panelGrid columns="1">
-			<h:outputText value="#{msgs.select_from_list}"/>
+	<h:panelGrid columns="3" cellspacing="0" cellpadding="0" style="width:auto;margin:-.3em 0 0 0"  styleClass="sidebyside" columnClasses="sidebyside,attach,sidebyside">
+		<h:panelGroup>
+			<h:outputText value="#{msgs.select_from_list}" style="display:block"/>
 			<h:selectManyListbox size="5" value="#{Mailtool.recipientSelector.sourceSelected}">
 	    		<f:selectItems value="#{Mailtool.recipientSelector.sourceListbox}"/>
 			</h:selectManyListbox>
-		</h:panelGrid>
-	
-		<h:panelGrid columns="1" cellspacing="0" cellpadding="0">
+		</h:panelGroup>
+		<h:panelGroup>
 			<sakai:button_bar>
 				<sakai:button_bar_item
 					action="#{Mailtool.recipientSelector.processAddButton}"
@@ -20,7 +18,6 @@
 					rendered="true"
 					immediate="false" />
 			</sakai:button_bar>
-	
 			<sakai:button_bar>
 				<sakai:button_bar_item
 					action="#{Mailtool.recipientSelector.processRemoveButton}"
@@ -28,29 +25,26 @@
 					rendered="true"
 					immediate="false" />
 			</sakai:button_bar>
-		</h:panelGrid>
-	
-		<h:panelGrid columns="1" cellspacing="0" cellpadding="0">
-			<h:outputText value="#{msgs.message_recipients}"/>
+		</h:panelGroup>	
+		<h:panelGroup>
+			<h:outputText value="#{msgs.message_recipients}"  style="display:block"/>
 			<h:selectManyListbox size="5" value="#{Mailtool.recipientSelector.sinkSelected}">
 	    		<f:selectItems value="#{Mailtool.recipientSelector.sinkListbox}"/>
 			</h:selectManyListbox>
-		</h:panelGrid>
-	
-	</h:panelGrid>
+		</h:panelGroup>
+	</h:panelGrid>	
 </h:panelGroup>
 
-<h:panelGroup rendered="#{Mailtool.currentMode=='options' }">
-	<h:panelGrid columns="3" cellspacing="0" cellpadding="3" columnClasses="gray-out,gray-out,gray-out">
-	
-		<h:panelGrid columns="1"  columnClasses="gray-out">
-			<h:outputText value="#{msgs.select_from_list}"/>
+<h:panelGroup rendered="#{Mailtool.currentMode=='options' }" style="height:100%;overflow:hidden;display:block;margin:.5em 0;padding:.3em;color:#555 !important" styleClass="inopPanel" >
+	<h:outputText  value="Preview (inactive)"  style="padding:.5em"/>
+	<h:panelGrid columns="3" cellspacing="0" cellpadding="0" style="width:auto"  styleClass="sidebyside" columnClasses="sidebyside,attach,sidebyside">
+		<h:panelGroup>
+			<h:outputText value="#{msgs.select_from_list}" style="display:block"/>
 			<h:selectManyListbox disabled="true" size="5" value="#{Mailtool.recipientSelector.sourceSelected}">
-	    		<f:selectItems value="#{Mailtool.recipientSelector.sourceListbox}"/>
+				<f:selectItems value="#{Mailtool.recipientSelector.sourceListbox}"/>
 			</h:selectManyListbox>
-		</h:panelGrid>
-	
-		<h:panelGrid columns="1" cellspacing="0" cellpadding="0"  columnClasses="gray-out">
+		</h:panelGroup>
+		<h:panelGroup>
 			<sakai:button_bar>
 				<sakai:button_bar_item
 					disabled="true"
@@ -58,24 +52,21 @@
 					value=" #{msgs.add_button}  "
 					rendered="true"
 					immediate="false" />
-			</sakai:button_bar>
-	
-			<sakai:button_bar>
-				<sakai:button_bar_item
+				</sakai:button_bar>
+				<sakai:button_bar>
+					<sakai:button_bar_item
 					disabled="true"
 					action="#{Mailtool.recipientSelector.processRemoveButton}"
 					value="#{msgs.remove_button}"
 					rendered="true"
 					immediate="false" />
 			</sakai:button_bar>
-		</h:panelGrid>
-	
-		<h:panelGrid columns="1" cellspacing="0" cellpadding="0" columnClasses="gray-out">
-			<h:outputText value="#{msgs.message_recipients}"/>
+		</h:panelGroup>	
+		<h:panelGroup>
+			<h:outputText value="#{msgs.message_recipients}" style="display:block"/>
 			<h:selectManyListbox disabled="true" size="5" value="#{Mailtool.recipientSelector.sinkSelected}">
-	    		<f:selectItems value="#{Mailtool.recipientSelector.sinkListbox}"/>
+				<f:selectItems value="#{Mailtool.recipientSelector.sinkListbox}"/>
 			</h:selectManyListbox>
-		</h:panelGrid>
-	
+		</h:panelGroup>	
 	</h:panelGrid>
 </h:panelGroup>
