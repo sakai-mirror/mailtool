@@ -26,6 +26,7 @@ public class EmailRole {
 	String m_roleid = "";
 	String m_rolesingular = "";
 	String m_roleplural = "";
+	String roletype="";
 	
 	public EmailRole(String realmid, String roleid, String rolesingular, String roleplural)
 	{
@@ -34,7 +35,15 @@ public class EmailRole {
 		m_rolesingular = rolesingular;
 		m_roleplural = roleplural;
 	}
-	
+
+	public EmailRole(String realmid, String roleid, String rolesingular, String roleplural, String rtype)
+	{
+		m_realmid = realmid;
+		m_roleid = roleid;
+		m_rolesingular = rolesingular;
+		m_roleplural = roleplural;
+		roletype=rtype;
+	}
 	public String getRealmid() {
 		return m_realmid;
 	}
@@ -60,5 +69,13 @@ public class EmailRole {
 	}
 	public void setRolesingular(String m_rolesingular) {
 		this.m_rolesingular = m_rolesingular;
+	}
+
+	public String getRoletype() {
+		return roletype;
+	}
+
+	public void setRoletype(String roletype) {
+		this.roletype = roletype;
 	}
 }

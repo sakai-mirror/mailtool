@@ -1076,7 +1076,8 @@ public class Mailtool
 				(rolesingular != null && rolesingular != "") &&
 				(roleplural != null && roleplural != "") )
 			{
-				EmailRole emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural);
+				//EmailRole emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural);
+				EmailRole emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural, "role");
 				theroles.add(emailrole);
 				already_configured=true;
 			}
@@ -1102,11 +1103,28 @@ public class Mailtool
 						plural = rolename+"s";
 					}
 					
-					EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, singular, plural);
+					//EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, singular, plural);
+					EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, singular, plural, "role");
 					theroles.add(emailrole);
 			}				
 		}
-
+		
+		////////// adding groups as roles
+		
+		try{
+			currentSite = siteService.getSite(siteid);
+			}
+			catch(Exception e) {}
+			Collection groups = currentSite.getGroups();
+			for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
+			      Group currentGroup = (Group) groupIterator.next();
+			      String groupname=currentGroup.getTitle();
+			      String groupid=currentGroup.getProviderGroupId(); //???????????????????????????????
+			      //EmailRole emailrole2=new EmailRole("/site/"+siteid, groupname, groupname, groupname);
+			      EmailRole emailrole2=new EmailRole(groupid, groupname, groupname, groupname, "group");
+			      theroles.add(emailrole2);
+			}
+			////////////////
 		return theroles;
 	}
 	
@@ -1273,36 +1291,74 @@ public class Mailtool
 		{
 			EmailRole emailrole = (EmailRole) i.next();
 			
-			String realmid = emailrole.getRealmid();
-			
-			AuthzGroup therealm = null;
-			try {
-				//therealm = m_realmService.getRealm(realmid);
-				therealm = m_realmService.getAuthzGroup(realmid);
-			} catch (Exception e) {
-				log.debug("Exception: Mailtool.getEmailGroups() #1, " + e.getMessage());
-			}
-			
-			//Set users = therealm.getUsersWithRole(emailrole.getRoleid());
-			Set users = therealm.getUsersHasRole(emailrole.getRoleid());
-			List /* EmailUser */ mailusers = new ArrayList();
-			for (Iterator j = users.iterator(); j.hasNext();)
+			if (emailrole.roletype.equals("role"))
 			{
-				String userid = (String) j.next();
+				String realmid = emailrole.getRealmid();
+				
+				AuthzGroup therealm = null;
 				try {
-					User theuser = m_userDirectoryService.getUser(userid);
-//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
-//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
-					// trying to fix SAK-7356 (Guests are not included in recipient lists)
-					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName().equals("") ? theuser.getEmail() : theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
-					mailusers.add(emailuser);
+					//therealm = m_realmService.getRealm(realmid);
+					therealm = m_realmService.getAuthzGroup(realmid);
 				} catch (Exception e) {
-					log.debug("Exception: Mailtool.getEmailGroups() #2, " + e.getMessage());
+					log.debug("Exception: Mailtool.getEmailGroups() #1, " + e.getMessage());
 				}
+				
+				//Set users = therealm.getUsersWithRole(emailrole.getRoleid());
+				Set users = therealm.getUsersHasRole(emailrole.getRoleid());
+				List /* EmailUser */ mailusers = new ArrayList();
+				for (Iterator j = users.iterator(); j.hasNext();)
+				{
+					String userid = (String) j.next();
+					try {
+						User theuser = m_userDirectoryService.getUser(userid);
+	//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
+	//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
+						// trying to fix SAK-7356 (Guests are not included in recipient lists)
+						EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName().equals("") ? theuser.getEmail() : theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
+						mailusers.add(emailuser);
+					} catch (Exception e) {
+						log.debug("Exception: Mailtool.getEmailGroups() #2, " + e.getMessage());
+					}
+				}
+				Collections.sort(mailusers);
+				EmailGroup thegroup = new EmailGroup(emailrole, mailusers);
+				thegroups.add(thegroup);
 			}
-			Collections.sort(mailusers);
-			EmailGroup thegroup = new EmailGroup(emailrole, mailusers);
-			thegroups.add(thegroup);
+			
+			else if (emailrole.roletype.equals("group"))
+			{
+				String sid = getSiteID();
+				Site currentSite=null;
+				try{
+					currentSite = siteService.getSite(sid);
+				}
+				catch(Exception e)
+				{
+					log.debug("Exception: Mailtool.getEmailGroups() #3, " + e.getMessage());
+				}
+				Collection groups = currentSite.getGroups();
+				/////Group agroup=currentSite.getGroup(emailrole.getRealmid()); //////?????????????????????
+				Group agroup=null;
+				for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
+				      agroup = (Group) groupIterator.next();
+				      String groupname=agroup.getTitle();
+				      if (emailrole.getRoleid().equals(groupname)) break;
+				}
+				Set users2=agroup.getUsers(); ////////////////////////// something like that ---- Need to be tested !!!!!!
+				List mailusers2 = new ArrayList();
+				for (Iterator k= users2.iterator();k.hasNext();){
+				   	  String userid2 = (String) k.next();
+				   	  try {
+				  		  User theuser2=m_userDirectoryService.getUser(userid2);
+				   		  EmailUser emailuser2 = new EmailUser(theuser2.getId(), theuser2.getSortName(), theuser2.getEmail());
+				   		  mailusers2.add(emailuser2);
+				   	  } catch (Exception e) {}
+				}
+				Collections.sort(mailusers2);
+				EmailGroup thegroup2 = new EmailGroup(emailrole, mailusers2);
+				      thegroups.add(thegroup2);
+			} // else
+
 		}
 		
 		return thegroups;
