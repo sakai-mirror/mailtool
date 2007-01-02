@@ -6,7 +6,7 @@
 	<h:panelGrid columns="3" cellspacing="0" cellpadding="0" style="width:auto;margin:-.3em 0 0 0"  styleClass="sidebyside" columnClasses="sidebyside,attach,sidebyside">
 		<h:panelGroup>
 			<h:outputText value="#{msgs.select_from_list}" style="display:block"/>
-			<h:selectManyListbox size="5" value="#{Mailtool.recipientSelector.sourceSelected}">
+			<h:selectManyListbox size="10" value="#{Mailtool.recipientSelector.sourceSelected}">
 	    		<f:selectItems value="#{Mailtool.recipientSelector.sourceListbox}"/>
 			</h:selectManyListbox>
 		</h:panelGroup>
@@ -28,7 +28,7 @@
 		</h:panelGroup>	
 		<h:panelGroup>
 			<h:outputText value="#{msgs.message_recipients}"  style="display:block"/>
-			<h:selectManyListbox size="5" value="#{Mailtool.recipientSelector.sinkSelected}">
+			<h:selectManyListbox size="10" value="#{Mailtool.recipientSelector.sinkSelected}">
 	    		<f:selectItems value="#{Mailtool.recipientSelector.sinkListbox}"/>
 			</h:selectManyListbox>
 		</h:panelGroup>
