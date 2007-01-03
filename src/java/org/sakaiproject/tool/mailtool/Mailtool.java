@@ -1552,9 +1552,6 @@ public class Mailtool
 	public void processRemoveFile()
 	{
 	    	String id = getFacesParamValue(facesContext, "id");
-//	    	int index=Integer.parseInt(id);
-//	    	System.out.println("index="+index);
-//	    	attachedFiles.remove(index);
 	    	
 	    	Attachment a=null;
 	    	Attachment aForRemoval=null;
