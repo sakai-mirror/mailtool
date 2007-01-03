@@ -25,6 +25,7 @@
  * Modified/Expanded by SOO IL KIM (kimsooil@bu.edu)
  * 
  */
+
 package org.sakaiproject.tool.mailtool;
 
 import java.lang.Thread;
