@@ -45,7 +45,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.io.FilenameUtils;
-
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.email.cover.EmailService;
 import org.sakaiproject.event.cover.NotificationService;
