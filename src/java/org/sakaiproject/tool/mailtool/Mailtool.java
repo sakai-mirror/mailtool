@@ -25,7 +25,6 @@
  * Modified/Expanded by SOO IL KIM (kimsooil@bu.edu)
  * 
  */
-
 package org.sakaiproject.tool.mailtool;
 
 import java.lang.Thread;
@@ -45,6 +44,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.io.FilenameUtils;
+
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.email.cover.EmailService;
 import org.sakaiproject.event.cover.NotificationService;
@@ -138,6 +138,7 @@ public class Mailtool
 	protected String m_replyto="";
 	protected String m_sitetype="";
 	protected String m_mode="";
+	protected String m_siteid="";
 	
 	protected boolean is_fckeditor=false;
 	protected boolean is_htmlarea=false;
@@ -203,72 +204,13 @@ public class Mailtool
 	private boolean attachClicked=false;
 //	protected String uploaddirectory="";
 	protected String eid="";
-	
-	public void setattachClicked(boolean a)
-	{
-		this.attachClicked=a;
-	}
-	public boolean getattachClicked()
-	{
-		return attachClicked;
-	}
-	protected String getConfigParam(String parameter)
-	{
-		String p=ToolManager.getCurrentPlacement().getPlacementConfig().getProperty(parameter);
-		if (p==null) return "";
-		return p;
-	}
-	protected void setConfigParam(String parameter, String newvalue)
-	{
-		ToolManager.getCurrentPlacement().getPlacementConfig().setProperty(parameter, newvalue);
-	//	ToolManager.getCurrentPlacement().save(); // will be saved in processUpdateOptions 
-	}
-	protected String getSiteID()
-	{
-		String id=ToolManager.getCurrentPlacement().getContext();
-		return id;
-	}
-	protected String getSiteType()
-	{
-		String sid=getSiteID();
-		String type="";
-		try{
-		type=SiteService.getSite(sid).getType();
-		}
-		catch(Exception e)
-		{	
-			log.debug("Exception: Mailtool.getSiteType(), " + e.getMessage());
-		}
-		return type;
-	}
 
-	protected String getSiteTitle()
-	{
-		String sid=getSiteID();
-		String title="";
-		try{
-			title=SiteService.getSite(sid).getTitle();
-		}
-		catch (Exception e)
-		{
-			log.debug("Exception: Mailtool.getSiteTitle(), " + e.getMessage());
-		}
-		return title;
-		
-	}
-	//public void setEmailService(EmailService service) { this.m_emailService = service; }
-	public void setUserDirectoryService(UserDirectoryService service) { this.m_userDirectoryService = service; }
-	public void setAuthzGroupService(AuthzGroupService service) { this.m_realmService = service; }
-	//public void setLogger(Logger logger) { this.logger = logger; } // by SK 6/30/2006
-	
-
-	/**  Done Setting Sakai Services **/
-	
 	public Mailtool()
 	{
 		
 		setCurrentMode("compose");
 		m_sitetype=getSiteType();
+		m_siteid=getSiteID();
 		
 		m_changedViewChoice = getRecipview();  
 		
@@ -308,6 +250,70 @@ public class Mailtool
 		//System.out.println("site type="+getSiteType());
 		//System.out.println("site id="+getSiteID());
 	}
+
+	public void setattachClicked(boolean a)
+	{
+		this.attachClicked=a;
+	}
+	public boolean getattachClicked()
+	{
+		return attachClicked;
+	}
+	protected String getConfigParam(String parameter)
+	{
+		String p=ToolManager.getCurrentPlacement().getPlacementConfig().getProperty(parameter);
+		if (p==null) return "";
+		return p;
+	}
+	protected void setConfigParam(String parameter, String newvalue)
+	{
+		ToolManager.getCurrentPlacement().getPlacementConfig().setProperty(parameter, newvalue);
+	//	ToolManager.getCurrentPlacement().save(); // will be saved in processUpdateOptions 
+	}
+	protected String getSiteID()
+	{
+		return (ToolManager.getCurrentPlacement().getContext());
+	}
+	private String getSiteRealmID()
+	{
+		return ("/site/" + ToolManager.getCurrentPlacement().getContext());
+	}
+	 	
+	protected String getSiteType()
+	{
+		//String sid=getSiteID();
+		String type="";
+		try{
+		type=SiteService.getSite(m_siteid).getType();
+		}
+		catch(Exception e)
+		{	
+			log.debug("Exception: Mailtool.getSiteType(), " + e.getMessage());
+		}
+		return type;
+	}
+
+	protected String getSiteTitle()
+	{
+		//String sid=getSiteID();
+		String title="";
+		try{
+			title=SiteService.getSite(m_siteid).getTitle();
+		}
+		catch (Exception e)
+		{
+			log.debug("Exception: Mailtool.getSiteTitle(), " + e.getMessage());
+		}
+		return title;
+		
+	}
+	//public void setEmailService(EmailService service) { this.m_emailService = service; }
+	public void setUserDirectoryService(UserDirectoryService service) { this.m_userDirectoryService = service; }
+	public void setAuthzGroupService(AuthzGroupService service) { this.m_realmService = service; }
+	//public void setLogger(Logger logger) { this.logger = logger; } // by SK 6/30/2006
+	
+
+	/**  Done Setting Sakai Services **/
 	
 	public String getCurrentMode()
 	{
@@ -617,7 +623,7 @@ public class Mailtool
 		
 		//Should we append this to the archive?
 		/////String emailarchive = this.getConfigParam("emailarchive");
-		String emailarchive="/mailarchive/channel/"+getSiteID()+"/main";
+		String emailarchive="/mailarchive/channel/"+m_siteid+"/main";
 		/////if ((emailarchive != "") && (m_archiveMessage))
 		if (m_archiveMessage && isEmailArchiveInSite())
 		{
@@ -772,9 +778,11 @@ public class Mailtool
 		/* Display Users with Bad Emails if the option is
 		 * turned on.
 		 */
-		Boolean showBadEmails = getDisplayInvalidEmailAddr();
+		//Boolean showBadEmails = getDisplayInvalidEmailAddr();
+		boolean showBadEmails = getDisplayInvalidEmailAddr();
 		
-		if (showBadEmails.booleanValue() == true)
+//		if (showBadEmails.booleanValue() == true)
+		if (showBadEmails == true)			
 		{
 			m_results += "<br/><br/>";
 				
@@ -927,7 +935,8 @@ public class Mailtool
 		else 
 			return recipview;
 	}
-	
+	// role-based permission checking ... modified thanks to Seth at Columbia Jan 3 2007
+	//
 	public boolean isAllowedToSend()
 	{
 /***		String siteid = this.getConfigParam("mail.newlock.siteid");
@@ -937,26 +946,90 @@ public class Mailtool
 		if (siteid.equals(""))
 			return true;
 		***/
-		String siteid="/site/"+getSiteID();
+		//String siteid="/site/"+getSiteID();
 		//return m_realmService.unlock(this.getCurrentUser().getUserid(), "mail.new", siteid);
 		//return m_realmService.isAllowed(this.getCurrentUser().getUserid(), "mail.new", siteid); // nov 09, 2006 by SK
-		return m_realmService.isAllowed(this.getCurrentUser().getUserid(), "mailtool.send", siteid);
+//		return m_realmService.isAllowed(this.getCurrentUser().getUserid(), "mailtool.send", siteid);
 
+  
+		// role-based permission checking 
+		// get role for this user in this realm
+ 		String mySendRole = m_realmService.getUserRole(this.getCurrentUser().getUserid(),getSiteRealmID());
+
+ 		//return hasPermission(mySendRole, "mailtool.send", siteid);
+ 		//	use the hasPermissionForRole function to check if this user in this role has this permission
+ 		return hasPermissionForRole(mySendRole, "mailtool.send");
+		
 	}
+/**** it's user-permission-based checking
+ * 
 	public boolean isAllowedToConfigure()
 	{
-/***		String siteid = this.getConfigParam("mail.newlock.siteid");
-		if (siteid == null)
-			return true;
-		
-		if (siteid.equals(""))
-			return true;
-		***/
+
 		String siteid="/site/"+getSiteID();
 		//return m_realmService.unlock(this.getCurrentUser().getUserid(), "mail.new", siteid);
 		return m_realmService.isAllowed(this.getCurrentUser().getUserid(), "mailtool.admin", siteid);
 
 	}
+****/
+	// role-based permission 
+ 	public boolean isAllowedToConfigure()
+ 	{
+ 		//String siteid="/site/"+getSiteID();
+		
+		// get role for this user in this realm
+		String myConfigRole = m_realmService.getUserRole(this.getCurrentUser().getUserid(),getSiteRealmID());
+
+		//return hasPermission(myConfigRole, "mailtool.admin", siteid);
+		// use the hasPermissionForRole function to check if this user in this role has this permission
+		return hasPermissionForRole(myConfigRole, "mailtool.admin");
+	}
+ 	/****
+	private boolean hasPermission(String role, String permission, String siteid)
+	{
+		Collection realmList = new ArrayList();
+		realmList.add(siteid);
+		AuthzGroup authzGroup=null;
+		try
+		{
+			authzGroup  = m_realmService.getAuthzGroup("!site.helper");
+		}
+		catch (Exception e)
+		{
+			log.info("No site helper template found");
+		}
+		
+		if (authzGroup!=null)
+		{
+			realmList.add(authzGroup.getId());
+		}
+		Set allowedFunctions = m_realmService.getAllowedFunctions(role, realmList);
+		return allowedFunctions.contains(permission);
+	}
+	*****/
+	// explicitly add the permissions for this role in !site.helper with the following
+	private boolean hasPermissionForRole(String role, String permission)
+	{
+		Collection realmList = new ArrayList();
+		realmList.add(getSiteRealmID());
+		AuthzGroup authzGroup=null;
+		try
+		{
+			authzGroup  = m_realmService.getAuthzGroup("!site.helper");
+		}
+		catch (Exception e)
+		{
+			log.info("No site helper template found");
+		}
+		
+		if (authzGroup!=null)
+		{
+			realmList.add(authzGroup.getId());
+		}
+		
+		Set allowedFunctions = m_realmService.getAllowedFunctions(role, realmList);
+		return allowedFunctions.contains(permission);
+	}	
 	public boolean isFCKeditor()
 	{
 		String editortype=this.getConfigParam("wysiwygeditor");
@@ -1014,20 +1087,23 @@ public class Mailtool
 		
 		return false;		
 	}
-
+/*
 	public boolean isPlainTextEditor()
 	{
 		if (isFCKeditor() || isHTMLArea()) return false;
 		
 		return true;
 	}
+*/	
 	/*
 	 * Get Information from the Tool Config
 	 */
-	public Boolean getDisplayInvalidEmailAddr()
+	//public Boolean getDisplayInvalidEmailAddr()
+	public boolean getDisplayInvalidEmailAddr()
 	{
 		//String invalid = m_toolConfig.getPlacementConfig().getProperty("displayinvalidemailaddrs");
 		String invalid = this.getConfigParam("displayinvalidemailaddrs");
+/***
 		if (invalid == null)
 			return Boolean.FALSE;
 		
@@ -1035,6 +1111,8 @@ public class Mailtool
 			return Boolean.TRUE;
 		else
 			return Boolean.FALSE;
+****/		
+		return (invalid==null ? false : (invalid.trim().toLowerCase().equals("yes") ? true : false)); 
 	}
 	
 	/*
@@ -1130,8 +1208,9 @@ public class Mailtool
 	
 	public void initializeCurrentRoles()
 	{
-		String siteid=getSiteID();
-		String realmid="/site/"+siteid;
+		//String siteid=getSiteID();
+		//String realmid="/site/"+siteid;
+		String realmid=getSiteRealmID();
 		try{
 			arole=m_realmService.getAuthzGroup(realmid);
 		} catch (Exception e){
@@ -1147,7 +1226,8 @@ public class Mailtool
 				Configuration c=new Configuration();
 				c.setId(num_role_id);
 				c.setRoleId(rolename);
-				c.setRealmid("/site/"+siteid);
+				//c.setRealmid("/site/"+siteid);
+				c.setRealmid(getSiteRealmID());
 				c.setSingular(rolename);
 				c.setPlural(rolename+"s");
 //				c.setSingularNew("");
@@ -1182,9 +1262,9 @@ public class Mailtool
 		boolean hasEmailArchive =false;
 		String toolid="sakai.mailbox";
 
-		String sid=getSiteID();
+		//String sid=getSiteID();
 		try{
-			Site site=SiteService.getSite(sid);
+			Site site=SiteService.getSite(m_siteid);
 /*			for (Iterator iPages = site.getPages().iterator();iPages.hasNext();)
 			{
 				SitePage page = (SitePage) iPages.next();
@@ -1313,8 +1393,28 @@ public class Mailtool
 						User theuser = m_userDirectoryService.getUser(userid);
 	//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
 	//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
+/***						
 						// trying to fix SAK-7356 (Guests are not included in recipient lists)
 						EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName().equals("") ? theuser.getEmail() : theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
+***/
+						// trying to fix SAK-7356 (Guests are not included in recipient lists)
+						// also SAK-7539
+						String firstname_for_display = "";
+						String lastname_for_display = "";
+						if (theuser.getFirstName().trim().equals("")){
+							if (theuser.getEmail().trim().equals("") && theuser.getLastName().trim().equals(""))
+								firstname_for_display = theuser.getDisplayId(); // fix for SAK-7539
+							else
+								firstname_for_display = theuser.getEmail();  // fix for SAK-7356
+						}
+						else {
+							firstname_for_display = theuser.getFirstName();
+						}
+						
+						lastname_for_display = theuser.getLastName();
+
+						EmailUser emailuser = new EmailUser(theuser.getId(), firstname_for_display, lastname_for_display, theuser.getEmail());
+						
 						mailusers.add(emailuser);
 					} catch (Exception e) {
 						log.debug("Exception: Mailtool.getEmailGroups() #2, " + e.getMessage());
@@ -1350,8 +1450,27 @@ public class Mailtool
 				   	  String userid2 = (String) k.next();
 				   	  try {
 				  		  User theuser2=m_userDirectoryService.getUser(userid2);
-				   		  EmailUser emailuser2 = new EmailUser(theuser2.getId(), theuser2.getSortName(), theuser2.getEmail());
-				   		  mailusers2.add(emailuser2);
+//				   		  EmailUser emailuser2 = new EmailUser(theuser2.getId(), theuser2.getSortName(), theuser2.getEmail());
+
+							// trying to fix SAK-7356 (Guests are not included in recipient lists)
+							// also SAK-7539
+							String firstname_for_display = "";
+							String lastname_for_display = "";
+							if (theuser2.getFirstName().trim().equals("")){
+								if (theuser2.getEmail().trim().equals("") && theuser2.getLastName().trim().equals(""))
+									firstname_for_display = theuser2.getDisplayId(); // fix for SAK-7539
+								else
+									firstname_for_display = theuser2.getEmail();  // fix for SAK-7356
+							}
+							else {
+								firstname_for_display = theuser2.getFirstName();
+							}
+							
+							lastname_for_display = theuser2.getLastName();
+
+							EmailUser emailuser2 = new EmailUser(theuser2.getId(), firstname_for_display, lastname_for_display, theuser2.getEmail());
+				  		  
+				  		  mailusers2.add(emailuser2);
 				   	  } catch (Exception e) {}
 				}
 				Collections.sort(mailusers2);
@@ -1362,8 +1481,7 @@ public class Mailtool
 		}
 		
 		return thegroups;
-	}
-	
+	}	
 	/*
 	 * Get the current user
 	 */
@@ -1552,6 +1670,9 @@ public class Mailtool
 	public void processRemoveFile()
 	{
 	    	String id = getFacesParamValue(facesContext, "id");
+//	    	int index=Integer.parseInt(id);
+//	    	System.out.println("index="+index);
+//	    	attachedFiles.remove(index);
 	    	
 	    	Attachment a=null;
 	    	Attachment aForRemoval=null;
