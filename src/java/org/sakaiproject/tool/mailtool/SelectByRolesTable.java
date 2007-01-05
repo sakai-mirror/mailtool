@@ -1,9 +1,9 @@
 /**********************************************************************************
-* $URL: https://source.sakaiproject.org/contrib/mailtool/branches/2.3-004/src/java/org/sakaiproject/tool/mailtool/SelectByRolesTable.java $
-* $Id: SelectByRolesTable.java 2336 2006-10-13 19:43:07Z kimsooil@bu.edu $
+* $URL$
+* $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2006 The Sakai Foundation.
+* Copyright (c) 2006, 2007 The Sakai Foundation.
 * 
 * Licensed under the Educational Community License, Version 1.0 (the "License"); 
 * you may not use this file except in compliance with the License. 
