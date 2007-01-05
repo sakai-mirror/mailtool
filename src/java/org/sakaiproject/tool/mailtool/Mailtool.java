@@ -778,9 +778,11 @@ public class Mailtool
 		/* Display Users with Bad Emails if the option is
 		 * turned on.
 		 */
-		Boolean showBadEmails = getDisplayInvalidEmailAddr();
+		//Boolean showBadEmails = getDisplayInvalidEmailAddr();
+		boolean showBadEmails = getDisplayInvalidEmailAddr();
 		
-		if (showBadEmails.booleanValue() == true)
+//		if (showBadEmails.booleanValue() == true)
+		if (showBadEmails == true)			
 		{
 			m_results += "<br/><br/>";
 				
@@ -1085,20 +1087,23 @@ public class Mailtool
 		
 		return false;		
 	}
-
+/*
 	public boolean isPlainTextEditor()
 	{
 		if (isFCKeditor() || isHTMLArea()) return false;
 		
 		return true;
 	}
+*/	
 	/*
 	 * Get Information from the Tool Config
 	 */
-	public Boolean getDisplayInvalidEmailAddr()
+	//public Boolean getDisplayInvalidEmailAddr()
+	public boolean getDisplayInvalidEmailAddr()
 	{
 		//String invalid = m_toolConfig.getPlacementConfig().getProperty("displayinvalidemailaddrs");
 		String invalid = this.getConfigParam("displayinvalidemailaddrs");
+/***
 		if (invalid == null)
 			return Boolean.FALSE;
 		
@@ -1106,6 +1111,8 @@ public class Mailtool
 			return Boolean.TRUE;
 		else
 			return Boolean.FALSE;
+****/		
+		return (invalid==null ? false : (invalid.trim().toLowerCase().equals("yes") ? true : false)); 
 	}
 	
 	/*
@@ -1369,7 +1376,22 @@ public class Mailtool
 //					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
 //					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
 					// trying to fix SAK-7356 (Guests are not included in recipient lists)
-					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName().equals("") ? theuser.getEmail() : theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
+					// also SAK-7539
+					String firstname_for_display = "";
+					String lastname_for_display = "";
+					if (theuser.getFirstName().trim().equals("")){
+						if (theuser.getEmail().trim().equals("") && theuser.getLastName().trim().equals(""))
+							firstname_for_display = theuser.getDisplayId(); // fix for SAK-7539
+						else
+							firstname_for_display = theuser.getEmail();  // fix for SAK-7356
+					}
+					else {
+						firstname_for_display = theuser.getFirstName();
+					}
+					
+					lastname_for_display = theuser.getLastName();
+
+					EmailUser emailuser = new EmailUser(theuser.getId(), firstname_for_display, lastname_for_display, theuser.getEmail());
 					mailusers.add(emailuser);
 				} catch (Exception e) {
 					log.debug("Exception: Mailtool.getEmailGroups() #2, " + e.getMessage());
