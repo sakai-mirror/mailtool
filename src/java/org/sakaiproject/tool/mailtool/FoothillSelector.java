@@ -90,6 +90,14 @@ public class FoothillSelector implements RecipientSelector {
 			m_emailgroup = group;
 			m_label = group.getRolePlural();
 			
+			String rtype=group.getEmailrole().roletype;
+			if (rtype.equals("group")){
+				m_label += "(G)";
+			}
+			else if (rtype.equals("section")){
+				m_label += "(S)";
+			}
+			
 			for (Iterator i = group.getEmailusers().iterator(); i.hasNext();)
 			{
 				EmailUser user = (EmailUser) i.next();

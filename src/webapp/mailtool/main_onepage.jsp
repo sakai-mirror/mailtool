@@ -150,10 +150,10 @@
 							</h:panelGrid>	
 							<h:panelGrid columns="2" cellspacing="5" cellpadding="0" border="0" styleClass="act">
 								<sakai:button_bar>
-									<sakai:button_bar_item action="#{Mailtool.processSendEmail}" value="#{msgs.send_mail_button}" rendered="#{Mailtool.allowedToSend}" immediate="false" styleClass="active" />
+									<sakai:button_bar_item action="#{Mailtool.processSendEmail}" value="#{msgs.send_mail_button}" immediate="false" styleClass="active" />
 								</sakai:button_bar>	
 								<sakai:button_bar>
-									<sakai:button_bar_item action="#{Mailtool.processCancelEmail}" value="#{msgs.cancel_mail_button}" rendered="#{Mailtool.allowedToSend}" immediate="false" />
+									<sakai:button_bar_item action="#{Mailtool.processCancelEmail}" value="#{msgs.cancel_mail_button}" immediate="false" />
 								</sakai:button_bar>
 							</h:panelGrid>							
 						</h:panelGroup>

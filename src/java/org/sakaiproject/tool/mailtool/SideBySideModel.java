@@ -69,6 +69,11 @@ public class SideBySideModel {
 		{
 			m_data = group;
 			m_label = "All " + group.getEmailrole().getRoleplural();
+			
+			String rtype = group.getEmailrole().roletype;
+
+			if (rtype.equals("group")){ m_label +="(G)";}
+			else if (rtype.equals("section")) {m_label += "(S)";}
 
 	//		String rolename=group.getEmailrole().getRoleplural();
 	//		m_label +=(rolename.equals("maintain") || rolename.equals("access")) ? " Users" : "s";
@@ -86,6 +91,13 @@ public class SideBySideModel {
 		{
 			m_data = "divider";
 			m_label = "-------------";
+			m_divider = true;
+		}
+
+		public void setDataAsDivider(String more)
+		{
+			m_data = "divider";
+			m_label = "-------------"+more;
 			m_divider = true;
 		}
 		
@@ -172,16 +184,26 @@ public class SideBySideModel {
 			m_listboxdata.add(entry);
 			count++;
 		}
-		
+/*		
 		ListboxEntry diventry = new ListboxEntry(count);
 		diventry.setDataAsDivider();
 		diventry.setSourceSelected(true);
 		m_listboxdata.add(diventry);
 		count++;
-		
+*/		
 		for (Iterator i = groups.iterator(); i.hasNext();)
 		{
 			EmailGroup group = (EmailGroup) i.next();
+
+			String rtype = group.getEmailrole().roletype;
+			String rname = group.getEmailrole().getRolesingular();
+			ListboxEntry diventry = new ListboxEntry(count);
+			diventry.setDataAsDivider("["+rname+"]");
+			diventry.setSourceSelected(true);
+			m_listboxdata.add(diventry);
+			count++;
+
+
 			List users = group.getEmailusers();
 			for (Iterator j = users.iterator(); j.hasNext();)
 			{
@@ -193,7 +215,7 @@ public class SideBySideModel {
 				count++;
 				
 			}
-			
+/*			
 			if (i.hasNext() == true)
 			{
 				ListboxEntry entry = new ListboxEntry(count);
@@ -202,6 +224,7 @@ public class SideBySideModel {
 				m_listboxdata.add(entry);
 				count++;
 			}
+*/			
 		}
 	}
 	

@@ -144,6 +144,8 @@ public class Mailtool
 	protected boolean is_htmlarea=false;
 
 	protected RecipientSelector m_recipientSelector = null;
+	protected RecipientSelector m_recipientSelector2 = null;
+	protected RecipientSelector m_recipientSelector3 = null;
 	protected boolean m_selectByRole = false;
 	protected boolean m_selectByUser = false;
 	protected boolean m_selectByTree = false;
@@ -202,6 +204,13 @@ public class Mailtool
 	private int num_files=0;
 	private int num_id=0;
 	private boolean attachClicked=false;
+	
+	private boolean groupviewClicked=false;
+	private boolean sectionviewClicked=false;
+	
+	private boolean allGroupSelected=false;
+	private boolean allSectionSelected=false;
+	
 //	protected String uploaddirectory="";
 	protected String eid="";
 
@@ -868,13 +877,33 @@ public class Mailtool
 		
 		return selectItems;
 	}
-	
+
 	public RecipientSelector getRecipientSelector()
+	{
+		getRecipientSelectors();
+		
+		return  m_recipientSelector;
+	}
+
+	public RecipientSelector getRecipientSelector_Group()
+	{
+		getRecipientSelectors();
+		
+		return  m_recipientSelector2;
+	}
+
+	public RecipientSelector getRecipientSelector_Section()
+	{
+		getRecipientSelectors();
+		
+		return  m_recipientSelector3;
+	}
+	
+	
+	public void getRecipientSelectors()
 	{
 	 if ((m_recipientSelector == null) || (m_buildNewView == true))
 	 {
-		List emailGroups = getEmailGroups();
-		
 		if (m_selectByRole == true)
 		{
 			m_recipientSelector = new RoleSelector();
@@ -886,6 +915,8 @@ public class Mailtool
 		else if (m_selectByTree == true)
 		{
 			m_recipientSelector = new TreeSelector();
+			m_recipientSelector2 = new TreeSelector(); // groups
+			m_recipientSelector3 = new TreeSelector(); // sections
 		}
 		else if (m_selectSideBySide == true)
 		{
@@ -900,11 +931,22 @@ public class Mailtool
 			m_recipientSelector = new RoleSelector();
 		}
 		
-		m_recipientSelector.populate(emailGroups);
+		if (m_selectByTree == true){
+			List emailGroups1 = getEmailGroupsByType("role");
+			List emailGroups2 = getEmailGroupsByType("group");
+			List emailGroups3 = getEmailGroupsByType("section");
+			m_recipientSelector.populate(emailGroups1);
+			m_recipientSelector2.populate(emailGroups2);
+			m_recipientSelector3.populate(emailGroups3);
+		}
+		else {
+			List emailGroups = getEmailGroups();
+			m_recipientSelector.populate(emailGroups);
+		}
 		m_buildNewView = false;
 	 }
 		
-		return m_recipientSelector;
+		//return m_recipientSelector;
 	}
 	
 	/*
@@ -1199,7 +1241,14 @@ public class Mailtool
 			      String groupname=currentGroup.getTitle();
 			      String groupid=currentGroup.getProviderGroupId(); //???????????????????????????????
 			      //EmailRole emailrole2=new EmailRole("/site/"+siteid, groupname, groupname, groupname);
-			      EmailRole emailrole2=new EmailRole(groupid, groupname, groupname, groupname, "group");
+			      EmailRole emailrole2=null;
+			      if(currentGroup.getProperties().getProperty("sections_category") != null) {
+			    	  emailrole2=new EmailRole(groupid, groupname, groupname, groupname, "section");
+			      }
+			      else{
+			    	  emailrole2=new EmailRole(groupid, groupname, groupname, groupname, "group");  
+			      }
+		      
 			      theroles.add(emailrole2);
 			}
 			////////////////
@@ -1477,11 +1526,237 @@ public class Mailtool
 				EmailGroup thegroup2 = new EmailGroup(emailrole, mailusers2);
 				      thegroups.add(thegroup2);
 			} // else
+			else if (emailrole.roletype.equals("section"))
+			{
+				String sid = getSiteID();
+				Site currentSite=null;
+				try{
+					currentSite = siteService.getSite(sid);
+				}
+				catch(Exception e)
+				{
+					log.debug("Exception: Mailtool.getEmailGroups() #3, " + e.getMessage());
+				}
+				Collection groups = currentSite.getGroups();
+				/////Group agroup=currentSite.getGroup(emailrole.getRealmid()); //////?????????????????????
+				Group agroup=null;
+				for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
+				      agroup = (Group) groupIterator.next();
+				      String groupname=agroup.getTitle();
+				      if (emailrole.getRoleid().equals(groupname)) break;
+				}
+				Set users2=agroup.getUsers(); ////////////////////////// something like that ---- Need to be tested !!!!!!
+				List mailusers2 = new ArrayList();
+				for (Iterator k= users2.iterator();k.hasNext();){
+				   	  String userid2 = (String) k.next();
+				   	  try {
+				  		  User theuser2=m_userDirectoryService.getUser(userid2);
+//				   		  EmailUser emailuser2 = new EmailUser(theuser2.getId(), theuser2.getSortName(), theuser2.getEmail());
+
+							// trying to fix SAK-7356 (Guests are not included in recipient lists)
+							// also SAK-7539
+							String firstname_for_display = "";
+							String lastname_for_display = "";
+							if (theuser2.getFirstName().trim().equals("")){
+								if (theuser2.getEmail().trim().equals("") && theuser2.getLastName().trim().equals(""))
+									firstname_for_display = theuser2.getDisplayId(); // fix for SAK-7539
+								else
+									firstname_for_display = theuser2.getEmail();  // fix for SAK-7356
+							}
+							else {
+								firstname_for_display = theuser2.getFirstName();
+							}
+							
+							lastname_for_display = theuser2.getLastName();
+
+							EmailUser emailuser2 = new EmailUser(theuser2.getId(), firstname_for_display, lastname_for_display, theuser2.getEmail());
+				  		  
+				  		  mailusers2.add(emailuser2);
+				   	  } catch (Exception e) {}
+				}
+				Collections.sort(mailusers2);
+				EmailGroup thegroup2 = new EmailGroup(emailrole, mailusers2);
+				      thegroups.add(thegroup2);
+			} // else
 
 		}
 		
 		return thegroups;
-	}	
+	}
+	
+	public List /* EmailGroup */ getEmailGroupsByType(String roletypefilter)
+	{
+		List /* EmailGroup */ thegroups = new ArrayList();
+		
+		List emailroles = this.getEmailRoles();
+
+		for (Iterator i = emailroles.iterator(); i.hasNext();)
+		{
+			EmailRole emailrole = (EmailRole) i.next();
+			
+			if (emailrole.roletype.equals("role") && roletypefilter.equals("role"))
+			{
+				String realmid = emailrole.getRealmid();
+				
+				AuthzGroup therealm = null;
+				try {
+					//therealm = m_realmService.getRealm(realmid);
+					therealm = m_realmService.getAuthzGroup(realmid);
+				} catch (Exception e) {
+					log.debug("Exception: Mailtool.getEmailGroups() #1, " + e.getMessage());
+				}
+				
+				//Set users = therealm.getUsersWithRole(emailrole.getRoleid());
+				Set users = therealm.getUsersHasRole(emailrole.getRoleid());
+				List /* EmailUser */ mailusers = new ArrayList();
+				for (Iterator j = users.iterator(); j.hasNext();)
+				{
+					String userid = (String) j.next();
+					try {
+						User theuser = m_userDirectoryService.getUser(userid);
+	//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
+	//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
+/***						
+						// trying to fix SAK-7356 (Guests are not included in recipient lists)
+						EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName().equals("") ? theuser.getEmail() : theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
+***/
+						// trying to fix SAK-7356 (Guests are not included in recipient lists)
+						// also SAK-7539
+						String firstname_for_display = "";
+						String lastname_for_display = "";
+						if (theuser.getFirstName().trim().equals("")){
+							if (theuser.getEmail().trim().equals("") && theuser.getLastName().trim().equals(""))
+								firstname_for_display = theuser.getDisplayId(); // fix for SAK-7539
+							else
+								firstname_for_display = theuser.getEmail();  // fix for SAK-7356
+						}
+						else {
+							firstname_for_display = theuser.getFirstName();
+						}
+						
+						lastname_for_display = theuser.getLastName();
+
+						EmailUser emailuser = new EmailUser(theuser.getId(), firstname_for_display, lastname_for_display, theuser.getEmail());
+						
+						mailusers.add(emailuser);
+					} catch (Exception e) {
+						log.debug("Exception: Mailtool.getEmailGroups() #2, " + e.getMessage());
+					}
+				}
+				Collections.sort(mailusers);
+				EmailGroup thegroup = new EmailGroup(emailrole, mailusers);
+				thegroups.add(thegroup);
+			}
+			
+			else if (emailrole.roletype.equals("group") && roletypefilter.equals("group"))
+			{
+				String sid = getSiteID();
+				Site currentSite=null;
+				try{
+					currentSite = siteService.getSite(sid);
+				}
+				catch(Exception e)
+				{
+					log.debug("Exception: Mailtool.getEmailGroups() #3, " + e.getMessage());
+				}
+				Collection groups = currentSite.getGroups();
+				/////Group agroup=currentSite.getGroup(emailrole.getRealmid()); //////?????????????????????
+				Group agroup=null;
+				for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
+				      agroup = (Group) groupIterator.next();
+				      String groupname=agroup.getTitle();
+				      if (emailrole.getRoleid().equals(groupname)) break;
+				}
+				Set users2=agroup.getUsers(); ////////////////////////// something like that ---- Need to be tested !!!!!!
+				List mailusers2 = new ArrayList();
+				for (Iterator k= users2.iterator();k.hasNext();){
+				   	  String userid2 = (String) k.next();
+				   	  try {
+				  		  User theuser2=m_userDirectoryService.getUser(userid2);
+//				   		  EmailUser emailuser2 = new EmailUser(theuser2.getId(), theuser2.getSortName(), theuser2.getEmail());
+
+							// trying to fix SAK-7356 (Guests are not included in recipient lists)
+							// also SAK-7539
+							String firstname_for_display = "";
+							String lastname_for_display = "";
+							if (theuser2.getFirstName().trim().equals("")){
+								if (theuser2.getEmail().trim().equals("") && theuser2.getLastName().trim().equals(""))
+									firstname_for_display = theuser2.getDisplayId(); // fix for SAK-7539
+								else
+									firstname_for_display = theuser2.getEmail();  // fix for SAK-7356
+							}
+							else {
+								firstname_for_display = theuser2.getFirstName();
+							}
+							
+							lastname_for_display = theuser2.getLastName();
+
+							EmailUser emailuser2 = new EmailUser(theuser2.getId(), firstname_for_display, lastname_for_display, theuser2.getEmail());
+				  		  
+				  		  mailusers2.add(emailuser2);
+				   	  } catch (Exception e) {}
+				}
+				Collections.sort(mailusers2);
+				EmailGroup thegroup2 = new EmailGroup(emailrole, mailusers2);
+				      thegroups.add(thegroup2);
+			} // else
+			else if (emailrole.roletype.equals("section") && roletypefilter.equals("section"))
+			{
+				String sid = getSiteID();
+				Site currentSite=null;
+				try{
+					currentSite = siteService.getSite(sid);
+				}
+				catch(Exception e)
+				{
+					log.debug("Exception: Mailtool.getEmailGroups() #3, " + e.getMessage());
+				}
+				Collection groups = currentSite.getGroups();
+				/////Group agroup=currentSite.getGroup(emailrole.getRealmid()); //////?????????????????????
+				Group agroup=null;
+				for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
+				      agroup = (Group) groupIterator.next();
+				      String groupname=agroup.getTitle();
+				      if (emailrole.getRoleid().equals(groupname)) break;
+				}
+				Set users2=agroup.getUsers(); ////////////////////////// something like that ---- Need to be tested !!!!!!
+				List mailusers2 = new ArrayList();
+				for (Iterator k= users2.iterator();k.hasNext();){
+				   	  String userid2 = (String) k.next();
+				   	  try {
+				  		  User theuser2=m_userDirectoryService.getUser(userid2);
+//				   		  EmailUser emailuser2 = new EmailUser(theuser2.getId(), theuser2.getSortName(), theuser2.getEmail());
+
+							// trying to fix SAK-7356 (Guests are not included in recipient lists)
+							// also SAK-7539
+							String firstname_for_display = "";
+							String lastname_for_display = "";
+							if (theuser2.getFirstName().trim().equals("")){
+								if (theuser2.getEmail().trim().equals("") && theuser2.getLastName().trim().equals(""))
+									firstname_for_display = theuser2.getDisplayId(); // fix for SAK-7539
+								else
+									firstname_for_display = theuser2.getEmail();  // fix for SAK-7356
+							}
+							else {
+								firstname_for_display = theuser2.getFirstName();
+							}
+							
+							lastname_for_display = theuser2.getLastName();
+
+							EmailUser emailuser2 = new EmailUser(theuser2.getId(), firstname_for_display, lastname_for_display, theuser2.getEmail());
+				  		  
+				  		  mailusers2.add(emailuser2);
+				   	  } catch (Exception e) {}
+				}
+				Collections.sort(mailusers2);
+				EmailGroup thegroup2 = new EmailGroup(emailrole, mailusers2);
+				      thegroups.add(thegroup2);
+			} // else
+
+		}
+		
+		return thegroups;
+	}		
 	/*
 	 * Get the current user
 	 */
@@ -1929,5 +2204,45 @@ public class Mailtool
 		}
 		public void setEmailArchiveInSite(boolean emailArchiveInSite) {
 			EmailArchiveInSite = emailArchiveInSite;
-		} 		
+		}
+
+		public boolean isGroupviewClicked() {
+			return groupviewClicked;
+		}
+
+		public void setGroupviewClicked(boolean groupviewClicked) {
+			this.groupviewClicked = groupviewClicked;
+		}
+
+		public boolean isSectionviewClicked() {
+			return sectionviewClicked;
+		}
+
+		public void setSectionviewClicked(boolean sectionviewClicked) {
+			this.sectionviewClicked = sectionviewClicked;
+		}
+		public void toggle_groupviewClicked()
+	    {
+			groupviewClicked  = groupviewClicked ? false: true;
+	    }		
+		public void toggle_sectionviewClicked()
+	    {
+			sectionviewClicked  = sectionviewClicked ? false: true;
+	    }
+
+		public boolean isAllGroupSelected() {
+			return allGroupSelected;
+		}
+
+		public void setAllGroupSelected(boolean allGroupSelected) {
+			this.allGroupSelected = allGroupSelected;
+		}
+
+		public boolean isAllSectionSelected() {
+			return allSectionSelected;
+		}
+
+		public void setAllSectionSelected(boolean allSectionSelected) {
+			this.allSectionSelected = allSectionSelected;
+		}		
 }

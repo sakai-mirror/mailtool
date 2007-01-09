@@ -53,7 +53,14 @@ public class RoleSelector implements RecipientSelector {
 		//logger.debug("Mailtool Size of emailgroups: " + emailgroups.size());
 		for (Iterator i = m_initialGroups.iterator(); i.hasNext();)
 		{
-			roles.add(((EmailGroup) i.next()).getEmailrole());
+			//roles.add(((EmailGroup) i.next()).getEmailrole());
+
+			EmailGroup group = (EmailGroup) i.next();
+			// do not add "section" and "group" emailusers
+			EmailRole role = (EmailRole) group.getEmailrole();
+			if (role.roletype.equals("role")){
+				roles.add(role);				
+			}
 		}
 		
 		m_tabledata = new SelectByRolesTable(roles);

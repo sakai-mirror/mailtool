@@ -44,7 +44,11 @@ public class UserSelector implements RecipientSelector {
 		for (Iterator i = emailgroups.iterator(); i.hasNext();)
 		{
 			EmailGroup group = (EmailGroup) i.next();
-			users.addAll(group.getEmailusers());
+			//users.addAll(group.getEmailusers()); 
+
+			// do not add "section" and "group" emailusers
+			EmailRole role = (EmailRole) group.getEmailrole();
+			if (role.roletype.equals("role")) users.addAll(group.getEmailusers()); 
 		}
 		
 		m_usertable = new SelectByUserTable(users);
