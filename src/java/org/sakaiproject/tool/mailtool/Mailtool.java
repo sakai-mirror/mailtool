@@ -187,8 +187,6 @@ public class Mailtool
 	protected Site currentSite = null;
 	//protected Logger logger = null;  // by SK 6/30/2006
 
-//	protected int MAXFILE=readMAXFILE();
-	
 	private List attachedFiles = new ArrayList();
 	private List renamedRoles = new ArrayList();
 	private int num_roles_renamed=0;
@@ -222,7 +220,7 @@ public class Mailtool
 		m_siteid=getSiteID();
 		
 		m_changedViewChoice = getRecipview();  
-		
+
 		initializeCurrentRoles(); /* this initialization solves SAK-6810 */
 		
 		setMessageSubject(getSubjectPrefix().equals("")?getSubjectPrefixFromConfig():getSubjectPrefix());
@@ -255,9 +253,6 @@ public class Mailtool
 		}
 		
 		log.debug("Constructor");
-		//System.out.println("site title="+getSiteTitle());
-		//System.out.println("site type="+getSiteType());
-		//System.out.println("site id="+getSiteID());
 	}
 
 	public void setattachClicked(boolean a)
@@ -576,7 +571,8 @@ public class Mailtool
 	public String processCancelEmail()
 	{
 		this.m_recipientSelector = null;
-		this.m_subject = "";
+		//this.m_subject = "";
+		this.m_subject = getSubjectPrefix().equals("")?getSubjectPrefixFromConfig():getSubjectPrefix();
 		this.m_body = "";
 		num_files=0;
 		attachedFiles.clear();
@@ -779,7 +775,8 @@ public class Mailtool
 			}
 		
 		//	Clear the Subject and Body of the Message
-		m_subject = "";
+		//m_subject = "";
+		m_subject = getSubjectPrefix().equals("")?getSubjectPrefixFromConfig():getSubjectPrefix();
 		m_body = "";
 		num_files=0;
 		attachedFiles.clear();

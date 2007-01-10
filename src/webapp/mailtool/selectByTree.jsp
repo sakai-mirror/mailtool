@@ -6,7 +6,6 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 
 --%>
                                                                                                 
-
 <%-- Tree Table --%>
 <h:panelGroup rendered="#{Mailtool.currentMode=='compose' }">
 <h:panelGroup>
@@ -23,16 +22,16 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 
 			<h:dataTable rendered="#{not row.collapsed}" value="#{row.userTable}" var="user_row"  styleClass="listHier lines nolines hierItemBlockWrapper" columnClasses="attach,,attach,"  cellpadding="0" cellspacing="0" style="width:auto;font-weight:normal">
 				<h:column>
-					<h:selectBooleanCheckbox id="indCol1Checkbox" value="#{user_row.selected1}"  />
+					<h:selectBooleanCheckbox id="indCol1Checkbox1" value="#{user_row.selected1}"  />
 				</h:column>
 				<h:column>
-					<h:outputLabel for="indCol1Checkbox" value="#{user_row.user1.displayname}" style="white-space:nowrap" />
+					<h:outputLabel for="indCol1Checkbox1" value="#{user_row.user1.displayname}" style="white-space:nowrap" />
 				</h:column>
 				<h:column>
-					<h:selectBooleanCheckbox id="indCol2Checkbox" value="#{user_row.selected2}" rendered="#{user_row.render2}" style="margin-left:2em;"/>
+					<h:selectBooleanCheckbox id="indCol2Checkbox2" value="#{user_row.selected2}" rendered="#{user_row.render2}" style="margin-left:2em;"/>
 				</h:column>
 				<h:column>
-					<h:outputLabel for="indCol2Checkbox" rendered="#{user_row.render2}" value="#{user_row.user2.displayname}" style="white-space:nowrap" />
+					<h:outputLabel for="indCol2Checkbox2" rendered="#{user_row.render2}" value="#{user_row.user2.displayname}" style="white-space:nowrap" />
 				</h:column>
 
 			</h:dataTable>
@@ -41,7 +40,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 	</h:dataTable>
 </h:panelGroup>
 
-<h:panelGrid rendered="#{not Mailtool.groupviewClicked}" columns="1" styleClass="nolines">
+<h:panelGrid rendered="#{not Mailtool.groupviewClicked}" columns="1" border="0" style="margin:0;width:100%" cellpadding="0" cellspacing="0">
 <h:panelGroup>
 <h:selectBooleanCheckbox id="selectGroupCheckbox"  value="#{Mailtool.allGroupSelected}" />
 <h:outputLabel for="selectGroupCheckbox" value="All Groups " />
@@ -57,8 +56,8 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 
 	<h:dataTable value="#{Mailtool.recipientSelector_Group.dataModel}" var="row"  border="0" style="margin:0;width:100%" cellpadding="0" cellspacing="0">
 		<h:column>
-			<h:selectBooleanCheckbox id="selectAllCheckbox" rendered="#{row.collapsed}" value="#{row.allSelected}" />
-			<h:outputLabel for="selectAllCheckbox" rendered="#{row.collapsed}" value="#{msgs.all_prefix} #{row.pluralRolename} " />
+			<h:selectBooleanCheckbox id="selectAllGroupCheckbox" rendered="#{row.collapsed}" value="#{row.allSelected}" />
+			<h:outputLabel for="selectAllGroupCheckbox" rendered="#{row.collapsed}" value="#{msgs.all_prefix} #{row.pluralRolename} " />
 			<h:outputText rendered="#{row.collapsed}" value=" - "  />
 			<h:commandLink rendered="#{row.collapsed}" actionListener="#{row.actionExpand}" onmouseup="submit()" value="#{msgs.select_individuals_button} #{row.pluralRolename}" />
 			<h:outputText rendered="#{not row.collapsed}" value="#{msgs.select_individual_prefix} " />
@@ -68,16 +67,16 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 
 			<h:dataTable rendered="#{not row.collapsed}" value="#{row.userTable}" var="user_row"  styleClass="listHier lines nolines hierItemBlockWrapper" columnClasses="attach,,attach,"  cellpadding="0" cellspacing="0" style="width:auto;font-weight:normal">
 				<h:column>
-					<h:selectBooleanCheckbox id="indCol1Checkbox" value="#{user_row.selected1}"  />
+					<h:selectBooleanCheckbox id="indCol1Checkbox3" value="#{user_row.selected1}"  />
 				</h:column>
 				<h:column>
-					<h:outputLabel for="indCol1Checkbox" value="#{user_row.user1.displayname}" style="white-space:nowrap" />
+					<h:outputLabel for="indCol1Checkbox3" value="#{user_row.user1.displayname}" style="white-space:nowrap" />
 				</h:column>
 				<h:column>
-					<h:selectBooleanCheckbox id="indCol2Checkbox" value="#{user_row.selected2}" rendered="#{user_row.render2}" style="margin-left:2em;"/>
+					<h:selectBooleanCheckbox id="indCol2Checkbox4" value="#{user_row.selected2}" rendered="#{user_row.render2}" style="margin-left:2em;"/>
 				</h:column>
 				<h:column>
-					<h:outputLabel for="indCol2Checkbox" rendered="#{user_row.render2}" value="#{user_row.user2.displayname}" style="white-space:nowrap" />
+					<h:outputLabel for="indCol2Checkbox4" rendered="#{user_row.render2}" value="#{user_row.user2.displayname}" style="white-space:nowrap" />
 				</h:column>
 
 			</h:dataTable>
@@ -87,7 +86,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 </h:panelGroup>
 </h:panelGrid>
 
-<h:panelGrid rendered="#{not Mailtool.sectionviewClicked}" columns="1" styleClass="nolines">
+<h:panelGrid rendered="#{not Mailtool.sectionviewClicked}" columns="1" border="0" style="margin:0;width:100%" cellpadding="0" cellspacing="0">
 <h:panelGroup>
 <h:selectBooleanCheckbox id="selectSectionCheckbox"  value="#{Mailtool.allSectionSelected}" />
 <h:outputLabel for="selectSectionCheckbox" value="All Sections " />
@@ -103,8 +102,8 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 
 	<h:dataTable value="#{Mailtool.recipientSelector_Section.dataModel}" var="row"  border="0" style="margin:0;width:100%" cellpadding="0" cellspacing="0">
 		<h:column>
-			<h:selectBooleanCheckbox id="selectAllCheckbox" rendered="#{row.collapsed}" value="#{row.allSelected}" />
-			<h:outputLabel for="selectAllCheckbox" rendered="#{row.collapsed}" value="#{msgs.all_prefix} #{row.pluralRolename} " />
+			<h:selectBooleanCheckbox id="selectAllSectionCheckbox" rendered="#{row.collapsed}" value="#{row.allSelected}" />
+			<h:outputLabel for="selectAllSectionCheckbox" rendered="#{row.collapsed}" value="#{msgs.all_prefix} #{row.pluralRolename} " />
 			<h:outputText rendered="#{row.collapsed}" value=" - "  />
 			<h:commandLink rendered="#{row.collapsed}" actionListener="#{row.actionExpand}" onmouseup="submit()" value="#{msgs.select_individuals_button} #{row.pluralRolename}" />
 			<h:outputText rendered="#{not row.collapsed}" value="#{msgs.select_individual_prefix} " />
@@ -114,16 +113,16 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 
 			<h:dataTable rendered="#{not row.collapsed}" value="#{row.userTable}" var="user_row"  styleClass="listHier lines nolines hierItemBlockWrapper" columnClasses="attach,,attach,"  cellpadding="0" cellspacing="0" style="width:auto;font-weight:normal">
 				<h:column>
-					<h:selectBooleanCheckbox id="indCol1Checkbox" value="#{user_row.selected1}"  />
+					<h:selectBooleanCheckbox id="indCol1Checkbox5" value="#{user_row.selected1}"  />
 				</h:column>
 				<h:column>
-					<h:outputLabel for="indCol1Checkbox" value="#{user_row.user1.displayname}" style="white-space:nowrap" />
+					<h:outputLabel for="indCol1Checkbox5" value="#{user_row.user1.displayname}" style="white-space:nowrap" />
 				</h:column>
 				<h:column>
-					<h:selectBooleanCheckbox id="indCol2Checkbox" value="#{user_row.selected2}" rendered="#{user_row.render2}" style="margin-left:2em;"/>
+					<h:selectBooleanCheckbox id="indCol2Checkbox6" value="#{user_row.selected2}" rendered="#{user_row.render2}" style="margin-left:2em;"/>
 				</h:column>
 				<h:column>
-					<h:outputLabel for="indCol2Checkbox" rendered="#{user_row.render2}" value="#{user_row.user2.displayname}" style="white-space:nowrap" />
+					<h:outputLabel for="indCol2Checkbox6" rendered="#{user_row.render2}" value="#{user_row.user2.displayname}" style="white-space:nowrap" />
 				</h:column>
 
 			</h:dataTable>
