@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -160,6 +161,8 @@ public class Mailtool
 	protected boolean m_replytoother = false;
 	protected boolean m_allusers = false;
 	protected boolean EmailArchiveInSite=false;
+	protected int num_groups=0;
+	protected int num_sections=0;
 	
 	protected String m_textformat = "";
 
@@ -214,7 +217,8 @@ public class Mailtool
 
 	public Mailtool()
 	{
-		
+		num_groups=0;
+		num_sections=0;
 		setCurrentMode("compose");
 		m_sitetype=getSiteType();
 		m_siteid=getSiteID();
@@ -254,6 +258,61 @@ public class Mailtool
 		
 		log.debug("Constructor");
 	}
+	public boolean isGroupviewClicked() {
+		return groupviewClicked;
+	}
+
+	public void setGroupviewClicked(boolean groupviewClicked) {
+		this.groupviewClicked = groupviewClicked;
+	}
+
+	public boolean isSectionviewClicked() {
+		return sectionviewClicked;
+	}
+
+	public void setSectionviewClicked(boolean sectionviewClicked) {
+		this.sectionviewClicked = sectionviewClicked;
+	}
+	public void toggle_groupviewClicked()
+    {
+		groupviewClicked  = groupviewClicked ? false: true;
+    }		
+	public void toggle_sectionviewClicked()
+    {
+		sectionviewClicked  = sectionviewClicked ? false: true;
+    }
+
+	public boolean isAllGroupSelected() {
+		return allGroupSelected;
+	}
+
+	public void setAllGroupSelected(boolean allGroupSelected) {
+		this.allGroupSelected = allGroupSelected;
+	}
+
+	public boolean isAllSectionSelected() {
+		return allSectionSelected;
+	}
+
+	public void setAllSectionSelected(boolean allSectionSelected) {
+		this.allSectionSelected = allSectionSelected;
+	}
+
+	public int getNum_sections() {
+		return num_sections;
+	}
+
+	public void setNum_sections(int num_sections) {
+		this.num_sections = num_sections;
+	}
+
+	public int getNum_groups() {
+		return num_groups;
+	}
+
+	public void setNum_groups(int num_groups) {
+		this.num_groups = num_groups;
+	}		
 
 	public void setattachClicked(boolean a)
 	{
@@ -570,12 +629,21 @@ public class Mailtool
 
 	public String processCancelEmail()
 	{
+		
 		this.m_recipientSelector = null;
 		//this.m_subject = "";
 		this.m_subject = getSubjectPrefix().equals("")?getSubjectPrefixFromConfig():getSubjectPrefix();
 		this.m_body = "";
 		num_files=0;
 		attachedFiles.clear();
+		m_buildNewView = true;
+		m_recipientSelector = null;
+		m_recipientSelector2 = null;
+		m_recipientSelector3 = null;
+		setAllUsersSelected(false);
+		setAllGroupSelected(false);
+		setAllSectionSelected(false);
+
 		return "cancel";
 	}
 //	public String processSendEmail(){ return "results";}
@@ -583,23 +651,53 @@ public class Mailtool
 	public String processSendEmail()
 	{
 		List /* EmailUser */ selected = m_recipientSelector.getSelectedUsers();
+		List selectedGroupUsers = m_recipientSelector2.getSelectedUsers();
+		List selectedSectionUsers = m_recipientSelector3.getSelectedUsers();
+		
+		
+		selected.addAll(selectedGroupUsers);
+		selected.addAll(selectedSectionUsers);
 		
 		/* Put everyone in a set so the same person doesn't get multiple 
 		 * emails.
 		 */
-		Set emailusers = new HashSet();
-		if (isAllUsersSelected()){
+		Set emailusers = new TreeSet();
+		if (isAllUsersSelected()){ // the button for this is inactivated ... leave for future 
 			for (Iterator i=getEmailGroups().iterator();i.hasNext();){
 				EmailGroup group = (EmailGroup) i.next();
 				emailusers.addAll(group.getEmailusers());
 			}
 		} else{
+/*
 			for (Iterator i = selected.iterator(); i.hasNext();)
 			{
 				EmailUser u = (EmailUser) i.next();
 				emailusers.add(u);
 			}
+*/
+			//emailusers = new HashSet(selected);
 		}
+		if (isAllGroupSelected()){
+			for (Iterator i=getEmailGroups().iterator();i.hasNext();){
+				EmailGroup group = (EmailGroup) i.next();
+				if (group.getEmailrole().roletype.equals("section")){
+					//emailusers.addAll(group.getEmailusers());
+					selected.addAll(group.getEmailusers());
+				}
+			}
+		}
+		if (isAllSectionSelected()){
+			for (Iterator i=getEmailGroups().iterator();i.hasNext();){
+				EmailGroup group = (EmailGroup) i.next();
+				if (group.getEmailrole().roletype.equals("group")){
+					//emailusers.addAll(group.getEmailusers());
+					selected.addAll(group.getEmailusers());
+				}
+			}			
+		}
+
+		emailusers = new TreeSet(selected); // convert List to Set (no duplicates)
+		
 		
 		m_subjectprefix = getSubjectPrefixFromConfig();
 		
@@ -615,6 +713,7 @@ public class Mailtool
 		String fromString = fromDisplay + " <" + fromEmail + ">";
 		
 		m_results = "Message sent to: <br>";
+		//m_results = "Number of recipients: "+emailusers.size()+"<br/>"; // testing if duplicate exist...
 
 		String subject = "";
 		/*
@@ -776,10 +875,19 @@ public class Mailtool
 		
 		//	Clear the Subject and Body of the Message
 		//m_subject = "";
+
 		m_subject = getSubjectPrefix().equals("")?getSubjectPrefixFromConfig():getSubjectPrefix();
 		m_body = "";
 		num_files=0;
 		attachedFiles.clear();
+		m_buildNewView = true;
+		m_recipientSelector = null;
+		m_recipientSelector2 = null;
+		m_recipientSelector3 = null;
+		setAllUsersSelected(false);
+		setAllGroupSelected(false);
+		setAllSectionSelected(false);
+		
 
 		/* Display Users with Bad Emails if the option is
 		 * turned on.
@@ -1161,6 +1269,9 @@ public class Mailtool
 	{
 		
 		List /* EmailRole */ theroles = new ArrayList();
+		List allgroups = new ArrayList();
+		List allsections = new ArrayList();
+		
 		String siteid=getSiteID();
 		String realmid="/site/"+siteid;
 		//String sitetype=getSiteType();
@@ -1241,13 +1352,19 @@ public class Mailtool
 			      EmailRole emailrole2=null;
 			      if(currentGroup.getProperties().getProperty("sections_category") != null) {
 			    	  emailrole2=new EmailRole(groupid, groupname, groupname, groupname, "section");
+			    	  allsections.add(emailrole2);
+			    	  num_sections++;
 			      }
 			      else{
-			    	  emailrole2=new EmailRole(groupid, groupname, groupname, groupname, "group");  
+			    	  emailrole2=new EmailRole(groupid, groupname, groupname, groupname, "group");
+			    	  allgroups.add(emailrole2);
+			    	  num_groups++;
 			      }
 		      
-			      theroles.add(emailrole2);
+			      //theroles.add(emailrole2);
 			}
+			theroles.addAll(allgroups); // for sorted list in side-by-side view & scrolling list view
+			theroles.addAll(allsections); // for sorted list ...
 			////////////////
 		return theroles;
 	}
@@ -2202,44 +2319,4 @@ public class Mailtool
 		public void setEmailArchiveInSite(boolean emailArchiveInSite) {
 			EmailArchiveInSite = emailArchiveInSite;
 		}
-
-		public boolean isGroupviewClicked() {
-			return groupviewClicked;
-		}
-
-		public void setGroupviewClicked(boolean groupviewClicked) {
-			this.groupviewClicked = groupviewClicked;
-		}
-
-		public boolean isSectionviewClicked() {
-			return sectionviewClicked;
-		}
-
-		public void setSectionviewClicked(boolean sectionviewClicked) {
-			this.sectionviewClicked = sectionviewClicked;
-		}
-		public void toggle_groupviewClicked()
-	    {
-			groupviewClicked  = groupviewClicked ? false: true;
-	    }		
-		public void toggle_sectionviewClicked()
-	    {
-			sectionviewClicked  = sectionviewClicked ? false: true;
-	    }
-
-		public boolean isAllGroupSelected() {
-			return allGroupSelected;
-		}
-
-		public void setAllGroupSelected(boolean allGroupSelected) {
-			this.allGroupSelected = allGroupSelected;
-		}
-
-		public boolean isAllSectionSelected() {
-			return allSectionSelected;
-		}
-
-		public void setAllSectionSelected(boolean allSectionSelected) {
-			this.allSectionSelected = allSectionSelected;
-		}		
 }
