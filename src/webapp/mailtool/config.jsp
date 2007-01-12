@@ -28,7 +28,7 @@
 					<sakai:messages />
 					<sakai:view_title  value="Options" />
 					<h:outputText value="You are currently choosing options for Email. 	Settings chosen on this page will become the default settings for this site."  styleClass="instruction" style="display: block;"/>
-					<h:panelGrid rendered="#{Mailtool.allowedToConfigure}" columns="2" border="0" cellspacing="0" cellpadding="0"  styleClass="jsfFormTable itemSummary">
+					<h:panelGrid columns="2" border="0" cellspacing="0" cellpadding="0"  styleClass="jsfFormTable itemSummary">
 						<h:panelGroup style="padding: 0pt; overflow: hidden; display: block; height: 100%; float: right;">
 							<h:outputLabel value="Choose selection view:" for="viewChoice"/>
 						</h:panelGroup>
