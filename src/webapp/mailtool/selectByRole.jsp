@@ -15,6 +15,7 @@ Mailtool.rolesTable returns DataModel from SelectByRolesTable.getRoles
 		</h:column>
 	</h:dataTable>
 </h:panelGroup>
+<%--
 <h:panelGroup rendered="#{Mailtool.currentMode=='options' }" style="height:100%;overflow:hidden;display:block;margin:.5em 0;padding:.3em;color:#555 !important" styleClass="inopPanel" >
 	<h:outputText  value="Preview (inactive)"  style="padding:.5em"/>
 	<h:dataTable value="#{Mailtool.recipientSelector.dataModel}" var="role" styleClass="listHier"  columnClasses="attach,checkbox" border="0">
@@ -26,3 +27,4 @@ Mailtool.rolesTable returns DataModel from SelectByRolesTable.getRoles
 		</h:column>
 	</h:dataTable>
 </h:panelGroup>
+--%>

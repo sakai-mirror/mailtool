@@ -34,7 +34,7 @@
 		</h:panelGroup>
 	</h:panelGrid>	
 </h:panelGroup>
-
+<%--
 <h:panelGroup rendered="#{Mailtool.currentMode=='options' }" style="height:100%;overflow:hidden;display:block;margin:.5em 0;padding:.3em;color:#555 !important" styleClass="inopPanel" >
 	<h:outputText  value="Preview (inactive)"  style="padding:.5em"/>
 	<h:panelGrid columns="3" cellspacing="0" cellpadding="0" style="width:auto"  styleClass="sidebyside" columnClasses="sidebyside,attach,sidebyside">
@@ -70,3 +70,4 @@
 		</h:panelGroup>	
 	</h:panelGrid>
 </h:panelGroup>
+--%>

@@ -225,6 +225,9 @@ public class Mailtool
 		
 		m_changedViewChoice = getRecipview();  
 
+		
+		//getRecipientSelectors();
+		
 		initializeCurrentRoles(); /* this initialization solves SAK-6810 */
 		
 		setMessageSubject(getSubjectPrefix().equals("")?getSubjectPrefixFromConfig():getSubjectPrefix());
