@@ -23,7 +23,7 @@
 			<div class="portletBody">
 				<h:form id="optionsForm">
 					<sakai:tool_bar>
-						<sakai:tool_bar_item value="Compose" action="#{Mailtool.processGoToCompose}" immediate="true" />
+						<sakai:tool_bar_item value="Compose" action="#{Mailtool.processGoToComposeByCancel}" immediate="true" />
 					</sakai:tool_bar>
 					<sakai:messages />
 					<sakai:view_title  value="Options" />
@@ -131,16 +131,16 @@
 							</h:panelGrid>
 						</f:facet>
 					</h:panelGrid>
-	
+
 					<sakai:button_bar>
 						<sakai:button_bar_item
 							action="#{Mailtool.processUpdateOptions}"
 							value="Update Defaults"
 							styleClass="active"
 							rendered="true"
-							immediate="false" />
+							immediate="false" /> 
 						<sakai:button_bar_item
-							action="#{Mailtool.processGoToCompose}"
+							action="#{Mailtool.processGoToComposeByCancel}"
 							value="Cancel"
 							rendered="true"
 							immediate="false" />

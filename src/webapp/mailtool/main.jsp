@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f"%>
 <%-- Main Sakai tag library --%>
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai"%>
-
+ 
 <f:view>
 <f:loadBundle basename="org.sakaiproject.tool.mailtool.Messages" var="msgs" />
 

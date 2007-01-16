@@ -164,6 +164,7 @@ public class Mailtool
 	private String m_recipJSPfrag = "";
 	private boolean m_buildNewView = false;
 	private String m_changedViewChoice = "";
+	private String m_currentViewChoice = "";
 
 	/** For Results.jsp **/
 	protected String m_results = "";
@@ -326,9 +327,16 @@ public class Mailtool
 	
 	public String processGoToOptions(){
 		setCurrentMode("options");
+		m_currentViewChoice=m_changedViewChoice;
 		return "configure";
 	}
 	public String processGoToCompose(){
+		setCurrentMode("compose");
+		return "compose";
+	} 
+	public String processGoToComposeByCancel(){
+		m_changedViewChoice=m_currentViewChoice;
+		m_buildNewView = true;
 		setCurrentMode("compose");
 		return "compose";
 	}	

@@ -50,7 +50,7 @@
 						<h:outputText rendered="#{Mailtool.replyToSelected == 'otheremail' }" value="#{Mailtool.replyToOtherEmail}"/>
 						<h:outputText rendered="#{Mailtool.replyToSelected == 'no' }" value="No Reply"/>
 					</h:panelGroup>
-					<%--
+					<%-- 
 							<h:outputText escape="false" value="View: " />
 							<h:selectOneListbox onchange="submit(); return false;" size="1" id="viewChoice" value="#{Mailtool.viewChoice}">
 								<f:selectItems value="#{Mailtool.viewChoiceDropdown}" />

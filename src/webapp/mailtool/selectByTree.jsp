@@ -38,7 +38,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 		</h:column>
 	</h:dataTable>
 </h:panelGroup>
-
+ 
 <h:panelGroup rendered="#{Mailtool.currentMode=='options' }" style="height:100%;overflow:hidden;display:block;margin:.5em 0;padding:0;color:#555 !important" styleClass="inopPanel" >
 		<h:outputText  value="Preview (inactive)"  style="padding:.5em"/>
 		<h:dataTable value="#{Mailtool.recipientSelector.dataModel}" var="row"  border="0" style="margin:1em 0" cellpadding="0" cellspacing="0" >
