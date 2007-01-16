@@ -3,7 +3,7 @@
 
 <%--
 Mailtool.rolesTable returns DataModel from SelectByRolesTable.getRoles
-
+ 
 --%>
 <%--
 <h:panelGroup rendered="#{Mailtool.currentMode=='compose' }">	

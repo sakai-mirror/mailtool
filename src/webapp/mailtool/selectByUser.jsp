@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %>
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
-
+ 
 <%-- Users Table --%>
 <%-- var=row is a SelectByUserTable.TableEntry      --%>
 <h:panelGroup rendered="#{Mailtool.currentMode=='compose' }">

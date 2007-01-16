@@ -1,11 +1,9 @@
 <%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %>
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
-
+ 
 <%--
 Mailtool.userTree returns DataModel from SelectByTree.getRows
-
 --%>
-                                                                                              
 <%-- Tree Table --%>
 <%--
 <h:panelGroup rendered="#{Mailtool.currentMode=='compose' }">

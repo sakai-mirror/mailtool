@@ -3,9 +3,8 @@
 
 <%--
 Mailtool.userTree returns DataModel from SelectByTree.getRows
-
 --%>
-                                                                                              
+                                                                         
 <%-- Tree Table --%>
 <h:panelGroup rendered="#{Mailtool.currentMode=='compose' }">
 <h:panelGroup>

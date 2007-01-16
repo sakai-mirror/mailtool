@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
 <%@ taglib uri="http://sakaiproject.org/jsf/mailtool" prefix="mailtool" %>
-<%--
+<%-- 
 <h:panelGroup rendered="#{Mailtool.currentMode=='compose' }">
 	<h:panelGrid columns="3" cellspacing="0" cellpadding="0" style="margin:0" styleClass="sidebyside">
 		<h:panelGroup>

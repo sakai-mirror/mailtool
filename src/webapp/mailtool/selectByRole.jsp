@@ -3,7 +3,7 @@
 
 <%--
 Mailtool.rolesTable returns DataModel from SelectByRolesTable.getRoles
-
+ 
 --%>
 <h:panelGroup rendered="#{Mailtool.currentMode=='compose' }">	
 	<h:dataTable value="#{Mailtool.recipientSelector.dataModel}" var="role"  styleClass="listHier"  columnClasses="attach,checkbox" border="0" style="margin:0">
