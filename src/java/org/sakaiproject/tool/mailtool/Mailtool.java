@@ -1399,8 +1399,8 @@ public class Mailtool
 					
 					lastname_for_display = theuser.getLastName();
 
-					//EmailUser emailuser = new EmailUser(theuser.getId(), firstname_for_display, lastname_for_display, theuser.getEmail());
-					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
+					EmailUser emailuser = new EmailUser(theuser.getId(), firstname_for_display, lastname_for_display, theuser.getEmail());
+					//EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
 					mailusers.add(emailuser);
 				} catch (Exception e) {
 					log.debug("Exception: Mailtool.getEmailGroups() #2, " + e.getMessage());
