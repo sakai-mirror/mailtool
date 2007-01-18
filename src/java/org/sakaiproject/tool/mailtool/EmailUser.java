@@ -40,6 +40,7 @@ public class EmailUser implements Comparable {
 	{
 		m_userid = userid;
 		m_displayname = firstname+" "+lastname;
+		//m_displayname = lastname+", "+firstname;
 		m_firstname=firstname;
 		m_lastname=lastname;
 		m_email = email;
