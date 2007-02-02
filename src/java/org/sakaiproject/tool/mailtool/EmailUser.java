@@ -39,7 +39,9 @@ public class EmailUser implements Comparable {
 	public EmailUser(String userid, String firstname, String lastname, String email)
 	{
 		m_userid = userid;
-		m_displayname = firstname+" "+lastname;
+		//m_displayname = firstname+" "+lastname;
+		String comma=firstname.trim().equals("") ? "" : ", ";
+		m_displayname = lastname.trim().equals("") ? firstname: lastname+comma+firstname;
 		m_firstname=firstname;
 		m_lastname=lastname;
 		m_email = email;

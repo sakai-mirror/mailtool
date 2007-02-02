@@ -27,12 +27,12 @@
  */
 package org.sakaiproject.tool.mailtool;
 
-import java.lang.Thread;
+//import java.lang.Thread;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+//import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.Iterator;
 import java.util.List;
@@ -64,7 +64,7 @@ import org.sakaiproject.mailarchive.api.MailArchiveMessageEdit;
 import org.sakaiproject.mailarchive.api.MailArchiveMessageHeaderEdit;
 import org.sakaiproject.mailarchive.cover.MailArchiveService;
 import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.site.api.SitePage;
+//import org.sakaiproject.site.api.SitePage;
 
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
@@ -72,7 +72,7 @@ import org.sakaiproject.tool.cover.SessionManager;
 import javax.faces.context.FacesContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.event.ActionEvent;
+//import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.validator.ValidatorException;
@@ -170,6 +170,7 @@ public class Mailtool
 	private boolean m_buildNewView = false;
 	private String m_changedViewChoice = "";
 	private String m_currentViewChoice = "";
+	private String m_viewChoiceInOptions="";
 
 	/** For Results.jsp **/
 	protected String m_results = "";
@@ -392,8 +393,11 @@ public class Mailtool
 	}
 	
 	public String processGoToOptions(){
-		setCurrentMode("options");
+		//m_changedViewChoice = getRecipview();  
 		m_currentViewChoice = m_changedViewChoice;
+		//setViewChoice("user");
+		//m_buildNewView = true;
+		setCurrentMode("options");
 		return "configure";
 	}
 	public String processGoToCompose(){
@@ -1762,6 +1766,7 @@ public class Mailtool
 						lastname_for_display = theuser.getLastName();
 
 						EmailUser emailuser = new EmailUser(theuser.getId(), firstname_for_display, lastname_for_display, theuser.getEmail());
+						//EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
 						
 						mailusers.add(emailuser);
 					} catch (Exception e) {
@@ -2329,5 +2334,11 @@ public class Mailtool
 		}
 		public void setEmailArchiveInSite(boolean emailArchiveInSite) {
 			EmailArchiveInSite = emailArchiveInSite;
+		}
+		public String getM_viewChoiceInOptions() {
+			return m_viewChoiceInOptions;
+		}
+		public void setM_viewChoiceInOptions(String choiceInOptions) {
+			m_viewChoiceInOptions = choiceInOptions;
 		}
 }

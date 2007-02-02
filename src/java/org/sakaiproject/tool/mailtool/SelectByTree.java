@@ -39,6 +39,7 @@ public class SelectByTree {
 		
 		/* JSF Widgets */
 		private boolean m_allSelected = false;
+		private boolean m_groupAware=false;
 		
 		public TableEntry(EmailGroup emailgroup)
 		{
@@ -83,6 +84,14 @@ public class SelectByTree {
 		
 		public void setAllSelected(boolean value) { m_allSelected = value; }
 		public boolean isAllSelected() { return m_allSelected; }
+
+		public boolean isGroupAware() {
+			return m_groupAware;
+		}
+
+		public void setGroupAware(boolean aware) {
+			m_groupAware = aware;
+		}
 	}
 
 	protected List /* TableEntry */ m_tablerows = new ArrayList();
@@ -94,6 +103,8 @@ public class SelectByTree {
 		{
 			EmailGroup egroup = (EmailGroup) i.next();
 			TableEntry te = new TableEntry(egroup);
+			
+			te.m_groupAware = egroup.getRolePlural().equals("Students") ? true : false;			
 			m_tablerows.add(te);
 		}
 	}
