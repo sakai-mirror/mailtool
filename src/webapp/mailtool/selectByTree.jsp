@@ -71,7 +71,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 							<h:outputText value="#{grouprow.pluralRolename} "  />
 							<h:outputText value=" - "  />
 							<h:commandLink actionListener="#{grouprow.actionCollapse}" value="#{msgs.collapse_button}" />
-							<h:dataTable value="#{grouprow.userTable}" var="guser_row"  styleClass="listHier lines nolines" columnClasses="attach,,attach,"  cellpadding="0" cellspacing="0" style="margin-left:2em;width:auto;font-weight:normal">
+							<h:dataTable value="#{grouprow.userTable}" var="guser_row"  styleClass="listHier lines nolines hierItemBlockWrapper" columnClasses="attach,,attach,"  cellpadding="0" cellspacing="0" style="margin-left:2em;width:auto;font-weight:normal">
 								<h:column>
 									<h:selectBooleanCheckbox id="indCol1Checkbox3" value="#{guser_row.selected1}"  />
 								</h:column>
@@ -104,7 +104,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 							<h:outputText value="#{sectionrow.pluralRolename} "  />
 							<h:outputText value=" - "  />
 							<h:commandLink actionListener="#{sectionrow.actionCollapse}" value="#{msgs.collapse_button}" />
-							<h:dataTable value="#{sectionrow.userTable}" var="suser_row"  styleClass="listHier lines nolines" columnClasses="attach,,attach,"  cellpadding="0" cellspacing="0" style="margin-left:2em;width:auto;font-weight:normal">
+							<h:dataTable value="#{sectionrow.userTable}" var="suser_row"  styleClass="listHier lines nolines hierItemBlockWrapper" columnClasses="attach,,attach,"  cellpadding="0" cellspacing="0" style="margin-left:2em;width:auto;font-weight:normal">
 								<h:column>
 									<h:selectBooleanCheckbox id="indCol1Checkbox5" value="#{suser_row.selected1}"  />
 								</h:column>
