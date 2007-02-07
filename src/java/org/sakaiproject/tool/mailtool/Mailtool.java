@@ -145,6 +145,7 @@ public class Mailtool
 	protected boolean is_htmlarea=false;
 
 	protected RecipientSelector m_recipientSelector = null;
+	protected RecipientSelector m_recipientSelector1 = null;
 	protected RecipientSelector m_recipientSelector2 = null;
 	protected RecipientSelector m_recipientSelector3 = null;
 	protected boolean m_selectByRole = false;
@@ -210,9 +211,11 @@ public class Mailtool
 	
 	private boolean groupviewClicked=false;
 	private boolean sectionviewClicked=false;
+	private boolean groupAwareRoleviewClicked=false;
 	
 	private boolean allGroupSelected=false;
 	private boolean allSectionSelected=false;
+	private boolean allGroupAwareRoleSelected=false;
 	
 //	protected String uploaddirectory="";
 	protected String eid="";
@@ -281,12 +284,22 @@ public class Mailtool
 	public void toggle_groupviewClicked()
     {
 		groupviewClicked  = groupviewClicked ? false: true;
+		sectionviewClicked =  false; // exclusive rendering
+		groupAwareRoleviewClicked = false;
     }		
 	public void toggle_sectionviewClicked()
     {
 		sectionviewClicked  = sectionviewClicked ? false: true;
+		groupviewClicked = false; // exclusive rendering
+		groupAwareRoleviewClicked = false;
     }
 
+	public void toggle_groupAwareRoleviewClicked()
+    {
+		groupAwareRoleviewClicked = groupAwareRoleviewClicked ? false : true;
+		sectionviewClicked  = false; // exclusive rendering
+		groupviewClicked = false; // exclusive rendering
+    }
 	public boolean isAllGroupSelected() {
 		return allGroupSelected;
 	}
@@ -653,6 +666,7 @@ public class Mailtool
 		attachedFiles.clear();
 		m_buildNewView = true;
 		m_recipientSelector = null;
+		m_recipientSelector1 = null;
 		m_recipientSelector2 = null;
 		m_recipientSelector3 = null;
 		setAllUsersSelected(false);
@@ -666,10 +680,12 @@ public class Mailtool
 	public String processSendEmail()
 	{
 		List /* EmailUser */ selected = m_recipientSelector.getSelectedUsers();
+		List selectedGroupAwareRoleUsers = m_recipientSelector1.getSelectedUsers();
 		List selectedGroupUsers = m_recipientSelector2.getSelectedUsers();
 		List selectedSectionUsers = m_recipientSelector3.getSelectedUsers();
 		
 		
+		selected.addAll(selectedGroupAwareRoleUsers);
 		selected.addAll(selectedGroupUsers);
 		selected.addAll(selectedSectionUsers);
 		
@@ -710,7 +726,16 @@ public class Mailtool
 				}
 			}			
 		}
-
+		//
+		if (isAllGroupAwareRoleSelected()){ // correct me later ///////////////////////////////////////////////////////////
+			for (Iterator i=getEmailGroups().iterator();i.hasNext();){ //////////////////////////////
+				EmailGroup group = (EmailGroup) i.next();  //////////////////////////////
+				if (group.getEmailrole().roletype.equals("role")){  //////////////////////////////
+					//emailusers.addAll(group.getEmailusers());
+					selected.addAll(group.getEmailusers());  //////////////////////////////
+				}
+			}
+		}
 		emailusers = new TreeSet(selected); // convert List to Set (no duplicates)
 		
 		
@@ -897,6 +922,7 @@ public class Mailtool
 		attachedFiles.clear();
 		m_buildNewView = true;
 		m_recipientSelector = null;
+		m_recipientSelector1 = null;
 		m_recipientSelector2 = null;
 		m_recipientSelector3 = null;
 		setAllUsersSelected(false);
@@ -1005,6 +1031,12 @@ public class Mailtool
 		return  m_recipientSelector;
 	}
 
+	public RecipientSelector getRecipientSelector_GroupAwareRole()
+	{
+		getRecipientSelectors();
+		
+		return  m_recipientSelector1;
+	}
 	public RecipientSelector getRecipientSelector_Group()
 	{
 		getRecipientSelectors();
@@ -1035,6 +1067,7 @@ public class Mailtool
 		else if (m_selectByTree == true)
 		{
 			m_recipientSelector = new TreeSelector();
+			m_recipientSelector1 = new TreeSelector();
 			m_recipientSelector2 = new TreeSelector(); // groups
 			m_recipientSelector3 = new TreeSelector(); // sections
 		}
@@ -1053,9 +1086,11 @@ public class Mailtool
 		
 		if (m_selectByTree == true){
 			List emailGroups1 = getEmailGroupsByType("role");
+			List emailGroups1_1 = getEmailGroupsByType("role_groupaware");
 			List emailGroups2 = getEmailGroupsByType("group");
 			List emailGroups3 = getEmailGroupsByType("section");
 			m_recipientSelector.populate(emailGroups1);
+			m_recipientSelector1.populate(emailGroups1_1);
 			m_recipientSelector2.populate(emailGroups2);
 			m_recipientSelector3.populate(emailGroups3);
 		}
@@ -1320,7 +1355,13 @@ public class Mailtool
 				(roleplural != null && roleplural != "") )
 			{
 				//EmailRole emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural);
-				EmailRole emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural, "role");
+				EmailRole emailrole=null;
+				
+				if (rolesingular.equals("Student"))
+					emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural, "role_groupaware");
+				else 
+					emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural, "role");
+
 				theroles.add(emailrole);
 				already_configured=true;
 			}
@@ -1345,9 +1386,12 @@ public class Mailtool
 						singular = rolename;
 						plural = rolename+"s";
 					}
-					
+					EmailRole emailrole=null;
 					//EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, singular, plural);
-					EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, singular, plural, "role");
+					if (singular.equals("Student") || singular.equals("access"))
+						emailrole=new EmailRole("/site/"+siteid, rolename, singular, plural, "role_groupaware");
+					else
+						emailrole=new EmailRole("/site/"+siteid, rolename, singular, plural, "role");
 					theroles.add(emailrole);
 			}				
 		}
@@ -1882,6 +1926,61 @@ public class Mailtool
 				EmailGroup thegroup2 = new EmailGroup(emailrole, mailusers2);
 				      thegroups.add(thegroup2);
 			} // else
+			else if (emailrole.roletype.equals("role_groupaware") && roletypefilter.equals("role_groupaware"))
+			{
+				String realmid = emailrole.getRealmid();
+				
+				AuthzGroup therealm = null;
+				try {
+					//therealm = m_realmService.getRealm(realmid);
+					therealm = m_realmService.getAuthzGroup(realmid);
+				} catch (Exception e) {
+					log.debug("Exception: Mailtool.getEmailGroups() #1, " + e.getMessage());
+				}
+				
+				//Set users = therealm.getUsersWithRole(emailrole.getRoleid());
+				Set users = therealm.getUsersHasRole(emailrole.getRoleid());
+				List /* EmailUser */ mailusers = new ArrayList();
+				for (Iterator j = users.iterator(); j.hasNext();)
+				{
+					String userid = (String) j.next();
+					try {
+						User theuser = m_userDirectoryService.getUser(userid);
+	//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
+	//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
+/***						
+						// trying to fix SAK-7356 (Guests are not included in recipient lists)
+						EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName().equals("") ? theuser.getEmail() : theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
+***/
+						// trying to fix SAK-7356 (Guests are not included in recipient lists)
+						// also SAK-7539
+						String firstname_for_display = "";
+						String lastname_for_display = "";
+						if (theuser.getFirstName().trim().equals("")){
+							if (theuser.getEmail().trim().equals("") && theuser.getLastName().trim().equals(""))
+								firstname_for_display = theuser.getDisplayId(); // fix for SAK-7539
+							else
+								firstname_for_display = theuser.getEmail();  // fix for SAK-7356
+						}
+						else {
+							firstname_for_display = theuser.getFirstName();
+						}
+						
+						lastname_for_display = theuser.getLastName();
+
+						EmailUser emailuser = new EmailUser(theuser.getId(), firstname_for_display, lastname_for_display, theuser.getEmail());
+						//EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
+						
+						mailusers.add(emailuser);
+					} catch (Exception e) {
+						log.debug("Exception: Mailtool.getEmailGroups() #4, " + e.getMessage());
+					}
+				}
+				Collections.sort(mailusers);
+				EmailGroup thegroup = new EmailGroup(emailrole, mailusers);
+				thegroups.add(thegroup);
+			} // else
+
 
 		}
 		
@@ -2340,5 +2439,17 @@ public class Mailtool
 		}
 		public void setM_viewChoiceInOptions(String choiceInOptions) {
 			m_viewChoiceInOptions = choiceInOptions;
+		}
+		public boolean isGroupAwareRoleviewClicked() {
+			return groupAwareRoleviewClicked;
+		}
+		public void setGroupAwareRoleviewClicked(boolean groupAwareRoleviewClicked) {
+			this.groupAwareRoleviewClicked = groupAwareRoleviewClicked;
+		}
+		public boolean isAllGroupAwareRoleSelected() {
+			return allGroupAwareRoleSelected;
+		}
+		public void setAllGroupAwareRoleSelected(boolean allGroupAwareRoleSelected) {
+			this.allGroupAwareRoleSelected = allGroupAwareRoleSelected;
 		}
 }
