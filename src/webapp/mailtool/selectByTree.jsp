@@ -11,9 +11,15 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 
 <h:panelGroup>
 			<h:panelGroup rendered="#{not Mailtool.groupAwareRoleviewClicked}">
+				<h:selectBooleanCheckbox id="selectAllGroupAwareRoleCheckbox1" value="#{Mailtool.allGroupAwareRoleSelected}" />
+				<h:outputLabel for="selectAllGroupAwareRoleCheckbox1" value=" Group-aware Role" />
+				<h:outputText value=" - "  />
 				<h:commandLink action="#{Mailtool.toggle_groupAwareRoleviewClicked}" value=" Select Individuals" />
 			</h:panelGroup>
 			<h:panelGroup rendered="#{Mailtool.groupAwareRoleviewClicked}">
+				<h:selectBooleanCheckbox id="selectAllGroupAwareRoleCheckbox2" value="#{Mailtool.allGroupAwareRoleSelected}" />
+				<h:outputLabel for="selectAllGroupAwareRoleCheckbox2" value=" Group-aware Role" />
+				<h:outputText value=" - "  />			
 				<h:commandLink action="#{Mailtool.toggle_groupAwareRoleviewClicked}" value=" Collapse Individuals" />
 			</h:panelGroup>			
 
@@ -52,8 +58,6 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 			</h:panelGroup>
 		</h:column>
 	</h:dataTable>
-
-			
 			
 			<h:panelGrid rendered="#{Mailtool.groupviewClicked }" columns="1" styleClass="ListHier lines nolines hierItemBlockWrapper" style="margin:0;width:100%">
 				<h:dataTable value="#{Mailtool.recipientSelector_Group.dataModel}" var="grouprow"  border="0" style="width:auto" cellpadding="0" cellspacing="0">
