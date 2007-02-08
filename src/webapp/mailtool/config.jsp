@@ -108,7 +108,7 @@
 							  <h:panelGroup>
 								<f:verbatim><h4></f:verbatim>
 									<h:outputText value="Rename roles - " />
-							  		<h:commandLink action="#{Mailtool.toggle_showRemainingRoleClicked}" value=" Hide Renaming roles"/>
+							  		<h:commandLink action="#{Mailtool.toggle_showRemainingRoleClicked}" value=" Hide Renaming roles"  style="text-decoration: underline;font-weight:normal"/>
 								<f:verbatim></h4></f:verbatim>
 							  </h:panelGroup>
 								<h:outputText value="Choose names that will appear in the Roles listing on the To menu. See example above."  styleClass="instruction" style="display: block;"/>
