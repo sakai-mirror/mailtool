@@ -128,6 +128,7 @@ public class Mailtool
 	protected String m_recipview = "";
 	protected String uploaddirectoryDefault="/tmp/";
 	protected String recipviewDefault="tree";
+	protected String groupAwareRoleDefault=""; // for course site
 	
 	/** For Main.jsp **/
 	protected String m_subject = "";
@@ -140,6 +141,7 @@ public class Mailtool
 	protected String m_sitetype="";
 	protected String m_mode="";
 	protected String m_siteid="";
+	protected String m_realmid="";
 	
 	protected boolean is_fckeditor=false;
 	protected boolean is_htmlarea=false;
@@ -212,6 +214,7 @@ public class Mailtool
 	private boolean groupviewClicked=false;
 	private boolean sectionviewClicked=false;
 	private boolean groupAwareRoleviewClicked=false;
+	private boolean showRenamingRolesClicked=false;
 	
 	private boolean allGroupSelected=false;
 	private boolean allSectionSelected=false;
@@ -227,9 +230,9 @@ public class Mailtool
 		setCurrentMode("compose");
 		m_sitetype=getSiteType();
 		m_siteid=getSiteID();
-		
-		m_changedViewChoice = getRecipview();  
-
+		m_realmid=getSiteRealmID();
+		m_changedViewChoice = getRecipview();
+		groupAwareRoleDefault=getGroupAwareRoleDefault();
 		
 		//getRecipientSelectors();
 		
@@ -299,6 +302,10 @@ public class Mailtool
 		groupAwareRoleviewClicked = groupAwareRoleviewClicked ? false : true;
 		sectionviewClicked  = false; // exclusive rendering
 		groupviewClicked = false; // exclusive rendering
+    }
+	public void toggle_showRemainingRoleClicked()
+    {
+		showRenamingRolesClicked = showRenamingRolesClicked ?  false : true;
     }
 	public boolean isAllGroupSelected() {
 		return allGroupSelected;
@@ -502,6 +509,7 @@ public class Mailtool
 		
 		return uploaddirectoryDefault;
 	}
+
 	public boolean isShowRenamingRoles()
 	{
 		String rename=ServerConfigurationService.getString("mailtool.show.renaming.roles");
@@ -510,8 +518,8 @@ public class Mailtool
 			return (rename.trim().toLowerCase().equals("yes") || rename.trim().toLowerCase().equals("true") ? true : false); 
 		}
 		return false;
-		
-	}	
+	}
+	
 	public void setEditorType(String editor)
 	{
 		m_editortype = editor;
@@ -1127,10 +1135,26 @@ public class Mailtool
 	{
 		//String recipview = m_toolConfig.getPlacementConfig().getProperty("recipview");
 		String recipview = this.getConfigParam("recipview");
-		if (recipview == null || recipview=="")
+		if (recipview == null || recipview.trim().equals(""))
 			return recipviewDefault;
 		else 
 			return recipview;
+	}
+	public String getGroupAwareRoleDefault()
+	{
+		if (getSiteType().equals("course"))
+			return "Student";
+		if (getSiteType().equals("project"))
+			return "access";
+		return "";
+	}
+	public String getGroupAwareRole()
+	{
+		String groupAwareRole = this.getConfigParam("GroupAwareRole");
+		if (groupAwareRole == null || groupAwareRole.trim().equals(""))
+			return groupAwareRoleDefault;
+		else
+			return groupAwareRole.trim();
 	}
 	// role-based permission checking ... modified thanks to Seth at Columbia Jan 3 2007
 	//
@@ -1322,8 +1346,9 @@ public class Mailtool
 		List allgroups = new ArrayList();
 		List allsections = new ArrayList();
 		
-		String siteid=getSiteID();
-		String realmid="/site/"+siteid;
+		//String siteid=getSiteID();
+		//String realmid="/site/"+siteid;
+		//String realmid=getSiteRealmID();
 		//String sitetype=getSiteType();
 /*		
 		if (sitetype.equals("project")){
@@ -1357,7 +1382,8 @@ public class Mailtool
 				//EmailRole emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural);
 				EmailRole emailrole=null;
 				
-				if (rolesingular.equals("Student"))
+				//if (rolesingular.equals("Student"))
+				if (rolesingular.equals(getGroupAwareRole()))
 					emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural, "role_groupaware");
 				else 
 					emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural, "role");
@@ -1368,7 +1394,7 @@ public class Mailtool
 		} // for
 		if (already_configured==false){
 			try{
-				arole=m_realmService.getAuthzGroup(realmid);
+				arole=m_realmService.getAuthzGroup(m_realmid);
 			} catch (Exception e){
 				log.debug("Exception: Mailtool.getEmailRoles(), " + e.getMessage());
 			}
@@ -1388,10 +1414,11 @@ public class Mailtool
 					}
 					EmailRole emailrole=null;
 					//EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, singular, plural);
-					if (singular.equals("Student") || singular.equals("access"))
-						emailrole=new EmailRole("/site/"+siteid, rolename, singular, plural, "role_groupaware");
+					//if (singular.equals("Student") || singular.equals("access"))
+					if (singular.equals(getGroupAwareRole()))
+						emailrole=new EmailRole("/site/"+m_siteid, rolename, singular, plural, "role_groupaware");
 					else
-						emailrole=new EmailRole("/site/"+siteid, rolename, singular, plural, "role");
+						emailrole=new EmailRole("/site/"+m_siteid, rolename, singular, plural, "role");
 					theroles.add(emailrole);
 			}				
 		}
@@ -1399,7 +1426,7 @@ public class Mailtool
 		////////// adding groups as roles
 		
 		try{
-			currentSite = siteService.getSite(siteid);
+			currentSite = siteService.getSite(m_siteid);
 			}
 			catch(Exception e) {}
 			Collection groups = currentSite.getGroups();
@@ -2451,5 +2478,11 @@ public class Mailtool
 		}
 		public void setAllGroupAwareRoleSelected(boolean allGroupAwareRoleSelected) {
 			this.allGroupAwareRoleSelected = allGroupAwareRoleSelected;
+		}
+		public boolean isShowRenamingRolesClicked() {
+			return showRenamingRolesClicked;
+		}
+		public void setShowRenamingRolesClicked(boolean showRenamingRolesClicked) {
+			this.showRenamingRolesClicked = showRenamingRolesClicked;
 		}
 }

@@ -99,16 +99,18 @@
 								<f:selectItem itemLabel="Plain text" itemValue="plaintext"/>
 							</h:selectOneRadio>
 						</h:panelGroup>
-						<%-- gsilver: unsure of this last panelGroup set, not showing for me  --%>
-						<h:panelGroup rendered="#{Mailtool.showRenamingRoles }">
-							<h:panelGroup>
-								<f:verbatim><h4></f:verbatim>
-									<h:outputText value="Rename roles" />
-								<f:verbatim></h4></f:verbatim>
-							</h:panelGroup>
-						</h:panelGroup>
 						<f:facet name="footer">
-							<h:panelGrid rendered="#{Mailtool.showRenamingRoles }" columns="1" styleClass="jsfFormTable itemSummary">
+						  <h:panelGroup rendered="#{Mailtool.showRenamingRoles}">
+							<h:panelGroup rendered="#{not Mailtool.showRenamingRolesClicked }">
+							  <h:commandLink action="#{Mailtool.toggle_showRemainingRoleClicked}" value=" Show Renaming roles menu" style="text-decoration: underline"/>
+							</h:panelGroup>
+							<h:panelGrid rendered="#{Mailtool.showRenamingRolesClicked }" columns="1" styleClass="jsfFormTable itemSummary">
+							  <h:panelGroup>
+								<f:verbatim><h4></f:verbatim>
+									<h:outputText value="Rename roles - " />
+							  		<h:commandLink action="#{Mailtool.toggle_showRemainingRoleClicked}" value=" Hide Renaming roles"/>
+								<f:verbatim></h4></f:verbatim>
+							  </h:panelGroup>
 								<h:outputText value="Choose names that will appear in the Roles listing on the To menu. See example above."  styleClass="instruction" style="display: block;"/>
 								<h:dataTable value="#{Mailtool.renamedRoles}" var="role"  cellspacing="0" cellpadding="0"  width="100%" >
 									<h:column>
@@ -129,6 +131,7 @@
 									</h:column>
 								</h:dataTable>
 							</h:panelGrid>
+						  </h:panelGroup>
 						</f:facet>
 					</h:panelGrid>
 						<sakai:button_bar>

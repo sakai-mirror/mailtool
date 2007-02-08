@@ -104,7 +104,7 @@ public class SelectByTree {
 			EmailGroup egroup = (EmailGroup) i.next();
 			TableEntry te = new TableEntry(egroup);
 			
-			te.m_groupAware = egroup.getRolePlural().equals("Students") ? true : false;			
+			//te.m_groupAware = egroup.getRolePlural().equals("Students") ? true : false;			
 			m_tablerows.add(te);
 		}
 	}
