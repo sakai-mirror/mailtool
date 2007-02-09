@@ -82,7 +82,11 @@ public class SelectByTree {
 			m_collapsed = true;
 		}
 		
-		public void setAllSelected(boolean value) { m_allSelected = value; }
+		public void setAllSelected(boolean value) {
+			m_allSelected = value;
+			m_usertable.switchSelections(value);
+		}
+
 		public boolean isAllSelected() { return m_allSelected; }
 
 		public boolean isGroupAware() {
@@ -123,7 +127,8 @@ public class SelectByTree {
 		for (Iterator i = m_tablerows.iterator(); i.hasNext();)
 		{
 			TableEntry te = (TableEntry) i.next();
-			if ((te.isCollapsed() == true) && (te.isAllSelected() == true))
+//			if ((te.isCollapsed() == true) && (te.isAllSelected() == true))
+			if (te.isAllSelected() == true)
 			{
 				selectedusers.addAll(te.m_emailgroup.getEmailusers());
 			}

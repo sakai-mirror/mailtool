@@ -7,34 +7,38 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
                                                  
 <%-- Tree Table --%>
 <h:panelGroup rendered="#{Mailtool.currentMode=='compose' }">
-
-	<h:panelGroup rendered="#{not Mailtool.groupAwareRoleviewClicked}"  style="font-weight:normal">
-		<h:selectBooleanCheckbox id="selectAllGroupAwareRoleCheckbox1" value="#{Mailtool.allGroupAwareRoleSelected}" />
-		<h:outputLabel for="selectAllGroupAwareRoleCheckbox1" value=" All #{Mailtool.groupAwareRole}s" />
-		<h:outputText value=" - "  />
-		<h:commandLink action="#{Mailtool.toggle_groupAwareRoleviewClicked}" value=" Select Individuals" style="text-decoration: underline"/>
+	<h:panelGroup rendered="#{Mailtool.groupAwareRoleExist}">
+		<h:panelGroup rendered="#{not Mailtool.groupAwareRoleviewClicked}"  style="font-weight:normal">
+			<h:selectBooleanCheckbox id="selectAllGroupAwareRoleCheckbox1" value="#{Mailtool.allGroupAwareRoleSelected}" />
+			<h:outputLabel for="selectAllGroupAwareRoleCheckbox1" value=" All #{Mailtool.groupAwareRole}s" />
+			<h:outputText value=" - "  />
+			<h:commandLink action="#{Mailtool.toggle_groupAwareRoleviewClicked}" value=" Select Individuals" style="text-decoration: underline"/>
+		</h:panelGroup>
+		<h:panelGroup rendered="#{Mailtool.groupAwareRoleviewClicked}" style="font-weight:normal">
+			<h:selectBooleanCheckbox id="selectAllGroupAwareRoleCheckbox2" value="#{Mailtool.allGroupAwareRoleSelected}" />
+			<h:outputLabel for="selectAllGroupAwareRoleCheckbox2" value=" All #{Mailtool.groupAwareRole}s" />
+			<h:outputText value=" - "  />			
+			<h:commandLink action="#{Mailtool.toggle_groupAwareRoleviewClicked}" value=" Collapse Individuals"/>
+		</h:panelGroup>
 	</h:panelGroup>
-	<h:panelGroup rendered="#{Mailtool.groupAwareRoleviewClicked}" style="font-weight:normal">
-		<h:selectBooleanCheckbox id="selectAllGroupAwareRoleCheckbox2" value="#{Mailtool.allGroupAwareRoleSelected}" />
-		<h:outputLabel for="selectAllGroupAwareRoleCheckbox2" value=" All #{Mailtool.groupAwareRole}s" />
-		<h:outputText value=" - "  />			
-		<h:commandLink action="#{Mailtool.toggle_groupAwareRoleviewClicked}" value=" Collapse Individuals"/>
-	</h:panelGroup>			
-	<h:outputText value=" - "  />
-	<h:panelGroup rendered="#{not Mailtool.groupviewClicked}" style="font-weight:normal">
-		<h:commandLink action="#{Mailtool.toggle_groupviewClicked}" value=" Select Groups" style="text-decoration: underline"/>
-	</h:panelGroup>
-	<h:panelGroup rendered="#{Mailtool.groupviewClicked}" style="font-weight:normal">
-		<h:commandLink action="#{Mailtool.toggle_groupviewClicked}" value=" Collapse Groups"/>
-	</h:panelGroup>			
-	<h:outputText value=" - "  />
-	<h:panelGroup rendered="#{not Mailtool.sectionviewClicked}" style="font-weight:normal">
-		<h:commandLink action="#{Mailtool.toggle_sectionviewClicked}" value=" Select Sections" style="text-decoration: underline"/>
+	<h:panelGroup rendered="#{Mailtool.num_groups > 0}">	
+		<h:outputText value=" | "  />
+		<h:panelGroup rendered="#{not Mailtool.groupviewClicked}" style="font-weight:normal">
+			<h:commandLink action="#{Mailtool.toggle_groupviewClicked}" value=" Select Groups" style="text-decoration: underline"/>
+		</h:panelGroup>
+		<h:panelGroup rendered="#{Mailtool.groupviewClicked}" style="font-weight:normal">
+			<h:commandLink action="#{Mailtool.toggle_groupviewClicked}" value=" Collapse Groups"/>
+		</h:panelGroup>
 	</h:panelGroup>	
-	<h:panelGroup rendered="#{Mailtool.sectionviewClicked}" style="font-weight:normal">
-		<h:commandLink action="#{Mailtool.toggle_sectionviewClicked}" value=" Collapse Sections"/>
-	</h:panelGroup>			
-
+	<h:panelGroup rendered="#{Mailtool.num_sections > 0}">
+		<h:outputText value=" | "  />
+		<h:panelGroup rendered="#{not Mailtool.sectionviewClicked}" style="font-weight:normal">
+			<h:commandLink action="#{Mailtool.toggle_sectionviewClicked}" value=" Select Sections" style="text-decoration: underline"/>
+		</h:panelGroup>	
+		<h:panelGroup rendered="#{Mailtool.sectionviewClicked}" style="font-weight:normal">
+			<h:commandLink action="#{Mailtool.toggle_sectionviewClicked}" value=" Collapse Sections"/>
+		</h:panelGroup>			
+	</h:panelGroup>
 	<h:dataTable rendered="#{Mailtool.groupAwareRoleviewClicked}" value="#{Mailtool.recipientSelector_GroupAwareRole.dataModel}" var="row"  border="0" cellpadding="0" cellspacing="0">
 			<h:column>
 					<h:dataTable value="#{row.userTable}" var="user_row"  styleClass="listHier lines nolines hierItemBlockWrapper" columnClasses="attach,,attach,"  cellpadding="0" cellspacing="0" style="margin-left:2em;width:auto;font-weight:normal">

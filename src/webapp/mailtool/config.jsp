@@ -36,7 +36,9 @@
 							<h:selectOneListbox onchange="submit(); return false;" size="1" id="viewChoice" value="#{Mailtool.viewChoice}">
 									<f:selectItems value="#{Mailtool.viewChoiceDropdown}" />
 							</h:selectOneListbox>
+<%--
 							<f:subview id="selectByRole" rendered="#{Mailtool.selectByRole}"><jsp:include page="selectByRole2.jsp" /></f:subview>
+--%>
 							<f:subview id="selectByUser" rendered="#{Mailtool.selectByUser}"><jsp:include page="selectByUser2.jsp" /></f:subview>
 							<f:subview id="selectByTree" rendered="#{Mailtool.selectByTree}"><jsp:include page="selectByTree2.jsp" /></f:subview>
 							<f:subview id="selectSideBySide" rendered="#{Mailtool.selectSideBySide}"><jsp:include page="selectSideBySide2.jsp" /></f:subview>

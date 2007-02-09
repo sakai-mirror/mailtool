@@ -106,4 +106,15 @@ public class SelectByUserTable {
 		
 		return returnusers;
 	}
+	public void switchSelections(boolean allornot)
+	{
+		for (Iterator i = m_tablerows.iterator(); i.hasNext();)
+		{
+			TableEntry te = (TableEntry) i.next();
+			
+			te.setSelected1(allornot);
+			te.setSelected2(allornot);
+		}
+		
+	}
 }
