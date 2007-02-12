@@ -25,7 +25,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 					<h:commandLink action="#{Mailtool.toggle_groupAwareRoleviewClicked}" value=" Collapse Individuals"/>
 				</h:panelGroup>
 			</h:panelGroup>
-			<h:panelGroup rendered="#{Mailtool.num_groups > 0}">	
+			<h:panelGroup rendered="#{Mailtool.groupAwareRoleExist and Mailtool.num_groups > 0}">	
 				<h:outputText value=" - "  />
 				<h:panelGroup rendered="#{not Mailtool.groupviewClicked}">
 					<h:commandLink action="#{Mailtool.toggle_groupviewClicked}" value=" Select Groups" style="text-decoration: underline"/>
@@ -34,7 +34,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 					<h:commandLink action="#{Mailtool.toggle_groupviewClicked}" value=" Collapse Groups"/>
 				</h:panelGroup>
 			</h:panelGroup>
-			<h:panelGroup rendered="#{Mailtool.num_sections > 0}">			
+			<h:panelGroup rendered="#{Mailtool.groupAwareRoleExist and Mailtool.num_sections > 0}">			
 				<h:outputText value=" - "  />
 				<h:panelGroup rendered="#{not Mailtool.sectionviewClicked}">
 					<h:commandLink action="#{Mailtool.toggle_sectionviewClicked}" value=" Select Sections" style="text-decoration: underline"/>
