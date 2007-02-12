@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.StringTokenizer;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
@@ -128,7 +129,8 @@ public class Mailtool
 	protected String m_recipview = "";
 	protected String uploaddirectoryDefault="/tmp/";
 	protected String recipviewDefault="tree";
-	protected String groupAwareRoleDefault=""; // for course site
+	protected String groupAwareRoleDefault="";
+	protected String groupAwareRoleFound="";
 	
 	/** For Main.jsp **/
 	protected String m_subject = "";
@@ -236,6 +238,7 @@ public class Mailtool
 		m_realmid=getSiteRealmID();
 		m_changedViewChoice = getRecipview();
 		groupAwareRoleDefault=getGroupAwareRoleDefault();
+		groupAwareRoleFound=getGroupAwareRole();
 		
 		setSelectorType();
 		getRecipientSelectors();
@@ -1012,12 +1015,12 @@ public class Mailtool
 		item.setLabel("Users"); // User
 		item.setValue("user");
 		selectItems.add(item);
-		
+/*		
 		item = new SelectItem();
 		item.setLabel("Roles"); // Role
 		item.setValue("role");
 		selectItems.add(item);
-		
+*/		
 		item = new SelectItem();
 		item.setLabel("Users by Role"); // Tree
 		item.setValue("tree");
@@ -1162,14 +1165,42 @@ public class Mailtool
 		else
 			return groupAwareRole.trim();
 */
+		List /* EmailRole */ theroles = new ArrayList();
 		String gar=ServerConfigurationService.getString("mailtool.group.aware.role");
-		if (gar!="" && gar!=null)
+		String[] gartokens=gar.split(",");
+
+		try{
+			arole=m_realmService.getAuthzGroup(m_realmid);
+		} catch (Exception e){
+			log.debug("Exception: Mailtool.getEmailRoles(), " + e.getMessage());
+		}
+		for (Iterator i = arole.getRoles().iterator(); i.hasNext(); ) {
+				Role r = (Role) i.next();
+				String rolename=r.getId();
+				for (int t=0;t<gartokens.length;t++){
+					if (gartokens[t].trim().equals(rolename.trim())) return rolename;
+				}
+		}
+/*		if (gar!="" && gar!=null)
 		{
 			return gar.trim();
 		}
-		
+*/
 		return groupAwareRoleDefault;		
 	}
+
+	public boolean isGroupAwareRoleInSettings(String role)
+	{
+
+		String gar=ServerConfigurationService.getString("mailtool.group.aware.role");
+		String[] gartokens=gar.split(",");
+
+		for (int i=0;i<gartokens.length;i++){
+			if (gartokens[i].trim().equals(role.trim())) return true;
+		}
+		return false;
+	}
+	
 	// role-based permission checking ... modified thanks to Seth at Columbia Jan 3 2007
 	//
 	public boolean isAllowedToSend()
@@ -1397,7 +1428,7 @@ public class Mailtool
 				EmailRole emailrole=null;
 				
 				//if (rolesingular.equals("Student"))
-				if (rolesingular.equals(getGroupAwareRole())){
+				if (isGroupAwareRoleInSettings(rolename)){
 					emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural, "role_groupaware");
 					num_groupawarerole++;
 				}
@@ -1431,7 +1462,7 @@ public class Mailtool
 					EmailRole emailrole=null;
 					//EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, singular, plural);
 					//if (singular.equals("Student") || singular.equals("access"))
-					if (singular.equals(getGroupAwareRole())){
+					if (isGroupAwareRoleInSettings(rolename)){
 						emailrole=new EmailRole("/site/"+m_siteid, rolename, singular, plural, "role_groupaware");
 						num_groupawarerole++;
 					}
@@ -1507,7 +1538,7 @@ public class Mailtool
 				num_role_id++;
 				num_roles_renamed++;
 				
-				if (rolename.equals(getGroupAwareRole())) setGroupAwareRoleExist(true);
+				if (isGroupAwareRoleInSettings(rolename)){ setGroupAwareRoleExist(true); }
 
 		}
 /*			this is for detection group. it should be done in getEmailGroups()
@@ -1892,7 +1923,7 @@ public class Mailtool
 				//Set users2=agroup.getUsers(); ////////////////////////// something like that ---- Need to be tested !!!!!!
 				// filtering non-group-aware Role users
 				//
-				Set users2=agroup.getUsersHasRole(getGroupAwareRole());
+				Set users2=agroup.getUsersHasRole(groupAwareRoleFound);
 				List mailusers2 = new ArrayList();
 				for (Iterator k= users2.iterator();k.hasNext();){
 				   	  String userid2 = (String) k.next();
@@ -1946,7 +1977,7 @@ public class Mailtool
 				}
 				//Set users2=agroup.getUsers(); ////////////////////////// something like that ---- Need to be tested !!!!!!
 				// filtering out non-group-aware Role users
-				Set users2=agroup.getUsersHasRole(getGroupAwareRole());
+				Set users2=agroup.getUsersHasRole(groupAwareRoleFound);
 				
 				List mailusers2 = new ArrayList();
 				for (Iterator k= users2.iterator();k.hasNext();){
