@@ -67,7 +67,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 //import javax.faces.event.ActionEvent;
-import javax.faces.model.SelectItem;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.validator.ValidatorException;
 import javax.faces.component.UIComponent;
@@ -95,8 +94,6 @@ public class Mailtool
 	protected boolean DEBUG_NO_EMAIL = true;
 	
 	protected static final int NUMBER_ROLES = 15;
-
-	private int MaxNumRoles=15; // should be same as number of roles in tools/sakai.mailtool.xml
 
 	private int MaxNumAttachment=readMaxNumAttachment();
 	
@@ -147,9 +144,6 @@ public class Mailtool
 	
 	protected String m_textformat = "";
 	private String m_recipJSPfrag = "";
-	private boolean m_buildNewView = false;
-	private String m_changedViewChoice = "";
-	private String m_currentViewChoice = "";
 	protected String m_results = "";
 	
 	/** Set Sakai Services */	
@@ -195,15 +189,14 @@ public class Mailtool
 		m_sitetype=getSiteType();
 		m_siteid=getSiteID();
 		m_realmid=getSiteRealmID();
-		m_changedViewChoice = getRecipview();
 		groupAwareRoleDefault=getGroupAwareRoleDefault();
 		groupAwareRoleFound=getGroupAwareRole();
 
 		setSelectorType();
 		getRecipientSelectors();
 
-		initializeCurrentRoles(); /* this initialization solves SAK-6810 */
-
+		checkifGroupAwareRoleExist(); /* this initialization solves SAK-6810 */
+		
 		setMessageSubject(getSubjectPrefix().equals("")?getSubjectPrefixFromConfig():getSubjectPrefix());
 		setSubjectPrefix(getSubjectPrefixFromConfig());
 		setEmailArchiveInSite(isEmailArchiveAddedToSite());
@@ -275,10 +268,6 @@ public class Mailtool
 		groupAwareRoleviewClicked = groupAwareRoleviewClicked ? false : true;
 		sectionviewClicked  = false; // exclusive rendering
 		groupviewClicked = false; // exclusive rendering
-    }
-	public void toggle_showRemainingRoleClicked()
-    {
-		showRenamingRolesClicked = showRenamingRolesClicked ?  false : true;
     }
 	public boolean isAllGroupSelected() {
 		return allGroupSelected;
@@ -370,16 +359,9 @@ public class Mailtool
 	}
 	
 	public String processGoToOptions(){
-		m_currentViewChoice = m_changedViewChoice;
 		return "configure";
 	}
 
-	public String processGoToComposeByCancel(){
-		m_changedViewChoice=m_currentViewChoice;
-		m_buildNewView = true;
-
-		return "compose";
-	}		
 	public String getfilename()
 	{
 		return filename;
@@ -395,21 +377,6 @@ public class Mailtool
 	{
 		this.roleid=r;
 	}
-	public String getSingular(){
-		return singular;		
-	}
-	public void setSingular(String s)
-	{
-		this.singular=s;
-	}
-	public String getPlural(){
-		return plural;		
-	}
-	public void setPlural(String p)
-	{
-		this.plural=p;
-	}
-	
 	public int getnum_files()
 	{
 		return this.num_files;
@@ -521,18 +488,10 @@ public class Mailtool
 		return m_results;
 	}
 	
-	public String getRecipJsp()
-	{
-		return m_recipJSPfrag;
-	}
-	
 	protected void setSelectorType()
 	{	
-		String type = "";
-		if (m_changedViewChoice.equals(""))
-			type = getRecipview();
-		else 
-			type = m_changedViewChoice;
+		String type = getRecipview();
+		if (type.equals("") || type==null) type = recipviewDefault;
 		
 		m_selectByRole = false;
 		m_selectByUser = false;
@@ -565,13 +524,6 @@ public class Mailtool
 			m_selectByTree = true;
 			m_recipJSPfrag = "selectByTree.jsp";
 		}
-/*
-		else
-		{
-			m_selectByRole = true;
-			m_recipJSPfrag = "selectByRole.jsp";
-		}
-*/		
 	}
 	
 	public boolean isSelectByRole()
@@ -612,7 +564,7 @@ public class Mailtool
 		this.m_body = "";
 		num_files=0;
 		attachedFiles.clear();
-		m_buildNewView = true;
+//		m_buildNewView = true;
 		m_recipientSelector = null;
 		m_recipientSelector1 = null;
 		m_recipientSelector2 = null;
@@ -818,7 +770,6 @@ public class Mailtool
 		m_body = "";
 		num_files=0;
 		attachedFiles.clear();
-		m_buildNewView = true;
 		m_recipientSelector = null;
 		m_recipientSelector1 = null;
 		m_recipientSelector2 = null;
@@ -860,59 +811,6 @@ public class Mailtool
 		return "results";
 	}
 	
-	public void setViewChoice(String view)
-	{
-		if (m_changedViewChoice.equals(view))
-		{
-			m_buildNewView = false;
-		}
-		else
-		{
-			m_changedViewChoice = view;
-			m_buildNewView = true;
-		}
-	}
-	
-	public String getViewChoice()
-	{
-		if (m_changedViewChoice.equals(""))
-			return this.getRecipview();
-		else
-			return m_changedViewChoice;
-	}
-	
-	public List /* SelectItemGroup */ getViewChoiceDropdown()
-	{
-		List selectItems = new ArrayList();
-		
-		SelectItem item = new SelectItem();
-		item.setLabel("Users"); // User
-		item.setValue("user");
-		selectItems.add(item);
-/*		
-		item = new SelectItem();
-		item.setLabel("Roles"); // Role
-		item.setValue("role");
-		selectItems.add(item);
-*/		
-		item = new SelectItem();
-		item.setLabel("Users by Role"); // Tree
-		item.setValue("tree");
-		selectItems.add(item);
-		
-		item = new SelectItem();
-		item.setLabel("Side-by-Side"); // Side By Side
-		item.setValue("sidebyside");
-		selectItems.add(item);
-		
-		item = new SelectItem();
-		item.setLabel("Scrolling List"); // Foothill
-		item.setValue("foothill");
-		selectItems.add(item);
-		
-		return selectItems;
-	}
-
 	public RecipientSelector getRecipientSelector()
 	{
 		getRecipientSelectors();
@@ -943,13 +841,9 @@ public class Mailtool
 	
 	public void getRecipientSelectors()
 	{
-	 if ((m_recipientSelector == null) || (m_buildNewView == true))
+	 if (m_recipientSelector == null)
 	 {
-		if (m_selectByRole == true)
-		{
-			m_recipientSelector = new RoleSelector();
-		}
-		else if (m_selectByUser == true)
+		 if (m_selectByUser == true)
 		{
 			m_recipientSelector = new UserSelector();
 		}
@@ -968,10 +862,6 @@ public class Mailtool
 		{
 			m_recipientSelector = new FoothillSelector();
 		}
-		else
-		{
-			m_recipientSelector = new RoleSelector();
-		}
 		
 		if (m_selectByTree == true){
 			List emailGroups1 = getEmailGroupsByType("role");
@@ -987,14 +877,13 @@ public class Mailtool
 			List emailGroups = getEmailGroups();
 			m_recipientSelector.populate(emailGroups);
 		}
-		m_buildNewView = false;
 	 }
 	}
 	
 	// Get Information from the Tool Config
 	public String getSubjectPrefixFromConfig()
 	{
-		String prefix = this.getConfigParam("subjectprefix");        //propsedit.getProperty("subjectprefix");
+		String prefix = this.getConfigParam("subjectprefix");
 		if (prefix == null || prefix == "")
 		{
 			String titleDefault=getSiteTitle()+": ";
@@ -1007,7 +896,6 @@ public class Mailtool
 	// Get Information from the Tool Config
 	public String getRecipview()
 	{
-		//String recipview = m_toolConfig.getPlacementConfig().getProperty("recipview");
 		String recipview = this.getConfigParam("recipview");
 		if (recipview == null || recipview.trim().equals(""))
 			return recipviewDefault;
@@ -1015,7 +903,6 @@ public class Mailtool
 			return recipview;
 	}
 	// OOTB(Out of the box) Sakai defaults
-	//
 	public String getGroupAwareRoleDefault()
 	{
 		if (getSiteType().equals("course"))
@@ -1237,7 +1124,7 @@ public class Mailtool
 		return theroles;
 	}
 	
-	public void initializeCurrentRoles()
+	public void checkifGroupAwareRoleExist()
 	{
 		String realmid=getSiteRealmID();
 		try{
@@ -1248,18 +1135,6 @@ public class Mailtool
 		for (Iterator i = arole.getRoles().iterator(); i.hasNext(); ) {
 				Role r = (Role) i.next();
 				String rolename=r.getId();
-				// initialize "rename roles" in options
-				Configuration c=new Configuration();
-				c.setId(num_role_id);
-				c.setRoleId(rolename);
-				c.setRealmid(getSiteRealmID());
-				c.setSingular(rolename);
-				c.setPlural(rolename+"s");
-				c.setSingularNew(getConfigParam("role"+(num_role_id+1)+"singular"));
-				c.setPluralNew(getConfigParam("role"+(num_role_id+1)+"plural"));
-				renamedRoles.add(c);
-				num_role_id++;
-				num_roles_renamed++;
 				if (isGroupAwareRoleInSettings(rolename)) setGroupAwareRoleExist(true);
 		}
 	}
@@ -1864,12 +1739,6 @@ public class Mailtool
 		}
 		public void setAllGroupAwareRoleSelected(boolean allGroupAwareRoleSelected) {
 			this.allGroupAwareRoleSelected = allGroupAwareRoleSelected;
-		}
-		public boolean isShowRenamingRolesClicked() {
-			return showRenamingRolesClicked;
-		}
-		public void setShowRenamingRolesClicked(boolean showRenamingRolesClicked) {
-			this.showRenamingRolesClicked = showRenamingRolesClicked;
 		}
 		public int getNum_groupawarerole() {
 			return num_groupawarerole;
