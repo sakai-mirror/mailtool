@@ -6,7 +6,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 --%>
                                               
 <%-- Tree Table --%>
-<h:panelGroup rendered="#{Mailtool.currentMode=='compose' }">
+
 	<h:panelGroup rendered="#{Mailtool.groupAwareRoleExist}">
 		<h:panelGroup rendered="#{not Mailtool.groupAwareRoleviewClicked}"  style="font-weight:normal">
 			<h:selectBooleanCheckbox id="selectAllGroupAwareRoleCheckbox1" value="#{Mailtool.allGroupAwareRoleSelected}" />
@@ -161,7 +161,6 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 		</h:dataTable>
 	</h:panelGroup>
 
-</h:panelGroup>
 <%--
 <h:panelGrid rendered="#{not Mailtool.groupviewClicked}" columns="1" border="0" style="margin:0;width:100%" cellpadding="0" cellspacing="0">
 <h:panelGroup>

@@ -3,7 +3,7 @@
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
 <%@ taglib uri="http://sakaiproject.org/jsf/mailtool" prefix="mailtool" %>
  
-<h:panelGroup rendered="#{Mailtool.currentMode=='compose' }">
+
 	<h:panelGrid columns="3" cellspacing="0" cellpadding="0" style="margin:0" styleClass="sidebyside">
 		<h:panelGroup>
 			<h:selectManyListbox id="selectTo" size="10" value="#{Mailtool.recipientSelector.selectedItems}">
@@ -27,7 +27,7 @@
 			</sakai:button_bar>
 		</h:panelGroup>
 	</h:panelGrid>
-</h:panelGroup>
+
 <%--
 <h:panelGroup rendered="#{Mailtool.currentMode=='options' }" style="height:100%;overflow:hidden;display:block;margin:.5em 0;padding:.3em;color:#555 !important" styleClass="inopPanel" >
 	<h:outputText  value="Preview (inactive)"  style="padding:.5em"/>

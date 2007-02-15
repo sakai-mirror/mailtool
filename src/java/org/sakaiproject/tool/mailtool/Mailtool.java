@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/contrib/mailtool/branches/2.4.refactor/src/java/org/sakaiproject/tool/mailtool/Mailtool.java $
+* $Id:Mailtool.java 3486 2007-02-14 19:52:13Z kimsooil@bu.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006, 2007 The Sakai Foundation.
@@ -40,7 +40,6 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import java.util.StringTokenizer;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
@@ -78,7 +77,6 @@ import javax.faces.model.SelectItem;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.validator.ValidatorException;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
 
 import java.util.Properties;
 import javax.mail.BodyPart;
@@ -94,26 +92,10 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 
-
-
 import org.sakaiproject.tool.mailtool.Attachment;
 
 public class Mailtool
 {
-/*
-	public void startProcessSendEmail(){
-		Thread t = new Thread(this);
-		t.start();
-	}
-	public void run(){
-		processSendEmail();
-		processGoToResults();
-	}
-
-	public String processGoToResults(){
-		return "results";
-	}
-*/	
 	private final Log log = LogFactory.getLog(this.getClass());
 
 	protected FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -223,6 +205,11 @@ public class Mailtool
 	private boolean allSectionSelected=false;
 	private boolean allGroupAwareRoleSelected=false;
 	private boolean GroupAwareRoleExist=false;
+
+	private List /* EmailUser */ selected = null;
+	private List selectedGroupAwareRoleUsers = null;
+	private List selectedGroupUsers = null;
+	private List selectedSectionUsers = null;
 	
 //	protected String uploaddirectory="";
 	protected String eid="";
@@ -239,12 +226,19 @@ public class Mailtool
 		m_changedViewChoice = getRecipview();
 		groupAwareRoleDefault=getGroupAwareRoleDefault();
 		groupAwareRoleFound=getGroupAwareRole();
-		
+
 		setSelectorType();
 		getRecipientSelectors();
-		
+
 		initializeCurrentRoles(); /* this initialization solves SAK-6810 */
-		
+/*
+		 selected = m_recipientSelector.getSelectedUsers();
+		if (m_selectByTree){
+			selectedGroupAwareRoleUsers = m_recipientSelector1.getSelectedUsers();
+			selectedGroupUsers = m_recipientSelector2.getSelectedUsers();
+			selectedSectionUsers = m_recipientSelector3.getSelectedUsers();
+		}
+*/
 		setMessageSubject(getSubjectPrefix().equals("")?getSubjectPrefixFromConfig():getSubjectPrefix());
 		setSubjectPrefix(getSubjectPrefixFromConfig());
 		setEmailArchiveInSite(isEmailArchiveAddedToSite());
@@ -276,6 +270,11 @@ public class Mailtool
 		
 		log.debug("Constructor");
 	}
+	//public void setEmailService(EmailService service) { this.m_emailService = service; }
+	public void setUserDirectoryService(UserDirectoryService service) { this.m_userDirectoryService = service; }
+	public void setAuthzGroupService(AuthzGroupService service) { this.m_realmService = service; }
+	//public void setLogger(Logger logger) { this.logger = logger; } // by SK 6/30/2006
+
 	public boolean isGroupviewClicked() {
 		return groupviewClicked;
 	}
@@ -402,11 +401,7 @@ public class Mailtool
 		return title;
 		
 	}
-	//public void setEmailService(EmailService service) { this.m_emailService = service; }
-	public void setUserDirectoryService(UserDirectoryService service) { this.m_userDirectoryService = service; }
-	public void setAuthzGroupService(AuthzGroupService service) { this.m_realmService = service; }
-	//public void setLogger(Logger logger) { this.logger = logger; } // by SK 6/30/2006
-	
+
 
 	/**  Done Setting Sakai Services **/
 	
@@ -694,16 +689,16 @@ public class Mailtool
 	
 	public String processSendEmail()
 	{
-		List /* EmailUser */ selected = m_recipientSelector.getSelectedUsers();
-		List selectedGroupAwareRoleUsers = m_recipientSelector1.getSelectedUsers();
-		List selectedGroupUsers = m_recipientSelector2.getSelectedUsers();
-		List selectedSectionUsers = m_recipientSelector3.getSelectedUsers();
-		
-		
-		selected.addAll(selectedGroupAwareRoleUsers);
-		selected.addAll(selectedGroupUsers);
-		selected.addAll(selectedSectionUsers);
-		
+		/* EmailUser */ selected = m_recipientSelector.getSelectedUsers();
+		if (m_selectByTree){
+			selectedGroupAwareRoleUsers = m_recipientSelector1.getSelectedUsers();
+			selectedGroupUsers = m_recipientSelector2.getSelectedUsers();
+			selectedSectionUsers = m_recipientSelector3.getSelectedUsers();
+			
+			selected.addAll(selectedGroupAwareRoleUsers);
+			selected.addAll(selectedGroupUsers);
+			selected.addAll(selectedSectionUsers);
+		}
 		/* Put everyone in a set so the same person doesn't get multiple 
 		 * emails.
 		 */
@@ -1237,7 +1232,7 @@ public class Mailtool
 		return m_realmService.isAllowed(this.getCurrentUser().getUserid(), "mailtool.admin", siteid);
 
 	}
-****/
+****/ 
 	// role-based permission 
  	public boolean isAllowedToConfigure()
  	{
@@ -1541,20 +1536,6 @@ public class Mailtool
 				if (isGroupAwareRoleInSettings(rolename)){ setGroupAwareRoleExist(true); }
 
 		}
-/*			this is for detection group. it should be done in getEmailGroups()
- * 
-			try{
-			currentSite = siteService.getSite(siteid);
-			}
-			catch(Exception e) {}
-			Collection groups = currentSite.getGroups();
-			for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
-			      Group currentGroup = (Group) groupIterator.next();
-			      String groupname=currentGroup.getTitle();
-			      EmailRole emailrole2=new EmailRole("/site/"+siteid, groupname, groupname, groupname);
-			      theroles.add(emailrole2);
-			}
-			*/
 	}
 
 	public boolean isEmailArchiveAddedToSite()
@@ -1565,23 +1546,11 @@ public class Mailtool
 		//String sid=getSiteID();
 		try{
 			Site site=SiteService.getSite(m_siteid);
-/*			for (Iterator iPages = site.getPages().iterator();iPages.hasNext();)
+			Collection toolsInSite = site.getTools(toolid);
+			if (!toolsInSite.isEmpty())
 			{
-				SitePage page = (SitePage) iPages.next();
-				for (Iterator iTools = page.getTools().iterator(); iTools.hasNext();)
-				{
-					ToolConfiguration tool = (ToolConfiguration) iTools.next();
-					if (toolid.equals(tool.getTool().getId()))
-					{
-						hasEmailArchive=true;
-						break;
-					}
-*/
-					Collection toolsInSite = site.getTools(toolid);
-					if (!toolsInSite.isEmpty())
-					{
-						hasEmailArchive=true;
-					}
+				hasEmailArchive=true;
+			}
 		}
 		catch(Exception e)
 		{	
@@ -2119,10 +2088,6 @@ public class Mailtool
 			return false;
 		}
 		List mailHeaders = new Vector();
-//		mailHeaders.add(MailArchiveService.HEADER_OUTER_CONTENT_TYPE + ": text/plain; charset=ISO-8859-1");
-//		mailHeaders.add(MailArchiveService.HEADER_INNER_CONTENT_TYPE + ": text/plain; charset=ISO-8859-1");
-////		mailHeaders.add(MailArchiveService.HEADER_OUTER_CONTENT_TYPE + ": text/html; charset=ISO-8859-1");
-////		mailHeaders.add(MailArchiveService.HEADER_INNER_CONTENT_TYPE + ": text/html; charset=ISO-8859-1");
 
 		if (isFCKeditor() || isHTMLArea())
 		{
@@ -2163,42 +2128,6 @@ public class Mailtool
 		}
 		return true;
 	}
-/****
-	public void processReplyTo(ValueChangeEvent event)
-	{
-			if (isReplyToSender()){
-			setReplyToOther(false);
-			setDoNotReply(false);
-			}
-			else if (isDoNotReply()){
-			setReplyToSender(false);
-			setReplyToOther(false);
-			}
-			else if (isReplyToOther()){
-			setReplyToSender(false);
-			setDoNotReply(false);
-			}
-	}
-	public void processReplyTo2(ValueChangeEvent event)
-	{
-		String reply = getReplyToSelected().trim().toLowerCase();
-			if (reply.equals("yes")){ // reply to sender
-				setReplyToSender(true);
-				setReplyToOther(false);
-				setDoNotReply(false);
-			}
-			else if (reply.equals("no")){
-				setDoNotReply(true);
-				setReplyToSender(false);
-				setReplyToOther(false);
-			}
-			else if (reply.equals("otheremail")){
-				setReplyToOther(true);
-				setReplyToSender(false);
-				setDoNotReply(false);
-			}
-	}	
-***/	
 	public void processFileUpload(ValueChangeEvent event) throws AbortProcessingException
 	{
 		
@@ -2419,30 +2348,9 @@ public class Mailtool
 					i++;
 				}
 			}
-/*****			
-			if (getSubjectPrefix().equals("")!=true && getSubjectPrefix()!=null){
-				//setMessageSubject(getSubjectPrefix());
-				setConfigParam("subjectprefix", getSubjectPrefix());
-
-			}
-*****/			
 			//setViewChoice(getViewChoice());
 			setConfigParam("recipview", getViewChoice());
 
-/***			
-			if (isSendMeCopyInOptions()){
-				setConfigParam("sendmecopy", isSendMeCopy() ? "yes": "no");
-			}
-			else{
-				setConfigParam("sendmecopy", "");
-			}
-			if (isArchiveMessageInOptions()){
-				setConfigParam("emailarchive", isArchiveMessage() ? "yes": "no");
-			}
-			else {
-				setConfigParam("emailarchive", "");
-			}
-***/			
 			setConfigParam("sendmecopy", isSendMeCopy() ? "yes": "no");
 			setConfigParam("emailarchive", isArchiveMessage() ? "yes": "no");
 /*			
