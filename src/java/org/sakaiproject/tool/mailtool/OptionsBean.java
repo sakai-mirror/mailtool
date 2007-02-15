@@ -26,9 +26,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import javax.faces.model.SelectItem;
-
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.cover.AuthzGroupService;
@@ -41,7 +39,6 @@ import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -101,14 +98,13 @@ public class OptionsBean {
 	private int num_roles_renamed=0;
 
 	private final Log log = LogFactory.getLog(this.getClass());
-
 	
 	public OptionsBean()
 	{
 		num_groups=0;
 		num_sections=0;
 		num_groupawarerole=0;
-		setCurrentMode("compose");
+
 		m_sitetype=getSiteType();
 		m_siteid=getSiteID();
 		m_realmid=getSiteRealmID();
@@ -152,7 +148,7 @@ public class OptionsBean {
 		
 		log.debug("Constructor");
 	}
-	
+
 	public void setAuthzGroupService(AuthzGroupService service) { this.m_realmService = service; }
 	public void setUserDirectoryService(UserDirectoryService service) { this.m_userDirectoryService = service; }
 
@@ -166,7 +162,6 @@ public class OptionsBean {
 	}
 	protected String getSiteType()
 	{
-		//String sid=getSiteID();
 		String type="";
 		try{
 		type=SiteService.getSite(m_siteid).getType();
@@ -187,13 +182,6 @@ public class OptionsBean {
 	}
 	public String getGroupAwareRole()
 	{
-/*		String groupAwareRole = this.getConfigParam("GroupAwareRole");
-		if (groupAwareRole == null || groupAwareRole.trim().equals(""))
-			return groupAwareRoleDefault;
-		else
-			return groupAwareRole.trim();
-*/
-		List /* EmailRole */ theroles = new ArrayList();
 		String gar=ServerConfigurationService.getString("mailtool.group.aware.role");
 		String[] gartokens=gar.split(",");
 
@@ -209,33 +197,15 @@ public class OptionsBean {
 					if (gartokens[t].trim().equals(rolename.trim())) return rolename;
 				}
 		}
-/*		if (gar!="" && gar!=null)
-		{
-			return gar.trim();
-		}
-*/
 		return groupAwareRoleDefault;		
 	}
 	public boolean isEmailArchiveAddedToSite()
 	{
 		boolean hasEmailArchive =false;
 		String toolid="sakai.mailbox";
-
-		//String sid=getSiteID();
 		try{
 			Site site=SiteService.getSite(m_siteid);
-/*			for (Iterator iPages = site.getPages().iterator();iPages.hasNext();)
-			{
-				SitePage page = (SitePage) iPages.next();
-				for (Iterator iTools = page.getTools().iterator(); iTools.hasNext();)
-				{
-					ToolConfiguration tool = (ToolConfiguration) iTools.next();
-					if (toolid.equals(tool.getTool().getId()))
-					{
-						hasEmailArchive=true;
-						break;
-					}
-*/
+
 					Collection toolsInSite = site.getTools(toolid);
 					if (!toolsInSite.isEmpty())
 					{
@@ -247,13 +217,10 @@ public class OptionsBean {
 			log.debug("Exception: Mailtool.isEmailArchiveAddedToSite(), " + e.getMessage());
 		}
 		return hasEmailArchive;
-
 	}
 
 	public void initializeCurrentRoles()
 	{
-		//String siteid=getSiteID();
-		//String realmid="/site/"+siteid;
 		String realmid=getSiteRealmID();
 		try{
 			arole=m_realmService.getAuthzGroup(realmid);
@@ -263,19 +230,12 @@ public class OptionsBean {
 		for (Iterator i = arole.getRoles().iterator(); i.hasNext(); ) {
 				Role r = (Role) i.next();
 				String rolename=r.getId();
-//				EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, rolename, rolename);
-	//			theroles.add(emailrole);
-
-				// initialize "rename roles" in options
 				Configuration c=new Configuration();
 				c.setId(num_role_id);
 				c.setRoleId(rolename);
-				//c.setRealmid("/site/"+siteid);
 				c.setRealmid(getSiteRealmID());
 				c.setSingular(rolename);
 				c.setPlural(rolename+"s");
-//				c.setSingularNew("");
-//				c.setPluralNew("");
 				
 				c.setSingularNew(getConfigParam("role"+(num_role_id+1)+"singular"));
 				c.setPluralNew(getConfigParam("role"+(num_role_id+1)+"plural"));
@@ -287,24 +247,9 @@ public class OptionsBean {
 				if (isGroupAwareRoleInSettings(rolename)){ setGroupAwareRoleExist(true); }
 
 		}
-/*			this is for detection group. it should be done in getEmailGroups()
- * 
-			try{
-			currentSite = siteService.getSite(siteid);
-			}
-			catch(Exception e) {}
-			Collection groups = currentSite.getGroups();
-			for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
-			      Group currentGroup = (Group) groupIterator.next();
-			      String groupname=currentGroup.getTitle();
-			      EmailRole emailrole2=new EmailRole("/site/"+siteid, groupname, groupname, groupname);
-			      theroles.add(emailrole2);
-			}
-			*/
 	}
 	protected String getSiteTitle()
 	{
-		//String sid=getSiteID();
 		String title="";
 		try{
 			title=SiteService.getSite(m_siteid).getTitle();
@@ -331,7 +276,6 @@ public class OptionsBean {
 		{
 			String titleDefault=getSiteTitle()+": ";
 			return titleDefault;
-			//return "";
 		}
 		else
 			return prefix;
@@ -340,7 +284,6 @@ public class OptionsBean {
 	{
 		return m_subject;
 	}
-	
 	public void setMessageSubject(String subject)
 	{
 		m_subject = subject;
@@ -357,7 +300,6 @@ public class OptionsBean {
 		
 		return  m_recipientSelector;
 	}
-
 	public RecipientSelector getRecipientSelector_GroupAwareRole()
 	{
 		getRecipientSelectors();
@@ -370,14 +312,12 @@ public class OptionsBean {
 		
 		return  m_recipientSelector2;
 	}
-
 	public RecipientSelector getRecipientSelector_Section()
 	{
 		getRecipientSelectors();
 		
 		return  m_recipientSelector3;
 	}
-	
 	
 	public void getRecipientSelectors()
 	{
@@ -427,12 +367,9 @@ public class OptionsBean {
 		}
 		m_buildNewView = false;
 	 }
-		
-		//return m_recipientSelector;
 	}
 	public boolean isGroupAwareRoleInSettings(String role)
 	{
-
 		String gar=ServerConfigurationService.getString("mailtool.group.aware.role");
 		String[] gartokens=gar.split(",");
 
@@ -444,31 +381,9 @@ public class OptionsBean {
 
 	public List /* EmailRole */ getEmailRoles()
 	{
-		
 		List /* EmailRole */ theroles = new ArrayList();
 		List allgroups = new ArrayList();
 		List allsections = new ArrayList();
-		
-		//String siteid=getSiteID();
-		//String realmid="/site/"+siteid;
-		//String realmid=getSiteRealmID();
-		//String sitetype=getSiteType();
-/*		
-		if (sitetype.equals("project")){
-			EmailRole emailrole=new EmailRole("/site/"+siteid, "maintain", "Maintain", "Maintain roles");
-			theroles.add(emailrole);
-			EmailRole emailrole2=new EmailRole("/site/"+siteid, "access", "Access", "Access roles");
-			theroles.add(emailrole2);
-		}
-		else if (sitetype.equals("course")){
-			EmailRole emailrole=new EmailRole("/site/"+siteid, "Instructor", "Instructor", "Instructors");
-			theroles.add(emailrole);
-			EmailRole emailrole2=new EmailRole("/site/"+siteid, "Student", "Student", "Students");
-			theroles.add(emailrole2);
-			EmailRole emailrole3=new EmailRole("/site/"+siteid, "Teaching Assistant", "TA", "TAs");
-			theroles.add(emailrole3);
-		}
-*/
 		for (int i = 1; i < (NUMBER_ROLES+1); i++)
 		{
 			String rolerealm = this.getConfigParam("role" + i + "realmid");
@@ -482,17 +397,13 @@ public class OptionsBean {
 				(rolesingular != null && rolesingular != "") &&
 				(roleplural != null && roleplural != "") )
 			{
-				//EmailRole emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural);
 				EmailRole emailrole=null;
-				
-				//if (rolesingular.equals("Student"))
 				if (isGroupAwareRoleInSettings(rolename)){
 					emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural, "role_groupaware");
 					num_groupawarerole++;
 				}
 				else 
 					emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural, "role");
-
 				theroles.add(emailrole);
 				already_configured=true;
 			}
@@ -518,8 +429,6 @@ public class OptionsBean {
 						plural = rolename+"s";
 					}
 					EmailRole emailrole=null;
-					//EmailRole emailrole=new EmailRole("/site/"+siteid, rolename, singular, plural);
-					//if (singular.equals("Student") || singular.equals("access"))
 					if (isGroupAwareRoleInSettings(rolename)){
 						emailrole=new EmailRole("/site/"+m_siteid, rolename, singular, plural, "role_groupaware");
 						num_groupawarerole++;
@@ -529,9 +438,7 @@ public class OptionsBean {
 					theroles.add(emailrole);
 			}				
 		}
-		
-		////////// adding groups as roles
-		
+		// adding groups as roles
 		try{
 			currentSite = siteService.getSite(m_siteid);
 			}
@@ -553,18 +460,13 @@ public class OptionsBean {
 			    	  allgroups.add(emailrole2);
 			    	  num_groups++;
 			      }
-		      
-			      //theroles.add(emailrole2);
 			}
 			theroles.addAll(allgroups); // for sorted list in side-by-side view & scrolling list view
 			theroles.addAll(allsections); // for sorted list ...
-			////////////////
 		return theroles;
 	}
 
-	/*
-	 * Build all groups that will be used for this
-	 */
+	//Build all groups that will be used for this
 	public List /* EmailGroup */ getEmailGroups()
 	{
 		List /* EmailGroup */ thegroups = new ArrayList();
@@ -581,13 +483,10 @@ public class OptionsBean {
 				
 				AuthzGroup therealm = null;
 				try {
-					//therealm = m_realmService.getRealm(realmid);
 					therealm = m_realmService.getAuthzGroup(realmid);
 				} catch (Exception e) {
 					log.debug("Exception: Mailtool.getEmailGroups() #1, " + e.getMessage());
 				}
-				
-				//Set users = therealm.getUsersWithRole(emailrole.getRoleid());
 				Set users = therealm.getUsersHasRole(emailrole.getRoleid());
 				List /* EmailUser */ mailusers = new ArrayList();
 				for (Iterator j = users.iterator(); j.hasNext();)
@@ -595,14 +494,6 @@ public class OptionsBean {
 					String userid = (String) j.next();
 					try {
 						User theuser = m_userDirectoryService.getUser(userid);
-	//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
-	//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
-/***						
-						// trying to fix SAK-7356 (Guests are not included in recipient lists)
-						EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName().equals("") ? theuser.getEmail() : theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
-***/
-						// trying to fix SAK-7356 (Guests are not included in recipient lists)
-						// also SAK-7539
 						String firstname_for_display = "";
 						String lastname_for_display = "";
 						if (theuser.getFirstName().trim().equals("")){
@@ -641,7 +532,6 @@ public class OptionsBean {
 					log.debug("Exception: Mailtool.getEmailGroups() #3, " + e.getMessage());
 				}
 				Collection groups = currentSite.getGroups();
-				/////Group agroup=currentSite.getGroup(emailrole.getRealmid()); //////?????????????????????
 				Group agroup=null;
 				for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
 				      agroup = (Group) groupIterator.next();
@@ -654,10 +544,6 @@ public class OptionsBean {
 				   	  String userid2 = (String) k.next();
 				   	  try {
 				  		  User theuser2=m_userDirectoryService.getUser(userid2);
-//				   		  EmailUser emailuser2 = new EmailUser(theuser2.getId(), theuser2.getSortName(), theuser2.getEmail());
-
-							// trying to fix SAK-7356 (Guests are not included in recipient lists)
-							// also SAK-7539
 							String firstname_for_display = "";
 							String lastname_for_display = "";
 							if (theuser2.getFirstName().trim().equals("")){
@@ -693,7 +579,6 @@ public class OptionsBean {
 					log.debug("Exception: Mailtool.getEmailGroups() #3, " + e.getMessage());
 				}
 				Collection groups = currentSite.getGroups();
-				/////Group agroup=currentSite.getGroup(emailrole.getRealmid()); //////?????????????????????
 				Group agroup=null;
 				for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
 				      agroup = (Group) groupIterator.next();
@@ -706,10 +591,6 @@ public class OptionsBean {
 				   	  String userid2 = (String) k.next();
 				   	  try {
 				  		  User theuser2=m_userDirectoryService.getUser(userid2);
-//				   		  EmailUser emailuser2 = new EmailUser(theuser2.getId(), theuser2.getSortName(), theuser2.getEmail());
-
-							// trying to fix SAK-7356 (Guests are not included in recipient lists)
-							// also SAK-7539
 							String firstname_for_display = "";
 							String lastname_for_display = "";
 							if (theuser2.getFirstName().trim().equals("")){
@@ -733,35 +614,26 @@ public class OptionsBean {
 				EmailGroup thegroup2 = new EmailGroup(emailrole, mailusers2);
 				      thegroups.add(thegroup2);
 			} // else
-
 		}
-		
 		return thegroups;
 	}
 	
 	public List /* EmailGroup */ getEmailGroupsByType(String roletypefilter)
 	{
 		List /* EmailGroup */ thegroups = new ArrayList();
-		
 		List emailroles = this.getEmailRoles();
-
 		for (Iterator i = emailroles.iterator(); i.hasNext();)
 		{
 			EmailRole emailrole = (EmailRole) i.next();
-			
 			if (emailrole.roletype.equals("role") && roletypefilter.equals("role"))
 			{
 				String realmid = emailrole.getRealmid();
-				
 				AuthzGroup therealm = null;
 				try {
-					//therealm = m_realmService.getRealm(realmid);
 					therealm = m_realmService.getAuthzGroup(realmid);
 				} catch (Exception e) {
 					log.debug("Exception: Mailtool.getEmailGroups() #1, " + e.getMessage());
 				}
-				
-				//Set users = therealm.getUsersWithRole(emailrole.getRoleid());
 				Set users = therealm.getUsersHasRole(emailrole.getRoleid());
 				List /* EmailUser */ mailusers = new ArrayList();
 				for (Iterator j = users.iterator(); j.hasNext();)
@@ -769,14 +641,6 @@ public class OptionsBean {
 					String userid = (String) j.next();
 					try {
 						User theuser = m_userDirectoryService.getUser(userid);
-	//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
-	//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
-/***						
-						// trying to fix SAK-7356 (Guests are not included in recipient lists)
-						EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName().equals("") ? theuser.getEmail() : theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
-***/
-						// trying to fix SAK-7356 (Guests are not included in recipient lists)
-						// also SAK-7539
 						String firstname_for_display = "";
 						String lastname_for_display = "";
 						if (theuser.getFirstName().trim().equals("")){
@@ -788,12 +652,8 @@ public class OptionsBean {
 						else {
 							firstname_for_display = theuser.getFirstName();
 						}
-						
 						lastname_for_display = theuser.getLastName();
-
 						EmailUser emailuser = new EmailUser(theuser.getId(), firstname_for_display, lastname_for_display, theuser.getEmail());
-						//EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
-						
 						mailusers.add(emailuser);
 					} catch (Exception e) {
 						log.debug("Exception: Mailtool.getEmailGroups() #2, " + e.getMessage());
@@ -816,27 +676,18 @@ public class OptionsBean {
 					log.debug("Exception: Mailtool.getEmailGroups() #3, " + e.getMessage());
 				}
 				Collection groups = currentSite.getGroups();
-				/////Group agroup=currentSite.getGroup(emailrole.getRealmid()); //////?????????????????????
 				Group agroup=null;
 				for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
 				      agroup = (Group) groupIterator.next();
 				      String groupname=agroup.getTitle();
 				      if (emailrole.getRoleid().equals(groupname)) break;
 				}
-				
-				//Set users2=agroup.getUsers(); ////////////////////////// something like that ---- Need to be tested !!!!!!
-				// filtering non-group-aware Role users
-				//
 				Set users2=agroup.getUsersHasRole(groupAwareRoleFound);
 				List mailusers2 = new ArrayList();
 				for (Iterator k= users2.iterator();k.hasNext();){
 				   	  String userid2 = (String) k.next();
 				   	  try {
 				  		  User theuser2=m_userDirectoryService.getUser(userid2);
-//				   		  EmailUser emailuser2 = new EmailUser(theuser2.getId(), theuser2.getSortName(), theuser2.getEmail());
-
-							// trying to fix SAK-7356 (Guests are not included in recipient lists)
-							// also SAK-7539
 							String firstname_for_display = "";
 							String lastname_for_display = "";
 							if (theuser2.getFirstName().trim().equals("")){
@@ -872,26 +723,18 @@ public class OptionsBean {
 					log.debug("Exception: Mailtool.getEmailGroups() #3, " + e.getMessage());
 				}
 				Collection groups = currentSite.getGroups();
-				/////Group agroup=currentSite.getGroup(emailrole.getRealmid()); //////?????????????????????
 				Group agroup=null;
 				for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
 				      agroup = (Group) groupIterator.next();
 				      String groupname=agroup.getTitle();
 				      if (emailrole.getRoleid().equals(groupname)) break;
 				}
-				//Set users2=agroup.getUsers(); ////////////////////////// something like that ---- Need to be tested !!!!!!
-				// filtering out non-group-aware Role users
 				Set users2=agroup.getUsersHasRole(groupAwareRoleFound);
-				
 				List mailusers2 = new ArrayList();
 				for (Iterator k= users2.iterator();k.hasNext();){
 				   	  String userid2 = (String) k.next();
 				   	  try {
 				  		  User theuser2=m_userDirectoryService.getUser(userid2);
-//				   		  EmailUser emailuser2 = new EmailUser(theuser2.getId(), theuser2.getSortName(), theuser2.getEmail());
-
-							// trying to fix SAK-7356 (Guests are not included in recipient lists)
-							// also SAK-7539
 							String firstname_for_display = "";
 							String lastname_for_display = "";
 							if (theuser2.getFirstName().trim().equals("")){
@@ -903,12 +746,9 @@ public class OptionsBean {
 							else {
 								firstname_for_display = theuser2.getFirstName();
 							}
-							
 							lastname_for_display = theuser2.getLastName();
-
 							EmailUser emailuser2 = new EmailUser(theuser2.getId(), firstname_for_display, lastname_for_display, theuser2.getEmail());
-				  		  
-				  		  mailusers2.add(emailuser2);
+							mailusers2.add(emailuser2);
 				   	  } catch (Exception e) {}
 				}
 				Collections.sort(mailusers2);
@@ -921,13 +761,10 @@ public class OptionsBean {
 				
 				AuthzGroup therealm = null;
 				try {
-					//therealm = m_realmService.getRealm(realmid);
 					therealm = m_realmService.getAuthzGroup(realmid);
 				} catch (Exception e) {
 					log.debug("Exception: Mailtool.getEmailGroups() #1, " + e.getMessage());
 				}
-				
-				//Set users = therealm.getUsersWithRole(emailrole.getRoleid());
 				Set users = therealm.getUsersHasRole(emailrole.getRoleid());
 				List /* EmailUser */ mailusers = new ArrayList();
 				for (Iterator j = users.iterator(); j.hasNext();)
@@ -935,14 +772,6 @@ public class OptionsBean {
 					String userid = (String) j.next();
 					try {
 						User theuser = m_userDirectoryService.getUser(userid);
-	//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
-	//					EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
-/***						
-						// trying to fix SAK-7356 (Guests are not included in recipient lists)
-						EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getFirstName().equals("") ? theuser.getEmail() : theuser.getFirstName(), theuser.getLastName(), theuser.getEmail());
-***/
-						// trying to fix SAK-7356 (Guests are not included in recipient lists)
-						// also SAK-7539
 						String firstname_for_display = "";
 						String lastname_for_display = "";
 						if (theuser.getFirstName().trim().equals("")){
@@ -954,12 +783,8 @@ public class OptionsBean {
 						else {
 							firstname_for_display = theuser.getFirstName();
 						}
-						
 						lastname_for_display = theuser.getLastName();
-
 						EmailUser emailuser = new EmailUser(theuser.getId(), firstname_for_display, lastname_for_display, theuser.getEmail());
-						//EmailUser emailuser = new EmailUser(theuser.getId(), theuser.getSortName(), theuser.getEmail());
-						
 						mailusers.add(emailuser);
 					} catch (Exception e) {
 						log.debug("Exception: Mailtool.getEmailGroups() #4, " + e.getMessage());
@@ -969,18 +794,13 @@ public class OptionsBean {
 				EmailGroup thegroup = new EmailGroup(emailrole, mailusers);
 				thegroups.add(thegroup);
 			} // else
-
-
 		}
-		
 		return thegroups;
 	}		
-
 	public String processGoToComposeByCancel()
 	{
 		m_changedViewChoice=m_currentViewChoice;
 		m_buildNewView = true;
-		setCurrentMode("compose");
 		return "compose";
 	}	
 	public String getViewChoice()
@@ -1081,14 +901,73 @@ public class OptionsBean {
 			m_selectByRole = true;
 		}
 	}
-
-	public String getCurrentMode()
+	public boolean isShowRenamingRoles()
 	{
-		return m_mode;
+		String rename=ServerConfigurationService.getString("mailtool.show.renaming.roles");
+		if (rename!="" && rename!=null)
+		{
+			return (rename.trim().toLowerCase().equals("yes") || rename.trim().toLowerCase().equals("true") ? true : false); 
+		}
+		return false;
 	}
-	public void setCurrentMode(String m)
+	protected void setConfigParam(String parameter, String newvalue)
 	{
-		this.m_mode=m;
+		ToolManager.getCurrentPlacement().getPlacementConfig().setProperty(parameter, newvalue);
+	//	ToolManager.getCurrentPlacement().save(); // will be saved in processUpdateOptions 
+	}
+	public String processUpdateOptions()
+	{
+		if (isShowRenamingRoles()){
+			int i=1;
+			Configuration c=null;
+			Iterator iter = renamedRoles.iterator();
+			
+			while (iter.hasNext()){
+				c=(Configuration) iter.next();
+				if (c.getSingularNew().trim().equals("")!=true && c.getSingularNew()!=null) setConfigParam("role"+i+"singular", c.getSingularNew());
+				if (c.getPluralNew().trim().equals("")!=true && c.getPluralNew()!=null) setConfigParam("role"+i+"plural", c.getPluralNew());
+				i++;
+			}
+		}
+		setConfigParam("recipview", getViewChoice());
+		setConfigParam("sendmecopy", isSendMeCopy() ? "yes": "no");
+		setConfigParam("emailarchive", isArchiveMessage() ? "yes": "no");
+		String reply = getReplyToSelected().trim().toLowerCase();
+		if (reply.equals("yes")){
+			setConfigParam("replyto", "yes");
+		} else if (reply.equals("no")){
+			setConfigParam("replyto", "no");
+		} else if (reply.equals("otheremail")){
+			setConfigParam("replyto", getReplyToOtherEmail().trim());
+		}
+		if (getTextFormat().trim().toLowerCase().equals("htmltext")){
+			setConfigParam("messageformat", "htmltext");
+		}
+		else{
+			setConfigParam("messageformat", "plaintext");
+		}
+		
+		ToolManager.getCurrentPlacement().save(); 
+		
+		// reset Mailtool (with updated options)
+		ToolSession ts = SessionManager.getCurrentSession().getToolSession(ToolManager.getCurrentPlacement().getId());
+		ts.clearAttributes();
+
+		return "compose"; // go to Compose
+	}
+	public boolean isShowRenamingRolesClicked() {
+		return showRenamingRolesClicked;
+	}
+	public void setShowRenamingRolesClicked(boolean showRenamingRolesClicked) {
+		this.showRenamingRolesClicked = showRenamingRolesClicked;
+	}
+	public void toggle_showRemainingRoleClicked()
+    {
+		showRenamingRolesClicked = showRenamingRolesClicked ?  false : true;
+    }
+	public List getRenamedRoles() {
+
+		return renamedRoles;	
 	}
 	public boolean isSelectByRole()
 	{
@@ -1163,76 +1042,6 @@ public class OptionsBean {
 	{
 		m_textformat = format;
 	}
-	public boolean isShowRenamingRoles()
-	{
-		String rename=ServerConfigurationService.getString("mailtool.show.renaming.roles");
-		if (rename!="" && rename!=null)
-		{
-			return (rename.trim().toLowerCase().equals("yes") || rename.trim().toLowerCase().equals("true") ? true : false); 
-		}
-		return false;
-	}
-	public boolean isShowRenamingRolesClicked() {
-		return showRenamingRolesClicked;
-	}
-	public void setShowRenamingRolesClicked(boolean showRenamingRolesClicked) {
-		this.showRenamingRolesClicked = showRenamingRolesClicked;
-	}
-	public void toggle_showRemainingRoleClicked()
-    {
-		showRenamingRolesClicked = showRenamingRolesClicked ?  false : true;
-    }
-	public List getRenamedRoles() {
-
-		return renamedRoles;	
-	}
-	protected void setConfigParam(String parameter, String newvalue)
-	{
-		ToolManager.getCurrentPlacement().getPlacementConfig().setProperty(parameter, newvalue);
-	//	ToolManager.getCurrentPlacement().save(); // will be saved in processUpdateOptions 
-	}
-	public String processUpdateOptions()
-	{
-		if (isShowRenamingRoles()){
-			int i=1;
-			Configuration c=null;
-			Iterator iter = renamedRoles.iterator();
-			
-			while (iter.hasNext()){
-				c=(Configuration) iter.next();
-				if (c.getSingularNew().trim().equals("")!=true && c.getSingularNew()!=null) setConfigParam("role"+i+"singular", c.getSingularNew());
-				if (c.getPluralNew().trim().equals("")!=true && c.getPluralNew()!=null) setConfigParam("role"+i+"plural", c.getPluralNew());
-				i++;
-			}
-		}
-		
-		//setViewChoice(getViewChoice());
-		setConfigParam("recipview", getViewChoice());
-		setConfigParam("sendmecopy", isSendMeCopy() ? "yes": "no");
-		setConfigParam("emailarchive", isArchiveMessage() ? "yes": "no");
-		String reply = getReplyToSelected().trim().toLowerCase();
-		if (reply.equals("yes")){
-			setConfigParam("replyto", "yes");
-		} else if (reply.equals("no")){
-			setConfigParam("replyto", "no");
-		} else if (reply.equals("otheremail")){
-			setConfigParam("replyto", getReplyToOtherEmail().trim());
-		}
-		if (getTextFormat().trim().toLowerCase().equals("htmltext")){
-			setConfigParam("messageformat", "htmltext");
-		}
-		else{
-			setConfigParam("messageformat", "plaintext");
-		}
-		
-		ToolManager.getCurrentPlacement().save(); 
-		
-		// reset Mailtool (with updated options)
-		ToolSession ts = SessionManager.getCurrentSession().getToolSession(ToolManager.getCurrentPlacement().getId());
-		ts.clearAttributes();
-		setCurrentMode("compose");
-		return "compose"; // go to Compose
-	}
 	public String getReplyToOtherEmail()
 	{
 		return m_replytootheremail;
@@ -1256,29 +1065,24 @@ public class OptionsBean {
 	public boolean isGroupviewClicked() {
 		return groupviewClicked;
 	}
-
 	public void setGroupviewClicked(boolean groupviewClicked) {
 		this.groupviewClicked = groupviewClicked;
 	}
 	public boolean isSectionviewClicked() {
 		return sectionviewClicked;
 	}
-
 	public void setSectionviewClicked(boolean sectionviewClicked) {
 		this.sectionviewClicked = sectionviewClicked;
 	}
 	public int getNum_sections() {
 		return num_sections;
 	}
-
 	public void setNum_sections(int num_sections) {
 		this.num_sections = num_sections;
 	}
-
 	public int getNum_groups() {
 		return num_groups;
 	}
-
 	public void setNum_groups(int num_groups) {
 		this.num_groups = num_groups;
 	}
@@ -1291,14 +1095,12 @@ public class OptionsBean {
 	public boolean isAllGroupSelected() {
 		return allGroupSelected;
 	}
-
 	public void setAllGroupSelected(boolean allGroupSelected) {
 		this.allGroupSelected = allGroupSelected;
 	}
 	public boolean isAllSectionSelected() {
 		return allSectionSelected;
 	}
-
 	public void setAllSectionSelected(boolean allSectionSelected) {
 		this.allSectionSelected = allSectionSelected;
 	}
