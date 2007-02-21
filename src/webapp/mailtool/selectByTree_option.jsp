@@ -22,7 +22,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 					<h:selectBooleanCheckbox disabled="true" id="selectAllGroupAwareRoleCheckbox2" value="#{Option.allGroupAwareRoleSelected}" />
 					<h:outputLabel for="selectAllGroupAwareRoleCheckbox2" value=" All #{Option.groupAwareRole}s" style="color:#777;white-space:nowrap"/>
 					<h:outputText value=" - "  />			
-					<h:commandLink action="#{Option.toggle_groupAwareRoleviewClicked}" value=" Collapse Individuals"/>
+					<h:commandLink action="#{Option.toggle_groupAwareRoleviewClicked}" value=" Collapse Individuals" style="text-decoration: underline"/>
 				</h:panelGroup>
 			</h:panelGroup>
 			<h:panelGroup rendered="#{Option.groupAwareRoleExist and Option.num_groups > 0}">	
@@ -31,7 +31,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 					<h:commandLink action="#{Option.toggle_groupviewClicked}" value=" Select Groups" style="text-decoration: underline"/>
 				</h:panelGroup>
 				<h:panelGroup rendered="#{Option.groupviewClicked}">
-					<h:commandLink action="#{Option.toggle_groupviewClicked}" value=" Collapse Groups"/>
+					<h:commandLink action="#{Option.toggle_groupviewClicked}" value=" Collapse Groups" style="text-decoration: underline"/>
 				</h:panelGroup>
 			</h:panelGroup>
 			<h:panelGroup rendered="#{Option.groupAwareRoleExist and Option.num_sections > 0}">			
@@ -40,7 +40,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 					<h:commandLink action="#{Option.toggle_sectionviewClicked}" value=" Select Sections" style="text-decoration: underline"/>
 				</h:panelGroup>	
 				<h:panelGroup rendered="#{Option.sectionviewClicked}">
-					<h:commandLink action="#{Option.toggle_sectionviewClicked}" value=" Collapse Sections"/>
+					<h:commandLink action="#{Option.toggle_sectionviewClicked}" value=" Collapse Sections" style="text-decoration: underline"/>
 				</h:panelGroup>	
 			</h:panelGroup>
 		</h:panelGroup>		
@@ -77,7 +77,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 							<h:selectBooleanCheckbox disabled="true" id="selectAllGroupCheckbox2" value="#{grouprow.allSelected}" />
 							<h:outputText value="#{grouprow.pluralRolename} "  />
 							<h:outputText value=" - "  />
-							<h:commandLink actionListener="#{grouprow.actionCollapse}" value="#{msgs.collapse_button}"/>
+							<h:commandLink actionListener="#{grouprow.actionCollapse}" value="#{msgs.collapse_button}" style="text-decoration: underline"/>
 							<h:dataTable value="#{grouprow.userTable}" var="guser_row"  styleClass="listHier lines nolines" columnClasses="attach,,attach,"  cellpadding="0" cellspacing="0" style="margin-left:2em;width:auto;font-weight:normal">
 								<h:column>
 									<h:selectBooleanCheckbox disabled="true" id="indCol1Checkbox3" value="#{guser_row.selected1}"  />
@@ -110,7 +110,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 							<h:selectBooleanCheckbox id="selectAllSectionCheckbox2" value="#{sectionrow.allSelected}" />			
 							<h:outputText value="#{sectionrow.pluralRolename} "  />
 							<h:outputText value=" - "  />
-							<h:commandLink actionListener="#{sectionrow.actionCollapse}" value="#{msgs.collapse_button}"/>
+							<h:commandLink actionListener="#{sectionrow.actionCollapse}" value="#{msgs.collapse_button}" style="text-decoration: underline"/>
 							<h:dataTable value="#{sectionrow.userTable}" var="suser_row"  styleClass="listHier lines nolines" columnClasses="attach,,attach,"  cellpadding="0" cellspacing="0" style="margin-left:2em;width:auto;font-weight:normal">
 								<h:column>
 									<h:selectBooleanCheckbox disabled="true" id="indCol1Checkbox5" value="#{suser_row.selected1}"  />
@@ -143,7 +143,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 					<h:selectBooleanCheckbox disabled="true" id="selectAllCheckbox2" value="#{row.allSelected}" />
 					<h:outputLabel for="selectAllCheckbox2" value="#{msgs.all_prefix} #{row.pluralRolename} " style="color:#777;white-space:nowrap"/>
 					<h:outputText value=" - "  />
-					<h:commandLink actionListener="#{row.actionCollapse}" value="Collapse #{row.pluralRolename} " />
+					<h:commandLink actionListener="#{row.actionCollapse}" value="Collapse #{row.pluralRolename} " style="text-decoration: underline"/>
 				</h:panelGroup>
 	
 				<h:panelGroup rendered="#{not row.collapsed}">
