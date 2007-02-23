@@ -50,7 +50,6 @@ public class OptionsBean {
 	protected Site currentSite = null;
 
 	protected static final int NUMBER_ROLES = 15;
-	private String m_changedViewChoice = "";
 	private String m_currentViewChoice = "";
 	private boolean m_buildNewView = false;
 	protected String m_mode="";
@@ -104,7 +103,7 @@ public class OptionsBean {
 		m_sitetype=getSiteType();
 		m_siteid=getSiteID();
 		m_realmid=getSiteRealmID();
-		m_changedViewChoice = getRecipview();
+		m_currentViewChoice = getRecipview();
 		groupAwareRoleDefault=getGroupAwareRoleDefault();
 		groupAwareRoleFound=getGroupAwareRole();
 		
@@ -781,28 +780,29 @@ public class OptionsBean {
 	}		
 	public String processGoToComposeByCancel()
 	{
-		m_changedViewChoice=m_currentViewChoice;
-		m_buildNewView = true;
 		return "compose";
 	}	
 	public String getViewChoice()
 	{
-		if (m_changedViewChoice.equals(""))
+		if (m_currentViewChoice.equals(""))
 			return this.getRecipview();
 		else
-			return m_changedViewChoice;
+			return m_currentViewChoice;
 	}
 	public void setViewChoice(String view)
 	{
-		if (m_changedViewChoice.equals(view))
+		if (m_currentViewChoice.equals(view))
 		{
 			m_buildNewView = false;
 		}
 		else
 		{
-			m_changedViewChoice = view;
 			m_buildNewView = true;
 		}
+		m_currentViewChoice = view;
+		
+		setSelectorType();
+		getRecipientSelectors();
 	}
 	public String getRecipview()
 	{
@@ -837,11 +837,7 @@ public class OptionsBean {
 	}
 	protected void setSelectorType()
 	{	
-		String type = "";
-		if (m_changedViewChoice.equals(""))
-			type = getRecipview();
-		else 
-			type = m_changedViewChoice;
+		String type = m_currentViewChoice;
 		
 		m_selectByRole = false;
 		m_selectByUser = false;
@@ -959,27 +955,27 @@ public class OptionsBean {
 	}
 	public boolean isSelectByRole()
 	{
-		setSelectorType();
+//		setSelectorType();
 		return m_selectByRole;
 	}
 	public boolean isSelectByUser()
 	{
-		setSelectorType();
+//		setSelectorType();
 		return m_selectByUser;
 	}
 	public boolean isSelectByTree()
 	{
-		setSelectorType();
+//		setSelectorType();
 		return m_selectByTree;
 	}
 	public boolean isSelectSideBySide()
 	{
-		setSelectorType();
+//		setSelectorType();
 		return m_selectSideBySide;
 	}
 	public boolean isSelectByFoothill()
 	{
-		setSelectorType();
+//		setSelectorType();
 		return m_selectByFoothill;
 	}
 	public boolean isSendMeCopy()
