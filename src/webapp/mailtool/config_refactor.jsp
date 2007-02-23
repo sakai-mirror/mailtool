@@ -84,13 +84,13 @@
 						<f:facet name="footer">
 						  <h:panelGroup rendered="#{Option.showRenamingRoles}">
 							<h:panelGroup rendered="#{not Option.showRenamingRolesClicked }">
-							  <h:commandLink action="#{Option.toggle_showRemainingRoleClicked}" value=" Show Renaming roles menu" style="text-decoration: underline"/>
+							  <h:commandLink action="#{Option.toggle_showRemainingRoleClicked}" value=" Show Rename-roles menu" style="text-decoration: underline"/>
 							</h:panelGroup>
 							<h:panelGrid rendered="#{Option.showRenamingRolesClicked }" columns="1" styleClass="jsfFormTable itemSummary">
 							  <h:panelGroup>
 								<f:verbatim><h4></f:verbatim>
 									<h:outputText value="Rename roles - " />
-							  		<h:commandLink action="#{Option.toggle_showRemainingRoleClicked}" value=" Hide Renaming roles"  style="text-decoration: underline;font-weight:normal"/>
+							  		<h:commandLink action="#{Option.toggle_showRemainingRoleClicked}" value=" Hide Rename-roles menu"  style="text-decoration: underline;font-weight:normal"/>
 								<f:verbatim></h4></f:verbatim>
 							  </h:panelGroup>
 								<h:outputText value="Choose names that will appear in the Roles listing on the To menu. See example above."  styleClass="instruction" style="display: block;"/>
