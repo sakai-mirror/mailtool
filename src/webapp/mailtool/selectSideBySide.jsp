@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
  
-<h:panelGroup rendered="#{Mailtool.currentMode=='compose' }">
+
 	<h:panelGrid columns="3" cellspacing="0" cellpadding="0" style="width:auto;margin:-.3em 0 0 0"  styleClass="sidebyside" columnClasses="sidebyside,attach,sidebyside">
 		<h:panelGroup>
 			<h:outputText value="#{msgs.select_from_list}" style="display:block"/>
@@ -33,7 +33,7 @@
 			</h:selectManyListbox>
 		</h:panelGroup>
 	</h:panelGrid>	
-</h:panelGroup>
+
 <%--
 <h:panelGroup rendered="#{Mailtool.currentMode=='options' }" style="height:100%;overflow:hidden;display:block;margin:.5em 0;padding:.3em;color:#555 !important" styleClass="inopPanel" >
 	<h:outputText  value="Preview (inactive)"  style="padding:.5em"/>

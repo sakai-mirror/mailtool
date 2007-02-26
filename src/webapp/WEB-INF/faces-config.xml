@@ -26,6 +26,12 @@
 		<managed-bean-class>org.sakaiproject.tool.mailtool.Mailtool</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
+	<managed-bean>
+		<description>Option</description>
+		<managed-bean-name>Option</managed-bean-name>
+		<managed-bean-class>org.sakaiproject.tool.mailtool.OptionsBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
 
 	<navigation-rule>
 		<from-view-id>/mailtool/main_onepage.jsp</from-view-id>
@@ -41,7 +47,7 @@
 		</navigation-case>		
 		<navigation-case>
 			<from-outcome>configure</from-outcome>
-			<to-view-id>/mailtool/config.jsp</to-view-id>
+			<to-view-id>/mailtool/config_refactor.jsp</to-view-id>
       	<redirect/>
 		</navigation-case>	
 	</navigation-rule>
@@ -56,7 +62,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
-		<from-view-id>/mailtool/config.jsp</from-view-id>
+		<from-view-id>/mailtool/config_refactor.jsp</from-view-id>
 		<navigation-case>
 			<from-outcome>compose</from-outcome>
 			<to-view-id>/mailtool/main_onepage.jsp</to-view-id>

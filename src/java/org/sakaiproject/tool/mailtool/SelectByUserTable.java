@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/contrib/mailtool/branches/2.4.refactor/src/java/org/sakaiproject/tool/mailtool/SelectByUserTable.java $
+* $Id:SelectByUserTable.java 3486 2007-02-14 19:52:13Z kimsooil@bu.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006, 2007 The Sakai Foundation.
@@ -61,8 +61,8 @@ public class SelectByUserTable {
 	}
 	
 	List /** TableEntry **/ m_tablerows = new ArrayList();
-	
-	public SelectByUserTable(List /* EmailUsers */ users)
+/*
+	public SelectByUserTable(List users)
 	{
 		m_tablerows.clear();
 		Collections.sort(users);
@@ -77,8 +77,31 @@ public class SelectByUserTable {
 				EmailUser euser2 = (EmailUser) i.next();
 				te.setUser2(euser2);
 			}
+			m_tablerows.add(te);
+		}
+	}
+*/
+	public SelectByUserTable(List /* EmailUsers */ users)
+	{
+		m_tablerows.clear();
+		Collections.sort(users);
+		int num = users.size();
+		int half=(int)Math.ceil((double)num/2.0);
+		//Iterator i = users.iterator();
+		for (int k=0; k<half; k++)
+		{
+//			EmailUser euser1 = (EmailUser) i.next();
+			EmailUser euser1 = (EmailUser) users.get(k);
+
+			TableEntry te = new TableEntry();
+			te.setUser1(euser1);
 			
-			
+			if ((k+half)<num)
+			{
+				//EmailUser euser2 = (EmailUser) i.next();
+				EmailUser euser2 = (EmailUser) users.get(k+half);
+				te.setUser2(euser2);
+			}
 			m_tablerows.add(te);
 		}
 	}
