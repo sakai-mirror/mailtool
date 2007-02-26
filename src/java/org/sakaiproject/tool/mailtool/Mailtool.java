@@ -1054,7 +1054,8 @@ public class Mailtool
 			{
 				EmailRole emailrole=null;
 				
-				if (isGroupAwareRoleInSettings(rolename)){
+//				if (isGroupAwareRoleInSettings(rolename)){
+				if (getGroupAwareRole().equals(rolename)){
 					emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural, "role_groupaware");
 					num_groupawarerole++;
 				}
@@ -1085,7 +1086,7 @@ public class Mailtool
 						plural = rolename+"s";
 					}
 					EmailRole emailrole=null;
-					if (isGroupAwareRoleInSettings(rolename)){
+					if (getGroupAwareRole().equals(rolename)){
 						emailrole=new EmailRole("/site/"+m_siteid, rolename, singular, plural, "role_groupaware");
 						num_groupawarerole++;
 					}
@@ -1135,7 +1136,12 @@ public class Mailtool
 		for (Iterator i = arole.getRoles().iterator(); i.hasNext(); ) {
 				Role r = (Role) i.next();
 				String rolename=r.getId();
-				if (isGroupAwareRoleInSettings(rolename)) setGroupAwareRoleExist(true);
+				if (isGroupAwareRoleInSettings(rolename)){
+					setGroupAwareRoleExist(true); break;
+				}
+				else if (getGroupAwareRole().equals(rolename)){
+					setGroupAwareRoleExist(true); break;
+				}
 		}
 	}
 
