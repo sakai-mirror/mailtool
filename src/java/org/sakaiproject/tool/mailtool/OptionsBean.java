@@ -111,7 +111,8 @@ public class OptionsBean {
 		getRecipientSelectors();
 		
 		initializeCurrentRoles(); /* this initialization solves SAK-6810 */
-		
+		checkifGroupAwareRoleExist(); /* this initialization solves SAK-6810 */
+
 		setMessageSubject(getSubjectPrefix().equals("")?getSubjectPrefixFromConfig():getSubjectPrefix());
 		setSubjectPrefix(getSubjectPrefixFromConfig());
 		setEmailArchiveInSite(isEmailArchiveAddedToSite());
@@ -349,7 +350,25 @@ public class OptionsBean {
 		}
 		return false;
 	}
-
+	public void checkifGroupAwareRoleExist()
+	{
+		String realmid=getSiteRealmID();
+		try{
+			arole=m_realmService.getAuthzGroup(realmid);
+		} catch (Exception e){
+			log.debug("Exception: Mailtool.initializeCurrentRoles(), " + e.getMessage());
+		}
+		for (Iterator i = arole.getRoles().iterator(); i.hasNext(); ) {
+				Role r = (Role) i.next();
+				String rolename=r.getId();
+				if (isGroupAwareRoleInSettings(rolename)){
+					setGroupAwareRoleExist(true); break;
+				}
+				else if (getGroupAwareRole().equals(rolename)){
+					setGroupAwareRoleExist(true); break;
+				}
+		}
+	}
 	public List /* EmailRole */ getEmailRoles()
 	{
 		List /* EmailRole */ theroles = new ArrayList();
@@ -369,7 +388,8 @@ public class OptionsBean {
 				(roleplural != null && roleplural != "") )
 			{
 				EmailRole emailrole=null;
-				if (isGroupAwareRoleInSettings(rolename)){
+//				if (isGroupAwareRoleInSettings(rolename)){
+				if (getGroupAwareRole().equals(rolename)){					
 					emailrole = new EmailRole(rolerealm,rolename,rolesingular,roleplural, "role_groupaware");
 					num_groupawarerole++;
 				}
@@ -400,7 +420,8 @@ public class OptionsBean {
 						plural = rolename+"s";
 					}
 					EmailRole emailrole=null;
-					if (isGroupAwareRoleInSettings(rolename)){
+//					if (isGroupAwareRoleInSettings(rolename)){
+					if (getGroupAwareRole().equals(rolename)){						
 						emailrole=new EmailRole("/site/"+m_siteid, rolename, singular, plural, "role_groupaware");
 						num_groupawarerole++;
 					}

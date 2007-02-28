@@ -23,14 +23,14 @@
 			<div class="portletBody">
 				<h:form id="optionsForm">
 					<sakai:tool_bar>
-						<sakai:tool_bar_item value="Compose" action="#{Option.processGoToComposeByCancel}" immediate="true" />
+						<sakai:tool_bar_item value="#{msgs.compose_toolbar}" action="#{Option.processGoToComposeByCancel}" immediate="true" />
 					</sakai:tool_bar>
 					<sakai:messages />
-					<sakai:view_title  value="Options" />
-					<h:outputText value="You are currently choosing options for Email. 	Settings chosen on this page will become the default settings for this site."  styleClass="instruction" style="display: block;"/>
+					<sakai:view_title  value="#{msgs.options_toolbar}" />
+					<h:outputText value="#{msgs.options_instruction}"  styleClass="instruction" style="display: block;"/>
 					<h:panelGrid columns="2" border="0" cellspacing="0" cellpadding="0"  styleClass="jsfFormTable itemSummary">
 						<h:panelGroup style="padding: 0pt; overflow: hidden; display: block; height: 100%; float: right;">
-							<h:outputLabel value="Choose selection view:" for="viewChoice"/>
+							<h:outputLabel value="#{msgs.options_chooseselectionview}" for="viewChoice"/>
 						</h:panelGroup>
 						<h:panelGroup>
 							<h:selectOneListbox onchange="submit(); return false;" size="1" id="viewChoice" value="#{Option.viewChoice}">
@@ -42,12 +42,12 @@
 							<f:subview id="selectByFoothill" rendered="#{Option.selectByFoothill}"><jsp:include page="selectByFoothill_option.jsp" /></f:subview>
 						</h:panelGroup>
 						<h:panelGroup style="padding: 0pt; overflow: hidden; display: block; height: 100%; float: right;">
-							<h:outputText value="Copies:" />
+							<h:outputText value="#{msgs.options_copies}" />
 						</h:panelGroup>	
 
 						<h:panelGroup styleClass="checkbox">
 							<h:selectBooleanCheckbox value="#{Option.sendMeCopy}" id="sendMeACopyID"/>
-							<h:outputLabel value="Send me a copy" for="sendMeACopyID"/>
+							<h:outputLabel value="#{msgs.sendmeacopy}" for="sendMeACopyID"/>
 						</h:panelGroup>
 						<h:panelGroup>
 							<h:outputText value=" " />
@@ -55,61 +55,61 @@
 
 						<h:panelGroup rendered="#{Option.emailArchiveInSite}"styleClass="checkbox">
 							<h:selectBooleanCheckbox value="#{Option.archiveMessage}" id="achiveMessageID"/>
-							<h:outputLabel value="Add to Email Archive, visible to all site participants" for="achiveMessageID" />
+							<h:outputLabel value="#{msgs.addtoemailarchive}" for="achiveMessageID" />
 						</h:panelGroup>
 						<h:panelGroup rendered="#{not Option.emailArchiveInSite}" style="height:100%;overflow:hidden;display:block;color:#555 !important" styleClass="checkbox">
 							<h:selectBooleanCheckbox disabled="true" value="#{Option.archiveMessage}" id="achiveMessageID2"/>
-							<h:outputLabel value="Add to Email Archive, visible to all site participants" for="achiveMessageID2" style="color:#777;white-space:nowrap"/>
+							<h:outputLabel value="#{msgs.addtoemailarchive}" for="achiveMessageID2" style="color:#777;white-space:nowrap"/>
 						</h:panelGroup>
 
 						<h:panelGroup style="padding: 0pt; overflow: hidden; display: block; height: 100%; float: right;">
-							<h:outputText value="Reply-to:" />
+							<h:outputText value="#{msgs.replyto}" />
 						</h:panelGroup>
 						<h:panelGroup>
 							<h:selectOneRadio layout="pageDirection" value="#{Option.replyToSelected }" onclick="submit()" styleClass="checkbox">
-								<f:selectItem itemLabel="Sender" itemValue="yes"/>
-								<f:selectItem itemLabel="Do not allow reply" itemValue="no"/> 
+								<f:selectItem itemLabel="#{msgs.options_replylabel1}" itemValue="yes"/>
+								<f:selectItem itemLabel="#{msgs.options_replylabel2}" itemValue="no"/> 
 							</h:selectOneRadio>
 
 						</h:panelGroup>
 						<h:panelGroup style="padding: 0pt; overflow: hidden; display: block; height: 100%; float: right;">
-							<h:outputText value="Message format:" />
+							<h:outputText value="#{msgs.options_messageformat}" />
 						</h:panelGroup>
 						<h:panelGroup>
 							<h:selectOneRadio layout="pageDirection" value="#{Option.textFormat}" onclick="submit()"  styleClass="checkbox">
-								<f:selectItem itemLabel="HTML formatting" itemValue="htmltext"/>
-								<f:selectItem itemLabel="Plain text" itemValue="plaintext"/>
+								<f:selectItem itemLabel="#{msgs.options_textformat1}" itemValue="htmltext"/>
+								<f:selectItem itemLabel="#{msgs.options_textformat2}" itemValue="plaintext"/>
 							</h:selectOneRadio>
 						</h:panelGroup>
 						<f:facet name="footer">
 						  <h:panelGroup rendered="#{Option.showRenamingRoles}">
 							<h:panelGroup rendered="#{not Option.showRenamingRolesClicked }">
-							  <h:commandLink action="#{Option.toggle_showRemainingRoleClicked}" value=" Show Rename-roles menu" style="text-decoration: underline"/>
+							  <h:commandLink action="#{Option.toggle_showRemainingRoleClicked}" value=" #{msgs.options_showrenameroles}" style="text-decoration: underline"/>
 							</h:panelGroup>
 							<h:panelGrid rendered="#{Option.showRenamingRolesClicked }" columns="1" styleClass="jsfFormTable itemSummary">
 							  <h:panelGroup>
 								<f:verbatim><h4></f:verbatim>
-									<h:outputText value="Rename roles - " />
-							  		<h:commandLink action="#{Option.toggle_showRemainingRoleClicked}" value=" Hide Rename-roles menu"  style="text-decoration: underline;font-weight:normal"/>
+									<h:outputText value="#{msgs.options_renameroles} - " />
+							  		<h:commandLink action="#{Option.toggle_showRemainingRoleClicked}" value=" #{msgs.options_hiderenameroles}"  style="text-decoration: underline;font-weight:normal"/>
 								<f:verbatim></h4></f:verbatim>
 							  </h:panelGroup>
-								<h:outputText value="Choose names that will appear in the Roles listing on the To menu. See example above."  styleClass="instruction" style="display: block;"/>
+								<h:outputText value="#{msgs.options_renamerolesinstruction}"  styleClass="instruction" style="display: block;"/>
 								<h:dataTable value="#{Option.renamedRoles}" var="role"  cellspacing="0" cellpadding="0"  width="100%" >
 									<h:column>
 										<f:verbatim><h5></f:verbatim>
 											<h:outputText value="#{role.roleId}: "/>
 										<f:verbatim></h5></f:verbatim>
-										<h:outputLabel value="show role as -- singular form" for="rolesingular"/>
+										<h:outputLabel value="#{msgs.options_renameroles_singular}" for="rolesingular"/>
 										<f:verbatim><br/></f:verbatim>
 										<h:inputText size="20" value="#{role.singularNew}" id="rolesingular"/>
 										<f:verbatim><br/></f:verbatim>
-										<h:outputText value="e.g. #{role.singular }" styleClass="instruction" style="display: block;"/>
+										<h:outputText value="#{msgs.examplesign} #{role.singular }" styleClass="instruction" style="display: block;"/>
 										<f:verbatim><br/></f:verbatim>
-										<h:outputLabel value="show role as -- plural form" for="roleplural"/>
+										<h:outputLabel value="#{msgs.options_renameroles_plural}" for="roleplural"/>
 										<f:verbatim><br/></f:verbatim>
 										<h:inputText size="20" value="#{role.pluralNew}" id="roleplural"/>
 										<f:verbatim><br/></f:verbatim>
-										<h:outputText value="e.g. #{role.plural }" styleClass="instruction" style="display: block;"/>
+										<h:outputText value="#{msgs.examplesign} #{role.plural }" styleClass="instruction" style="display: block;"/>
 									</h:column>
 								</h:dataTable>
 							</h:panelGrid>
@@ -119,13 +119,13 @@
 						<sakai:button_bar>
 						<sakai:button_bar_item
 							action="#{Option.processUpdateOptions}"
-							value="Update Defaults"
+							value="#{msgs.options_updatebutton}"
 							styleClass="active"
 							rendered="true"
 							immediate="false" />
 						<sakai:button_bar_item
 							action="#{Option.processGoToComposeByCancel}"
-							value="Cancel"
+							value="#{msgs.options_cancelbutton}"
 							rendered="true"
 							immediate="false" />
 					</sakai:button_bar>

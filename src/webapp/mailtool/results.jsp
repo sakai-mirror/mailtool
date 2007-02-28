@@ -26,7 +26,7 @@
 					<div class="information">
 						<h:outputText escape="false" value="#{Mailtool.results}"/>
 						<h:panelGroup rendered="#{Mailtool.sendMeCopy}">
-						<h:outputText escape="false" value="(Copy sent to the sender)" />
+						<h:outputText escape="false" value="#{msgs.result_copysenttothesender}" />
 						</h:panelGroup>
 					</div>	
 					<sakai:button_bar>

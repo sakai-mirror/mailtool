@@ -12,6 +12,7 @@
     <message-bundle>org.sakaiproject.tool.mailtool.Messages</message-bundle>
     <locale-config>
       <default-locale>en</default-locale>
+      <supported-locale>ko</supported-locale>
       <!-- 
       <supported-locale>de</supported-locale>
       <supported-locale>fr</supported-locale>

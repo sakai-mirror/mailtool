@@ -6,7 +6,7 @@
 	<h:outputText  value="Preview (inactive)"  style="padding:.5em"/>
 	<h:panelGrid columns="3" cellspacing="0" cellpadding="0" style="width:auto"  styleClass="sidebyside" columnClasses="sidebyside,attach,sidebyside">
 		<h:panelGroup>
-			<h:outputText value="#{msgs.select_from_list}" style="display:block"/>
+			<h:outputText value="#{msgs.sidebyside_select_from_list}" style="display:block"/>
 			<h:selectManyListbox disabled="true" size="10" value="#{Option.recipientSelector.sourceSelected}">
 				<f:selectItems value="#{Option.recipientSelector.sourceListbox}"/>
 			</h:selectManyListbox>
@@ -30,7 +30,7 @@
 			</sakai:button_bar>
 		</h:panelGroup>	
 		<h:panelGroup>
-			<h:outputText value="#{msgs.message_recipients}" style="display:block"/>
+			<h:outputText value="#{msgs.sidebyside_message_recipients}" style="display:block"/>
 			<h:selectManyListbox disabled="true" size="10" value="#{Option.recipientSelector.sinkSelected}">
 				<f:selectItems value="#{Option.recipientSelector.sinkListbox}"/>
 			</h:selectManyListbox>
