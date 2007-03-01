@@ -33,7 +33,7 @@
 		<managed-bean-class>org.sakaiproject.tool.mailtool.OptionsBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-<!--
+
 <managed-bean>
       <description>
          Dynamic Resource Bundle Loader
@@ -47,7 +47,7 @@
          <value>org.sakaiproject.tool.mailtool.Messages</value>
       </managed-property>
 </managed-bean>
--->
+
 	<navigation-rule>
 		<from-view-id>/mailtool/main_onepage.jsp</from-view-id>
 		<navigation-case>
