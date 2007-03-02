@@ -8,36 +8,35 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 <%-- Tree Table --%>
 
 	<h:panelGroup rendered="#{Mailtool.groupAwareRoleExist}">
-		<h:panelGroup rendered="#{not Mailtool.groupAwareRoleviewClicked}"  style="font-weight:normal">
-			<h:selectBooleanCheckbox id="selectAllGroupAwareRoleCheckbox1" value="#{Mailtool.allGroupAwareRoleSelected}" />
+		<h:panelGroup>
+			<h:selectBooleanCheckbox id="selectAllGroupAwareRoleCheckbox1" value="#{Mailtool.allGroupAwareRoleSelected}"/>
 			<h:outputLabel for="selectAllGroupAwareRoleCheckbox1" value=" #{msgs.usersbyrole_all_prefix} #{Mailtool.groupAwareRole}#{msgs.usersbyrole_all_suffix}" />
 			<h:outputText value=" - "  />
-			<h:commandLink action="#{Mailtool.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_selectindividuals}" style="text-decoration: underline"/>
+			<h:panelGroup rendered="#{not Mailtool.groupAwareRoleviewClicked}"  style="font-weight:normal">
+				<h:commandLink action="#{Mailtool.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_selectindividuals}" style="text-decoration: underline"/>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{Mailtool.groupAwareRoleviewClicked}" style="font-weight:normal">
+				<h:commandLink action="#{Mailtool.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_collapseindividuals}" style="text-decoration: underline"/>
+			</h:panelGroup>
 		</h:panelGroup>
-		<h:panelGroup rendered="#{Mailtool.groupAwareRoleviewClicked}" style="font-weight:normal">
-			<h:selectBooleanCheckbox id="selectAllGroupAwareRoleCheckbox2" value="#{Mailtool.allGroupAwareRoleSelected}" />
-			<h:outputLabel for="selectAllGroupAwareRoleCheckbox2" value=" #{msgs.usersbyrole_all_prefix} #{Mailtool.groupAwareRole}#{msgs.usersbyrole_all_suffix}" />
-			<h:outputText value=" - "  />			
-			<h:commandLink action="#{Mailtool.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_collapseindividuals}" style="text-decoration: underline"/>
-		</h:panelGroup>
-	</h:panelGroup>
-	<h:panelGroup rendered="#{Mailtool.groupAwareRoleExist and Mailtool.num_groups > 0}">	
-		<h:outputText value=" | "  />
-		<h:panelGroup rendered="#{not Mailtool.groupviewClicked}" style="font-weight:normal">
-			<h:commandLink action="#{Mailtool.toggle_groupviewClicked}" value=" #{msgs.usersbyrole_selectgroups}" style="text-decoration: underline"/>
-		</h:panelGroup>
-		<h:panelGroup rendered="#{Mailtool.groupviewClicked}" style="font-weight:normal">
-			<h:commandLink action="#{Mailtool.toggle_groupviewClicked}" value=" #{msgs.usersbyrole_collapsegroups}" style="text-decoration: underline"/>
-		</h:panelGroup>
-	</h:panelGroup>	
-	<h:panelGroup rendered="#{Mailtool.groupAwareRoleExist and Mailtool.num_sections > 0}">
-		<h:outputText value=" | "  />
-		<h:panelGroup rendered="#{not Mailtool.sectionviewClicked}" style="font-weight:normal">
-			<h:commandLink action="#{Mailtool.toggle_sectionviewClicked}" value=" #{msgs.usersbyrole_selectsections}" style="text-decoration: underline"/>
+		<h:panelGroup rendered="#{Mailtool.num_groups > 0}">	
+			<h:outputText value=" | "  />
+			<h:panelGroup rendered="#{not Mailtool.groupviewClicked}" style="font-weight:normal">
+				<h:commandLink action="#{Mailtool.toggle_groupviewClicked}" value=" #{msgs.usersbyrole_selectgroups}" style="text-decoration: underline"/>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{Mailtool.groupviewClicked}" style="font-weight:normal">
+				<h:commandLink action="#{Mailtool.toggle_groupviewClicked}" value=" #{msgs.usersbyrole_collapsegroups}" style="text-decoration: underline"/>
+			</h:panelGroup>
 		</h:panelGroup>	
-		<h:panelGroup rendered="#{Mailtool.sectionviewClicked}" style="font-weight:normal">
-			<h:commandLink action="#{Mailtool.toggle_sectionviewClicked}" value=" #{msgs.usersbyrole_collapsesections}" style="text-decoration: underline"/>
-		</h:panelGroup>			
+		<h:panelGroup rendered="#{Mailtool.num_sections > 0}">
+			<h:outputText value=" | "  />
+			<h:panelGroup rendered="#{not Mailtool.sectionviewClicked}" style="font-weight:normal">
+				<h:commandLink action="#{Mailtool.toggle_sectionviewClicked}" value=" #{msgs.usersbyrole_selectsections}" style="text-decoration: underline"/>
+			</h:panelGroup>	
+			<h:panelGroup rendered="#{Mailtool.sectionviewClicked}" style="font-weight:normal">
+				<h:commandLink action="#{Mailtool.toggle_sectionviewClicked}" value=" #{msgs.usersbyrole_collapsesections}" style="text-decoration: underline"/>
+			</h:panelGroup>			
+		</h:panelGroup>
 	</h:panelGroup>
 	<h:dataTable rendered="#{Mailtool.groupAwareRoleviewClicked}" value="#{Mailtool.recipientSelector_GroupAwareRole.dataModel}" var="row"  border="0" cellpadding="0" cellspacing="0">
 			<h:column>
@@ -60,16 +59,13 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 
 	<h:dataTable rendered="#{Mailtool.groupviewClicked }" value="#{Mailtool.recipientSelector_Group.dataModel}" var="grouprow"  border="0" cellpadding="0" cellspacing="0" style="margin-left:2em;width:auto;font-weight:normal" styleClass="listHier nolines  hierItemBlockWrapper">
 		<h:column>
+			<h:selectBooleanCheckbox id="selectAllGroupCheckbox" value="#{grouprow.allSelected}" immediate="true" onchange="submit( );" valueChangeListener="#{grouprow.processSelectAll}"/>
+			<h:outputLabel for="selectAllGroupCheckbox" value="#{grouprow.pluralRolename} #{msgs.usersbyrole_group}" />
+			<h:outputText value=" - "  />
 			<h:panelGroup rendered="#{grouprow.collapsed}">
-				<h:selectBooleanCheckbox id="selectAllGroupCheckbox" value="#{grouprow.allSelected}" />
-				<h:outputLabel for="selectAllGroupCheckbox" value="#{grouprow.pluralRolename} #{msgs.usersbyrole_group}" />
-				<h:outputText value=" - "  />
 				<h:commandLink actionListener="#{grouprow.actionExpand}" value="#{msgs.usersbyrole_select_individuals_link}" style="text-decoration: underline"/>
 			</h:panelGroup>
 			<h:panelGroup rendered="#{not grouprow.collapsed}">
-				<h:selectBooleanCheckbox id="selectAllGroupCheckbox2" value="#{grouprow.allSelected}" />
-				<h:outputText value="#{grouprow.pluralRolename} "  />
-				<h:outputText value=" - "  />
 				<h:commandLink actionListener="#{grouprow.actionCollapse}" value="#{msgs.usersbyrole_collapse}" style="text-decoration: underline"/>
 				<h:dataTable value="#{grouprow.userTable}" var="guser_row"  styleClass="listHier nolines" columnClasses="attach,,attach,"  cellpadding="0" cellspacing="0" style="margin-left:2em;width:auto;font-weight:normal">
 					<h:column>
@@ -91,16 +87,13 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 
 	<h:dataTable rendered="#{Mailtool.sectionviewClicked}" value="#{Mailtool.recipientSelector_Section.dataModel}" var="sectionrow"  border="0" cellpadding="0" cellspacing="0" style="margin-left:2em;width:auto;font-weight:normal" styleClass="listHier nolines  hierItemBlockWrapper">
 		<h:column>
+			<h:selectBooleanCheckbox id="selectAllSectionCheckbox" value="#{sectionrow.allSelected}" immediate="true" onchange="submit( );" valueChangeListener="#{sectionrow.processSelectAll}"/>
+			<h:outputLabel for="selectAllSectionCheckbox" value="#{sectionrow.pluralRolename} #{msgs.usersbyrole_section}" />
+			<h:outputText value=" - "  />
 			<h:panelGroup rendered="#{sectionrow.collapsed}">
-				<h:selectBooleanCheckbox id="selectAllSectionCheckbox" value="#{sectionrow.allSelected}" />
-				<h:outputLabel for="selectAllSectionCheckbox" value="#{sectionrow.pluralRolename} #{msgs.usersbyrole_section}" />
-				<h:outputText value=" - "  />
 				<h:commandLink actionListener="#{sectionrow.actionExpand}" value="#{msgs.usersbyrole_select_individuals_link}" style="text-decoration: underline"/>
 			</h:panelGroup>
 			<h:panelGroup rendered="#{not sectionrow.collapsed}">
-				<h:selectBooleanCheckbox id="selectAllSectionCheckbox2" value="#{sectionrow.allSelected}" />			
-				<h:outputText value="#{sectionrow.pluralRolename} "  />
-				<h:outputText value=" - "  />
 				<h:commandLink actionListener="#{sectionrow.actionCollapse}" value="#{msgs.usersbyrole_collapse}" style="text-decoration: underline"/>
 				<h:dataTable value="#{sectionrow.userTable}" var="suser_row"  styleClass="listHier nolines" columnClasses="attach,,attach,"  cellpadding="0" cellspacing="0" style="margin-left:2em;width:auto;font-weight:normal">
 					<h:column>
@@ -123,16 +116,13 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 	<h:panelGroup>
 		<h:dataTable value="#{Mailtool.recipientSelector.dataModel}" var="row"  border="0" style="margin:0;width:100%" cellpadding="0" cellspacing="0">
 			<h:column>
+				<h:selectBooleanCheckbox id="selectAllCheckbox" value="#{row.allSelected}" immediate="true" onchange="submit( );" valueChangeListener="#{row.processSelectAll}"/>
+				<h:outputLabel for="selectAllCheckbox" value="#{msgs.usersbyrole_all_prefix} #{row.pluralRolename} " />
+				<h:outputText value=" - "  />
 				<h:panelGroup rendered="#{row.collapsed}">
-					<h:selectBooleanCheckbox id="selectAllCheckbox" value="#{row.allSelected}" />
-					<h:outputLabel for="selectAllCheckbox" value="#{msgs.usersbyrole_all_prefix} #{row.pluralRolename} " />
-					<h:outputText value=" - "  />
 					<h:commandLink actionListener="#{row.actionExpand}" value="#{msgs.usersbyrole_select} #{row.pluralRolename} " style="text-decoration: underline"/>
 				</h:panelGroup>
 				<h:panelGroup rendered="#{not row.collapsed}">
-					<h:selectBooleanCheckbox id="selectAllCheckbox2" value="#{row.allSelected}" />
-					<h:outputLabel for="selectAllCheckbox2" value="#{msgs.usersbyrole_all_prefix} #{row.pluralRolename} " />
-					<h:outputText value=" - "  />
 					<h:commandLink actionListener="#{row.actionCollapse}" value="#{msgs.usersbyrole_collapse} #{row.pluralRolename} " style="text-decoration: underline"/>
 				</h:panelGroup>
 	

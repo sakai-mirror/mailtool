@@ -28,6 +28,9 @@ import java.util.List;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.event.PhaseId;
 
 public class SelectByTree {
 	public class TableEntry
@@ -84,9 +87,28 @@ public class SelectByTree {
 		
 		public void setAllSelected(boolean value) {
 			m_allSelected = value;
-			m_usertable.switchSelections(value);
 		}
+		public void processSelectAll(ValueChangeEvent event)
+		{
+			PhaseId phaseId = event.getPhaseId();
+//			String oldValue = (String) event.getOldValue();
+//			String newValue = (String) event.getNewValue();
+			if (phaseId.equals(PhaseId.ANY_PHASE))
+			{
+			event.setPhaseId(PhaseId.UPDATE_MODEL_VALUES);
+			event.queue();
+			}
+			else if (phaseId.equals(PhaseId.UPDATE_MODEL_VALUES))
+			{
+//			 do you method here
+				boolean allornot = ((Boolean) event.getNewValue()).booleanValue();
+				setAllSelected(allornot);
+				m_usertable.switchSelections(allornot);
+//				FacesContext.getCurrentInstance().renderResponse();
 
+			}
+		}
+		
 		public boolean isAllSelected() { return m_allSelected; }
 
 		public boolean isGroupAware() {
