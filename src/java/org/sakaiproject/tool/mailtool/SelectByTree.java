@@ -91,8 +91,6 @@ public class SelectByTree {
 		public void processSelectAll(ValueChangeEvent event)
 		{
 			PhaseId phaseId = event.getPhaseId();
-//			String oldValue = (String) event.getOldValue();
-//			String newValue = (String) event.getNewValue();
 			if (phaseId.equals(PhaseId.ANY_PHASE))
 			{
 			event.setPhaseId(PhaseId.UPDATE_MODEL_VALUES);
@@ -120,7 +118,8 @@ public class SelectByTree {
 		}
 	}
 
-	protected List /* TableEntry */ m_tablerows = new ArrayList();
+//	protected List /* TableEntry */ m_tablerows = new ArrayList();
+	public List /* TableEntry */ m_tablerows = new ArrayList();
 	
 	public SelectByTree(List /* EmailGroup */ groups)
 	{
