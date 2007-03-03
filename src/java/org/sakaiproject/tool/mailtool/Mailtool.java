@@ -1759,25 +1759,4 @@ public class Mailtool
 		public void setGroupAwareRoleExist(boolean groupAwareRoleExist) {
 			GroupAwareRoleExist = groupAwareRoleExist;
 		}
-		public void processSelectAll(ValueChangeEvent event)
-		{
-			PhaseId phaseId = event.getPhaseId();
-			if (phaseId.equals(PhaseId.ANY_PHASE))
-			{
-			event.setPhaseId(PhaseId.UPDATE_MODEL_VALUES);
-			event.queue();
-			}
-			else if (phaseId.equals(PhaseId.UPDATE_MODEL_VALUES))
-			{
-//			 do you method here
-				boolean allornot = ((Boolean) event.getNewValue()).booleanValue();
-				setAllGroupAwareRoleSelected(allornot);
-				//m_recipientSelector1.getTree().get(0).setAllSelected();
-				
-//				setAllSelected(allornot);
-//				m_usertable.switchSelections(allornot);
-//				FacesContext.getCurrentInstance().renderResponse();
-
-			}
-		}
 }
