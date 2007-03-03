@@ -11,7 +11,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 		<h:dataTable value="#{Mailtool.recipientSelector_GroupAwareRole.dataModel}" var="garow"  border="0" cellpadding="0" cellspacing="0">
 				<h:column>
 						<h:panelGroup>
-							<h:selectBooleanCheckbox id="selectAllGroupAwareRoleCheckbox1" value="#{garow.allSelected}" immediate="true" onchange="submit( );" valueChangeListener="#{garow.processSelectAll}"/>
+							<h:selectBooleanCheckbox id="selectAllGroupAwareRoleCheckbox1" value="#{garow.allSelected}" immediate="true" onclick="submit( );" valueChangeListener="#{garow.processSelectAll}"/>
 							<h:outputLabel for="selectAllGroupAwareRoleCheckbox1" value=" #{msgs.usersbyrole_all_prefix} #{Mailtool.groupAwareRole}#{msgs.usersbyrole_all_suffix}" />
 							<h:outputText value=" - "  />
 							<h:panelGroup rendered="#{not Mailtool.groupAwareRoleviewClicked}"  style="font-weight:normal">
