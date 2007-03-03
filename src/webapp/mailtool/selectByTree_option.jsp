@@ -11,39 +11,41 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 		<h:outputText  value="#{msgs.options_preview}"  style="padding:.5em"/>
 		<f:verbatim><br/><br/></f:verbatim>
 		<h:panelGroup rendered="#{Option.groupAwareRoleExist}" style="margin-left:1em;font-weight:normal">
-			  	<h:panelGroup>
-					<h:selectBooleanCheckbox disabled="true" id="selectAllGroupAwareRoleCheckbox1" value="#{Option.allGroupAwareRoleSelected}" />
-					<h:outputLabel for="selectAllGroupAwareRoleCheckbox1" value=" #{msgs.usersbyrole_all_prefix} #{Option.groupAwareRole}#{msgs.usersbyrole_all_suffix}" style="color:#777;white-space:nowrap"/>
-					<h:outputText value=" - "  />
-					<h:panelGroup rendered="#{not Option.groupAwareRoleviewClicked}">
-						<h:commandLink action="#{Option.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_selectindividuals}" style="text-decoration: underline"/>
-					</h:panelGroup>
-					<h:panelGroup rendered="#{Option.groupAwareRoleviewClicked}">
-						<h:commandLink action="#{Option.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_collapseindividuals}" style="text-decoration: underline"/>
-					</h:panelGroup>
-				</h:panelGroup>
-				<h:panelGroup rendered="#{Option.num_groups > 0}">	
-					<h:outputText value=" | "  />
-					<h:panelGroup rendered="#{not Option.groupviewClicked}">
-						<h:commandLink action="#{Option.toggle_groupviewClicked}" value=" #{msgs.usersbyrole_selectgroups}" style="text-decoration: underline"/>
-					</h:panelGroup>
-					<h:panelGroup rendered="#{Option.groupviewClicked}">
-						<h:commandLink action="#{Option.toggle_groupviewClicked}" value=" #{msgs.usersbyrole_collapsegroups}" style="text-decoration: underline"/>
-					</h:panelGroup>
-				</h:panelGroup>
-				<h:panelGroup rendered="#{Option.num_sections > 0}">			
-					<h:outputText value=" | "  />
-					<h:panelGroup rendered="#{not Option.sectionviewClicked}">
-						<h:commandLink action="#{Option.toggle_sectionviewClicked}" value=" #{msgs.usersbyrole_selectsections}" style="text-decoration: underline"/>
-					</h:panelGroup>	
-					<h:panelGroup rendered="#{Option.sectionviewClicked}">
-						<h:commandLink action="#{Option.toggle_sectionviewClicked}" value=" #{msgs.usersbyrole_collapsesections}" style="text-decoration: underline"/>
-					</h:panelGroup>	
-				</h:panelGroup>
 
 			<h:dataTable rendered="#{Option.groupAwareRoleviewClicked}" value="#{Option.recipientSelector_GroupAwareRole.dataModel}" var="row"  border="0" cellpadding="0" cellspacing="0">
 					<h:column>
-							<h:dataTable value="#{row.userTable}" var="user_row"  styleClass="listHier nolines hierItemBlockWrapper" columnClasses="attach,,attach,"  cellpadding="0" cellspacing="0" style="margin-left:2em;width:auto;font-weight:normal">
+
+					  	<h:panelGroup>
+							<h:selectBooleanCheckbox disabled="true" id="selectAllGroupAwareRoleCheckbox1" value="#{Option.allGroupAwareRoleSelected}" />
+							<h:outputLabel for="selectAllGroupAwareRoleCheckbox1" value=" #{msgs.usersbyrole_all_prefix} #{Option.groupAwareRole}#{msgs.usersbyrole_all_suffix}" style="color:#777;white-space:nowrap"/>
+							<h:outputText value=" - "  />
+							<h:panelGroup rendered="#{not Option.groupAwareRoleviewClicked}">
+								<h:commandLink action="#{Option.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_selectindividuals}" style="text-decoration: underline"/>
+							</h:panelGroup>
+							<h:panelGroup rendered="#{Option.groupAwareRoleviewClicked}">
+								<h:commandLink action="#{Option.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_collapseindividuals}" style="text-decoration: underline"/>
+							</h:panelGroup>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{Option.num_groups > 0}">	
+							<h:outputText value=" | "  />
+							<h:panelGroup rendered="#{not Option.groupviewClicked}">
+								<h:commandLink action="#{Option.toggle_groupviewClicked}" value=" #{msgs.usersbyrole_selectgroups}" style="text-decoration: underline"/>
+							</h:panelGroup>
+							<h:panelGroup rendered="#{Option.groupviewClicked}">
+								<h:commandLink action="#{Option.toggle_groupviewClicked}" value=" #{msgs.usersbyrole_collapsegroups}" style="text-decoration: underline"/>
+							</h:panelGroup>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{Option.num_sections > 0}">			
+							<h:outputText value=" | "  />
+							<h:panelGroup rendered="#{not Option.sectionviewClicked}">
+								<h:commandLink action="#{Option.toggle_sectionviewClicked}" value=" #{msgs.usersbyrole_selectsections}" style="text-decoration: underline"/>
+							</h:panelGroup>	
+							<h:panelGroup rendered="#{Option.sectionviewClicked}">
+								<h:commandLink action="#{Option.toggle_sectionviewClicked}" value=" #{msgs.usersbyrole_collapsesections}" style="text-decoration: underline"/>
+							</h:panelGroup>	
+						</h:panelGroup>
+
+							<h:dataTable rendered="#{Option.groupAwareRoleviewClicked}" value="#{row.userTable}" var="user_row"  styleClass="listHier nolines hierItemBlockWrapper" columnClasses="attach,,attach,"  cellpadding="0" cellspacing="0" style="margin-left:2em;width:auto;font-weight:normal">
 								<h:column>
 									<h:selectBooleanCheckbox disabled="true" id="indCol1Checkbox11" value="#{user_row.selected1}"  />
 								</h:column>
