@@ -12,7 +12,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 		<f:verbatim><br/><br/></f:verbatim>
 		<h:panelGroup rendered="#{Option.groupAwareRoleExist}" style="margin-left:1em;font-weight:normal">
 
-			<h:dataTable rendered="#{Option.groupAwareRoleviewClicked}" value="#{Option.recipientSelector_GroupAwareRole.dataModel}" var="row"  border="0" cellpadding="0" cellspacing="0">
+			<h:dataTable value="#{Option.recipientSelector_GroupAwareRole.dataModel}" var="row"  border="0" cellpadding="0" cellspacing="0">
 					<h:column>
 
 					  	<h:panelGroup>
