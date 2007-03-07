@@ -326,8 +326,8 @@ public class Mailtool
 	}
 	
 	public String processGoToOptions(){
-		setCurrentMode("options");
 		m_currentViewChoice=m_changedViewChoice;
+		setCurrentMode("options");
 		return "configure";
 	}
 	public String processGoToCompose(){
@@ -575,10 +575,11 @@ public class Mailtool
 	public String processCancelEmail()
 	{
 		this.m_recipientSelector = null;
-		this.m_subject = "";
+		this.m_subject = getSubjectPrefixFromConfig();
 		this.m_body = "";
 		num_files=0;
 		attachedFiles.clear();
+		m_buildNewView = true;
 		return "cancel";
 	}
 //	public String processSendEmail(){ return "results";}
@@ -778,10 +779,11 @@ public class Mailtool
 			}
 		
 		//	Clear the Subject and Body of the Message
-		m_subject = "";
+		m_subject = getSubjectPrefixFromConfig();
 		m_body = "";
 		num_files=0;
 		attachedFiles.clear();
+		m_buildNewView = true;
 
 		/* Display Users with Bad Emails if the option is
 		 * turned on.
