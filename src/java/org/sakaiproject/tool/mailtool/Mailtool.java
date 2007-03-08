@@ -576,6 +576,7 @@ public class Mailtool
 	{
 		this.m_recipientSelector = null;
 		this.m_subject = getSubjectPrefixFromConfig();
+		m_otheremails="";
 		this.m_body = "";
 		num_files=0;
 		attachedFiles.clear();
@@ -780,6 +781,7 @@ public class Mailtool
 		
 		//	Clear the Subject and Body of the Message
 		m_subject = getSubjectPrefixFromConfig();
+		m_otheremails="";
 		m_body = "";
 		num_files=0;
 		attachedFiles.clear();
