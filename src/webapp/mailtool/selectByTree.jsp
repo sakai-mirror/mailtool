@@ -11,7 +11,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 		<h:dataTable value="#{Mailtool.recipientSelector_GroupAwareRole.dataModel}" var="garow"  border="0" cellpadding="0" cellspacing="0">
 				<h:column>
 						<h:panelGroup>
-							<h:selectBooleanCheckbox id="selectAllGroupAwareRoleCheckbox1" value="#{garow.allSelected}" immediate="true" onclick="submit( );" valueChangeListener="#{garow.processSelectAll}"/>
+							<h:selectBooleanCheckbox id="selectAllGroupAwareRoleCheckbox1" value="#{garow.allSelected}" immediate="true" onclick="submit();" valueChangeListener="#{garow.processSelectAll}"/>
 							<h:outputLabel for="selectAllGroupAwareRoleCheckbox1" value=" #{msgs.usersbyrole_all_prefix} #{Mailtool.groupAwareRole}#{msgs.usersbyrole_all_suffix}" />
 							<h:outputText value=" - "  />
 							<h:panelGroup rendered="#{not Mailtool.groupAwareRoleviewClicked}"  style="font-weight:normal">
@@ -59,7 +59,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 	
 		<h:dataTable rendered="#{Mailtool.groupviewClicked }" value="#{Mailtool.recipientSelector_Group.dataModel}" var="grouprow"  border="0" cellpadding="0" cellspacing="0" style="margin-left:2em;width:auto;font-weight:normal" styleClass="listHier nolines  hierItemBlockWrapper">
 			<h:column>
-				<h:selectBooleanCheckbox id="selectAllGroupCheckbox" value="#{grouprow.allSelected}" immediate="true" onclick="submit( );" valueChangeListener="#{grouprow.processSelectAll}"/>
+				<h:selectBooleanCheckbox id="selectAllGroupCheckbox" value="#{grouprow.allSelected}" immediate="true" onclick="submit();" valueChangeListener="#{grouprow.processSelectAll}"/>
 				<h:outputLabel for="selectAllGroupCheckbox" value="#{grouprow.pluralRolename} #{msgs.usersbyrole_group}" />
 				<h:outputText value=" - "  />
 				<h:panelGroup rendered="#{grouprow.collapsed}">
@@ -87,7 +87,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 	
 		<h:dataTable rendered="#{Mailtool.sectionviewClicked}" value="#{Mailtool.recipientSelector_Section.dataModel}" var="sectionrow"  border="0" cellpadding="0" cellspacing="0" style="margin-left:2em;width:auto;font-weight:normal" styleClass="listHier nolines  hierItemBlockWrapper">
 			<h:column>
-				<h:selectBooleanCheckbox id="selectAllSectionCheckbox" value="#{sectionrow.allSelected}" immediate="true" onclick="submit( );" valueChangeListener="#{sectionrow.processSelectAll}"/>
+				<h:selectBooleanCheckbox id="selectAllSectionCheckbox" value="#{sectionrow.allSelected}" immediate="true" onclick="submit();" valueChangeListener="#{sectionrow.processSelectAll}"/>
 				<h:outputLabel for="selectAllSectionCheckbox" value="#{sectionrow.pluralRolename} #{msgs.usersbyrole_section}" />
 				<h:outputText value=" - "  />
 				<h:panelGroup rendered="#{sectionrow.collapsed}">
@@ -116,7 +116,7 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 
 	<h:dataTable value="#{Mailtool.recipientSelector.dataModel}" var="row"  border="0" style="margin:0;width:100%" cellpadding="0" cellspacing="0">
 		<h:column>
-			<h:selectBooleanCheckbox id="selectAllCheckbox" value="#{row.allSelected}" immediate="true" onclick="submit( );" valueChangeListener="#{row.processSelectAll}"/>
+			<h:selectBooleanCheckbox id="selectAllCheckbox" value="#{row.allSelected}" immediate="true" onclick="submit();" valueChangeListener="#{row.processSelectAll}"/>
 			<h:outputLabel for="selectAllCheckbox" value="#{msgs.usersbyrole_all_prefix} #{row.pluralRolename} " />
 			<h:outputText value=" - "  />
 			<h:panelGroup rendered="#{row.collapsed}">
