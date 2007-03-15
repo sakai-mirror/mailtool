@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html version="-//W3C//DTD HTML 3.2//EN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Mailtool - Options</title>
+<link type="text/css" href="/library/skin/tool_base.css" rel="stylesheet">
+<link type="text/css" href="/library/skin/default/tool.css" rel="stylesheet">
+</head>
+<body>
+<div class="helpBody">
+<h2>Options</h2>
+<p>All roles which have the <strong>mailtool.admin</strong> permission will see an <strong>Options</strong> action link at the top of the <strong>Compose</strong> screen, which leads to this screen for setting the default behavior for the mailtool for the entire site. It is not necessary to change anything here in order to use the mailtool effectively, but &quot;power users&quot; may appreciate the extra options for tuning mailtool behavior.</p>
+<p>The first and most significant choice to be made here is the interface for recipient selection. There are four choices available in the drop-down selector:</p>
+<ul>
+    <li><strong>Users</strong> (a simple listing of all users, sorted alphabetically) - most appropriate for project or other smaller site types where all participants are on the same footing.</li>
+    <li><strong>Users by Role</strong> (the default interface, displayed in all the screenshots on this page) - this is both the default and the &quot;preferred&quot; interface, from the perspective of design and development focus. It is the most flexible and powerful of the four.</li>
+    <li><strong>Side by Side</strong> - This provides two selection lists side by side, much like the widget for setting Section membership.</li>
+    <li><strong>Scrolling List</strong> - This provides a single scrolling list which allows rapid selection of sets of lines based on Ctrl-clicks and Shift-clicks, but it can be difficult for sites with large populations because of the large quantity of scrolling.</li>
+</ul>
+<p>The second set of options has to do with how copies of the message are handled. The two possibilities represented here - &quot;Send Copy to Self&quot; and &quot;Add to Email Archive&quot; are also available on the <strong>Compose</strong> screen, but if they are set here they will become the defaults for the mailtool within this site.</p>
+<p>The third set of options is for how replies are to be handled. The default behavior is for replies to be directed to the sender's address, but it is also here presented as an option for no replies to be allowed, in which case the reply-to address simply becomes 'no-reply@server.edu'.</p>
+<p>The fourth set of options is concerned with the message composition pane, which can either use the editor specified in <strong>sakai.properties</strong>, or become a simple plain-text area.</p>
+<p>Finally, it is possible to alter the display labels for the singular and plural versions of the roles, if that set of options has been enabled in <strong>sakai.properties</strong>. This can allow for instructors to attach their own names to the roles (at least for mailtool purposes), and to accommodate roles in the interface where the roles have unconventional singular/plural distinctions. Since this is something that could be effectively handled as an admin matter, and doing so would allow the stripping away of another set of potentially confusing options which have marginal use cases, we have left the enablement up to <strong>sakai.properties</strong>, and relegated their specification to a third screen, which is arrived at through the link at the lower left: <strong>Show rename roles menu</strong>.</p>
+<p>Clicking on the &quot;Update Defaults&quot; button will store all these settings as the default behaviors for the mailtool for the entire site. Clicking on the &quot;Cancel&quot; button simply returns one to the <strong>Compose</strong> screen.</p>
+<p />
+</div>
+</body>
+</html>
