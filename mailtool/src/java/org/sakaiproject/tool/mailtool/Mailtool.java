@@ -84,7 +84,6 @@ import javax.mail.internet.InternetAddress;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
-import org.sakaiproject.tool.mailtool.Attachment;
 
 public class Mailtool {
 	private final Log log = LogFactory.getLog(this.getClass());
