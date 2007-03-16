@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html version="-//W3C//DTD HTML 3.2//EN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Mailtool - Group Awareness</title>
+<link type="text/css" href="/library/skin/tool_base.css" rel="stylesheet">
+<link type="text/css" href="/library/skin/default/tool.css" rel="stylesheet">
+</head>
+<body>
+<div class="helpBody">
+<h2>Group Awareness in Mailtool</h2>
+<p>Integrating group awareness into the fine-grained recipient selection has proved somewhat problematic, and so for the 2.4 release the following factors impinged upon the design, which we take to be an iteration suitable for further usability testing:</p>
+<ul>
+    <li>we decided to focus on the default recipient view (&quot;Users by Role&quot;) rather than introduce yet another view for explicitly handling groups alone.</li>
+    <li>this default view takes the site roles as its initial layer of grouping, and we decided not to alter this. Even though groups may in principle span multiple roles, our use cases were strongly oriented toward groups of one role only - namely, Students.</li>
+    <li>Since the number of roles could in principle be quite large, we did not want groups and sections to take up yet more vertical space on the <strong>Compose</strong> screen. We also wanted to avoid a significant usability problem where a single recipient could be presented in more than one place (which selection should be dispositive? There's no way to determine that with confidence, in the event of a discrepancy). As a simple way to minimize both of these problems, it was decided that grouping would simply be another way of arranging clusters of recipients in the expanded views, effectively introducing a second nested layer of grouping beneath the roles.</li>
+    <li>Groups and sections would be mutually exclusive in their treatment, again, to minimize the problem where the same recipient could be selected (or un-selected) in more than one place. This leaves alive the possibility of multiple selections for a single recipient, simply by virtue of the fact that groups are not mutually exclusive, but we've at least confined the problem that far for now.</li>
+</ul>
+<p>The end result is that there are 3 ways to expand a recipient list. The default way - an alphabetical listing of all contained members - is always available. If any groups are defined in the site, a second expansion action link becomes available: &quot;Select Groups.&quot; If any sections are defined in the site, yet another action link becomes available: &quot;Select Sections.&quot; The screen below shows a site with all three together for the Student role.</p>
+When the groups are expanded, initially only the list of defined groups are available.<br />
+<br />
+A second expansion shows the individual members of a group. Some instructors tell us they need to check this to be sure a given group is the one they have in mind, and it also gives them the option of selecting only a few individuals within a group. The group/section views then also serve as another way of arranging large recipient lists for readability, since a full listing of all students in a large course can be unwieldy.
+</div>
+</body>
+</html>
