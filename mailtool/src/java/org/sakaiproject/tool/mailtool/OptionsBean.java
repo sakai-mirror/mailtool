@@ -95,6 +95,9 @@ public class OptionsBean {
 	private int num_roles_renamed=0;
 	private final Log log = LogFactory.getLog(this.getClass());
 	
+	/**
+	 * Bean for Options page
+	 */
 	public OptionsBean()
 	{
 		num_groups=0;
@@ -350,13 +353,16 @@ public class OptionsBean {
 		}
 		return false;
 	}
+	/**
+	 * check if group-aware role exist in the site
+	 */
 	public void checkifGroupAwareRoleExist()
 	{
 		String realmid=getSiteRealmID();
 		try{
 			arole=m_realmService.getAuthzGroup(realmid);
 		} catch (Exception e){
-			log.debug("Exception: Mailtool.initializeCurrentRoles(), " + e.getMessage());
+			log.debug("Exception: OptionsBean.checkifGroupAwareRoleExist(), " + e.getMessage());
 		}
 		for (Iterator i = arole.getRoles().iterator(); i.hasNext(); ) {
 				Role r = (Role) i.next();
@@ -904,6 +910,11 @@ public class OptionsBean {
 	{
 		ToolManager.getCurrentPlacement().getPlacementConfig().setProperty(parameter, newvalue);
 	}
+	/**
+	 * Update/save any change(s)
+	 * @return
+	 * 		return "compse" for immediately navigating to compose page
+	 */
 	public String processUpdateOptions()
 	{
 		if (isShowRenamingRoles()){

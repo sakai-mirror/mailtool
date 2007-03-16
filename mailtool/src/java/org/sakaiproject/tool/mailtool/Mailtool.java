@@ -246,7 +246,7 @@ public class Mailtool {
 	private List selectedSectionUsers = null;
 
 	/**
-	 * Mailtool bean
+	 * Mailtool bean for compose page
 	 */
 	public Mailtool() {
 		num_groups = 0;
@@ -385,6 +385,7 @@ public class Mailtool {
 
 	/**
 	 * @return
+	 * 		return if attach clicked
 	 */
 	public boolean getattachClicked() {
 		return attachClicked;
@@ -395,6 +396,7 @@ public class Mailtool {
 	 *  
 	 * @param parameter
 	 * @return
+	 * return configuration string which matches parameter
 	 */
 	protected String getConfigParam(String parameter) {
 		String p = ToolManager.getCurrentPlacement().getPlacementConfig()
@@ -470,10 +472,20 @@ public class Mailtool {
 		this.num_files = num_files;
 	}
 
+	/**
+	 * @return
+	 * 		return the type of editor
+	 */
 	public String getEditorType() {
 		return m_editortype;
 	}
 
+	/**
+	 * read maximum number number of attachment from mailtool.max.num.attachment in sakai.properties
+	 * @return
+	 * 		return mailtool.max.num.attachment if set
+	 * 		Or return 10000 if not set.
+	 */
 	public int readMaxNumAttachment() {
 		try {
 			int maxnumattachment = Integer.parseInt(ServerConfigurationService
@@ -507,6 +519,11 @@ public class Mailtool {
 		return uploaddirectoryDefault;
 	}
 
+	/**
+	 * check if mailtool.show.renaming.role=yes|true in sakai.properties
+	 * @return
+	 * 		return true if mailtool.show.renaming.role=yes|true
+	 */
 	public boolean isShowRenamingRoles() {
 		String rename = ServerConfigurationService
 				.getString("mailtool.show.renaming.roles");
@@ -566,6 +583,9 @@ public class Mailtool {
 		return m_results;
 	}
 
+	/**
+	 * set setectortype when needed.
+	 */
 	protected void setSelectorType() {
 		String type = getRecipview();
 		if (type.equals("") || type == null)
@@ -620,6 +640,11 @@ public class Mailtool {
 		return m_selectByFoothill;
 	}
 
+	/**
+	 * initialize compose page. it will remove all previous editing
+	 * @return
+	 * 		"cancel" for navigating to compse page
+	 */
 	public String processCancelEmail() {
 
 		this.m_recipientSelector = null;
@@ -641,6 +666,11 @@ public class Mailtool {
 		return "cancel";
 	}
 
+	/**
+	 * Refactored mail-sending function (not using Sakai EmailService)
+	 * @return
+	 * 		return "results" for navigating to results page
+	 */
 	public String processSendEmail() {
 		/* EmailUser */selected = m_recipientSelector.getSelectedUsers();
 		if (m_selectByTree) {
@@ -907,6 +937,9 @@ public class Mailtool {
 		return m_recipientSelector3;
 	}
 
+	/**
+	 * By the selected type of recipient view, initialize/populate recipient selector(s)
+	 */
 	public void getRecipientSelectors() {
 		if (m_recipientSelector == null) {
 			if (m_selectByUser == true) {
@@ -948,7 +981,11 @@ public class Mailtool {
 			return prefix;
 	}
 
-	// Get Information from the Tool Config
+	/**
+	 * 	// Get Information from the Tool Config
+	 * @return
+	 * 		return the string of "recipview=" in sakai.mailtool.xml
+	 */
 	public String getRecipview() {
 		String recipview = this.getConfigParam("recipview");
 		if (recipview == null || recipview.trim().equals(""))
@@ -957,7 +994,13 @@ public class Mailtool {
 			return recipview;
 	}
 
-	// OOTB(Out of the box) Sakai defaults
+	/**
+	 * // OOTB(Out of the box) Sakai defaults
+	 * @return
+	 * 		return default group-aware role by type
+	 *		if type=course, return Student.
+	 *		if type=project, return access.
+	 */
 	public String getGroupAwareRoleDefault() {
 		if (getSiteType().equals("course"))
 			return "Student";
@@ -966,6 +1009,13 @@ public class Mailtool {
 		return "";
 	}
 
+	/**
+	 * Get group-aware role which is set in sakai.properties
+	 * e.g. "mailtool.group.aware.role=Student,access"
+	 * 
+	 * @return
+	 * 		return the String of group-aware role name 
+	 */
 	public String getGroupAwareRole() {
 		String gar = ServerConfigurationService
 				.getString("mailtool.group.aware.role");
@@ -986,6 +1036,12 @@ public class Mailtool {
 		return groupAwareRoleDefault;
 	}
 
+	/**
+	 * check if role is listed as group-aware role in mailtool.group.aware.role (in sakai.properties)
+	 * @param role
+	 * @return
+	 * 		return true if role is listed in mailtool.group.aware.role
+	 */
 	public boolean isGroupAwareRoleInSettings(String role) {
 		String gar = ServerConfigurationService
 				.getString("mailtool.group.aware.role");
@@ -1026,8 +1082,14 @@ public class Mailtool {
 		return hasPermissionForRole(myConfigRole, "mailtool.admin");
 	}
 
-	// explicitly add the permissions for this role in !site.helper with the
-	// following
+	/**
+	 * explicitly add the permissions for this role in !site.helper with the
+	 * following
+	 * @param role
+	 * @param permission
+	 * @return
+	 * 		return true if role has permission
+	 */
 	private boolean hasPermissionForRole(String role, String permission) {
 		Collection realmList = new ArrayList();
 		realmList.add(getSiteRealmID());
@@ -1045,6 +1107,11 @@ public class Mailtool {
 		return allowedFunctions.contains(permission);
 	}
 
+	/**
+	 * check if fckeditor is set for text editing
+	 * @return
+	 * 		return if fckeditor is set for the text editing
+	 */
 	public boolean isFCKeditor() {
 		String editortype = this.getConfigParam("wysiwygeditor");
 		if (editortype.equals("") || editortype == null) {
@@ -1065,6 +1132,11 @@ public class Mailtool {
 		return false;
 	}
 
+	/**
+	 * check if htmlarea is set for text editing
+	 * @return
+	 * 		return true if htmlarea is set for text editing
+	 */
 	public boolean isHTMLArea() {
 		String editortype = this.getConfigParam("wysiwygeditor");
 		if (editortype.equals("") || editortype == null) {
@@ -1085,14 +1157,22 @@ public class Mailtool {
 		return false;
 	}
 
-	// Get Information from the Tool Config
+	/**
+	 * check if DisplayInvalidEmailAddr set in sakai.mailtool.xml
+	 * @return
+	 * 	return true if "displayinvalidemailaddrs=yes" in Tool Config(registration) file 
+	 */
 	public boolean getDisplayInvalidEmailAddr() {
 		String invalid = this.getConfigParam("displayinvalidemailaddrs");
 		return (invalid == null ? false : (invalid.trim().toLowerCase().equals(
 				"yes") ? true : false));
 	}
 
-	// Read the tool config and build the email roles that are specified
+	/**
+	 * 	Read the tool config and build the email roles that are specified
+	 * @return
+	 * 		return EmailRoles (called from getEmailGroups())
+	 */
 	public List /* EmailRole */getEmailRoles() {
 		List /* EmailRole */theroles = new ArrayList();
 		List allgroups = new ArrayList();
@@ -1208,6 +1288,11 @@ public class Mailtool {
 		}
 	}
 
+	/**
+	 * Using SiteService & SITE.getTools(), check if Email Archive is among the tools in the site
+	 * @return
+	 * 		return true if Email Archive is added to the site
+	 */
 	public boolean isEmailArchiveAddedToSite() {
 		boolean hasEmailArchive = false;
 		String toolid = "sakai.mailbox";
@@ -1270,8 +1355,12 @@ public class Mailtool {
 		m_allusers = value;
 	}
 
-	/*
+
+	/**
 	 * Build all groups that will be used for this
+	 * 
+	 * @return
+	 * 		return EmailGroups in the site
 	 */
 	public List /* EmailGroup */getEmailGroups() {
 		List /* EmailGroup */thegroups = new ArrayList();
@@ -1439,6 +1528,12 @@ public class Mailtool {
 		return thegroups;
 	}
 
+	/**
+	 * Build all groups that will be used for this
+	 * @param roletypefilter
+	 * @return
+	 * 	return EmailGroup by Type
+	 */
 	public List /* EmailGroup */getEmailGroupsByType(String roletypefilter) {
 		List /* EmailGroup */thegroups = new ArrayList();
 
@@ -1663,9 +1758,8 @@ public class Mailtool {
 	}
 
 	/**
-	 * Get the current user
-	 * 
 	 * @return
+	 * 		return the current user
 	 */
 	public EmailUser getCurrentUser() {
 		EmailUser euser = null;
@@ -1690,6 +1784,7 @@ public class Mailtool {
 	 * @param subject
 	 * @param body
 	 * @return
+	 * 		true if success
 	 */
 	protected boolean appendToArchive(String channelRef, String sender,
 			String subject, String body) {
@@ -1745,6 +1840,11 @@ public class Mailtool {
 		return true;
 	}
 
+	/**
+	 * File upload via valuechangeEvent listener
+	 * @param event
+	 * @throws AbortProcessingException
+	 */
 	public void processFileUpload(ValueChangeEvent event)
 			throws AbortProcessingException {
 		Attachment att = new Attachment();
@@ -1783,6 +1883,9 @@ public class Mailtool {
 		} // end if
 	}
 
+	/**
+	 * remove the attachment file specified by id
+	 */
 	public void processRemoveFile() {
 		String id = getFacesParamValue(facesContext, "id");
 		Attachment a = null;
@@ -1816,6 +1919,7 @@ public class Mailtool {
 
 	/**
 	 * @return
+	 *		return attachedFiles List
 	 */
 	public List getAllAttachments() {
 		return attachedFiles;
@@ -1826,6 +1930,14 @@ public class Mailtool {
 				.getRequestParameterMap().get(name);
 	}
 
+	/**
+	 * Validate email address(throws validatorexception if the entered string does not look like email address
+	 * 
+	 * @param context
+	 * @param toValidate
+	 * @param value
+	 * @throws ValidatorException
+	 */
 	public void validateEmail(FacesContext context, UIComponent toValidate,
 			Object value) throws ValidatorException {
 		String enteredEmail = (String) value;
