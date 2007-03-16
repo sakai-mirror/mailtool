@@ -15,13 +15,13 @@
   </bean>
   <bean id="mailtoolContent3" class="org.sakaiproject.component.app.help.model.ResourceBean">
     <property name="docId"><value>mailtool_content3</value></property>
-    <property name="name"><value>Options or Instructor Preferences</value></property>
+    <property name="name"><value>Options, Saving defaults</value></property>
     <property name="location"><value>/sakai_mailtool/options.htm</value></property>
     <property name="defaultForTool"><value>sakai.mailtool</value></property>
   </bean>
   <bean id="mailtoolContent4" class="org.sakaiproject.component.app.help.model.ResourceBean">
     <property name="docId"><value>mailtool_content4</value></property>
-    <property name="name"><value>Group Awareness</value></property>
+    <property name="name"><value>Group/Section Awareness</value></property>
     <property name="location"><value>/sakai_mailtool/groupaware.htm</value></property>
     <property name="defaultForTool"><value>sakai.mailtool</value></property>
   </bean>
