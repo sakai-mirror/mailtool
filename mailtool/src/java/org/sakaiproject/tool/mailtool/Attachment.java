@@ -21,6 +21,12 @@
 
 package org.sakaiproject.tool.mailtool;
 
+/**
+ * Attachment (info) class in Mailtool
+ * 
+ * @author kimsooil
+ *
+ */
 public class Attachment {
 
 	private int id;

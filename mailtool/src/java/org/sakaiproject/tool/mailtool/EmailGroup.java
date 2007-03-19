@@ -24,6 +24,12 @@ package org.sakaiproject.tool.mailtool;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * EmailGroup in Mailtool (Can be roles, groups, sections in the site), commented by kimsooil@bu.edu
+ * 
+ * @author sgithens
+ *
+ */
 public class EmailGroup {
 	protected EmailRole m_emailrole = null;
 	protected List /* EmailUser */ m_emailusers = new ArrayList();

@@ -85,6 +85,12 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 
+/**
+ * Mailtool bean for compose (expanded by kimsooil@bu.edu)
+ * 
+ * @author sgithen
+ *
+ */
 public class Mailtool {
 	private final Log log = LogFactory.getLog(this.getClass());
 

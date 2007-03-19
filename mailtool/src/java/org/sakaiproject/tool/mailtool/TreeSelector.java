@@ -27,6 +27,13 @@ import java.util.List;
 import javax.faces.model.DataModel;
 
 
+/**
+ * TreeSelector, an implementation of RecipientSelector (commented by kimsooil@bu.edu)
+ * It calls SelectByTree which calls SelectByUserTable)
+ * 
+ * @author sgithens
+ *
+ */
 public class TreeSelector implements RecipientSelector {
 	SelectByTree m_tree = null;
 	List /* EmailGroup */ m_initialgroups = null;

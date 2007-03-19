@@ -21,6 +21,12 @@
 
 package org.sakaiproject.tool.mailtool;
 
+/**
+ * EmailRole (can be a role, a section, a group)
+ * 
+ * @author kimsooil
+ *
+ */
 public class EmailRole {
 	String m_realmid = "";
 	String m_roleid = "";

@@ -22,6 +22,12 @@
 package org.sakaiproject.tool.mailtool;
 
 
+/**
+ * EmailUser contains user id, full name, first/last names, etc. (commented by kimsooil@bu.edu)
+ * 
+ * @author sgithens
+ *
+ */
 public class EmailUser implements Comparable {
 	String m_userid = "";
 	String m_displayname = "";

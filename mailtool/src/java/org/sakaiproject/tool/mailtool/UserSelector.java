@@ -27,6 +27,12 @@ import java.util.List;
 
 import javax.faces.model.DataModel;
 
+/**
+ * UserSelector, an implementation of RecipientSelector(commented by kimsooil@bu.edu)
+ * 
+ * @author sgithens
+ *
+ */
 public class UserSelector implements RecipientSelector {
 	SelectByUserTable m_usertable = null;
 	List /* EmailGroup */ m_initialgroups = null;

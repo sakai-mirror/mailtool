@@ -29,6 +29,12 @@ import javax.faces.model.DataModel;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
+/**
+ * FoothillSelector, it's renamed to "Scrolling list" (commented by kimsooil@bu.edu)
+ * 
+ * @author sgithens
+ *
+ */
 public class FoothillSelector implements RecipientSelector {
 	List /* EmailGroup */ m_initialgroups = null;
 	int m_poscount = 0;

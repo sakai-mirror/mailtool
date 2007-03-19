@@ -27,6 +27,12 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
+/**
+ * SideBySideModel, just slightly modified for group-awareness by kimsooil@bu.edu
+ * 
+ * @author sgithens
+ *
+ */
 public class SideBySideModel {
 	
 	/** This will be the 'object' we hook up to in

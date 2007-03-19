@@ -25,6 +25,12 @@ import java.util.List;
 
 import javax.faces.model.DataModel;
 
+/**
+ * Interface for RecipientSelectors (commented by kimsooil@bu.edu)
+ * 
+ * @author sgithens
+ *
+ */
 public interface RecipientSelector {
 
 	//Method to populate groups and roles

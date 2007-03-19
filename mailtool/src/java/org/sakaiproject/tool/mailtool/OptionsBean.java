@@ -42,6 +42,12 @@ import org.sakaiproject.user.cover.UserDirectoryService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * OptionsBean, will be used only when authorized user click "options" link
+ * 
+ * @author kimsooil
+ *
+ */
 public class OptionsBean {
 	private AuthzGroupService m_realmService;
 	private AuthzGroup arole;

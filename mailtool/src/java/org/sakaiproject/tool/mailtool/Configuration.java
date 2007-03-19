@@ -21,6 +21,12 @@
 
 package org.sakaiproject.tool.mailtool;
 
+/**
+ * Configuration for "show renamining role" in Mailtool options
+ * 
+ * @author kimsooil
+ *
+ */
 public class Configuration {
 
 	private int id;

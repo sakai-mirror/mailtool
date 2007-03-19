@@ -28,6 +28,12 @@ import java.util.List;
 import javax.faces.model.DataModel;
 
 
+/**
+ * SideBySideSelector, an implementation of RecipientSelector (commented by kimsooil@bu.edu)
+ *  
+ * @author sgithens
+ *
+ */
 public class SideBySideSelector implements RecipientSelector {
 	List /* emailgroups */ m_initialgroups = null;
 	

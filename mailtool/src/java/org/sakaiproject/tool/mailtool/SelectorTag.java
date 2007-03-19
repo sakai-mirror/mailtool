@@ -27,6 +27,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.webapp.UIComponentTag;
 
+/**
+ * SelectorTag: (Comment by kimsooil@bu.edu) don't know what's for
+ * 
+ * @author sgithens
+ *
+ */
 public class SelectorTag extends UIComponentTag {
 	public String getRendererType() { return null; }
 	public String getComponentType() { return "MailtoolSelector"; }

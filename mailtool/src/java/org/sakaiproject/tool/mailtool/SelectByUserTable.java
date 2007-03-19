@@ -29,6 +29,12 @@ import java.util.List;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 
+/**
+ * SelectByUserTable, it's used both for Tree(Users by Role) and User views (commented by kimsooil@bu.edu)
+ * 
+ * @author sgithens
+ *
+ */
 public class SelectByUserTable {
 	public class TableEntry
 	{

@@ -32,6 +32,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.PhaseId;
 
+/**
+ * SelectByTree, it's renamed to "Users by Role" (commented by kimsooil@bu.edu)
+ * 
+ * @author sgithens
+ *
+ */
 public class SelectByTree {
 	public class TableEntry
 	{
