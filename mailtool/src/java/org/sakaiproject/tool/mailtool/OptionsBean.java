@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL: https://source.sakaiproject.org/contrib/mailtool/branches/2.4.refactor/src/java/org/sakaiproject/tool/mailtool/OptionsBean.java $
-* $Id: OptionsBean.java 3642 2007-02-23 15:45:10Z kimsooil@bu.edu $
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2006, 2007 The Sakai Foundation.
