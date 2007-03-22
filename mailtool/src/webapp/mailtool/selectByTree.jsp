@@ -12,13 +12,13 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 				<h:column>
 						<h:panelGroup>
 							<h:selectBooleanCheckbox id="selectAllGroupAwareRoleCheckbox1" value="#{garow.allSelected}" immediate="true" onclick="submit();" valueChangeListener="#{garow.processSelectAll}"/>
-							<h:outputLabel for="selectAllGroupAwareRoleCheckbox1" value=" #{msgs.usersbyrole_all_prefix} #{Mailtool.groupAwareRole}#{msgs.usersbyrole_all_suffix}" />
+							<h:outputLabel for="selectAllGroupAwareRoleCheckbox1" value=" #{msgs.usersbyrole_all_prefix}  #{garow.pluralRolename} " />
 							<h:outputText value=" - "  />
 							<h:panelGroup rendered="#{not Mailtool.groupAwareRoleviewClicked}"  style="font-weight:normal">
-								<h:commandLink action="#{Mailtool.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_selectindividuals}" style="text-decoration: underline"/>
+								<h:commandLink action="#{Mailtool.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_select} #{garow.pluralRolename}" style="text-decoration: underline"/>
 							</h:panelGroup>
 							<h:panelGroup rendered="#{Mailtool.groupAwareRoleviewClicked}" style="font-weight:normal">
-								<h:commandLink action="#{Mailtool.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_collapseindividuals}" style="text-decoration: underline"/>
+								<h:commandLink action="#{Mailtool.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_collapse} #{garow.pluralRolename}" style="text-decoration: underline"/>
 							</h:panelGroup>
 						</h:panelGroup>
 						<h:panelGroup rendered="#{Mailtool.num_groups > 0}">	

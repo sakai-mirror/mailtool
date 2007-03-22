@@ -1218,10 +1218,15 @@ public class Mailtool {
 				String rolename = r.getId();
 				String singular = "";
 				String plural = "";
-				if (rolename.equals("maintain") || rolename.equals("access")) {
+				if (rolename.equals("maintain")) {
+					singular = rolename;
+					plural = rolename + "ers";
+				}
+				else if (rolename.equals("access")) {
 					singular = rolename;
 					plural = rolename + " users";
-				} else {
+				}
+				else {
 					singular = rolename;
 					plural = rolename + "s";
 				}

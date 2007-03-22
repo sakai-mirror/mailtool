@@ -17,13 +17,13 @@ Mailtool.userTree returns DataModel from SelectByTree.getRows
 
 					  	<h:panelGroup>
 							<h:selectBooleanCheckbox disabled="true" id="selectAllGroupAwareRoleCheckbox1" value="#{Option.allGroupAwareRoleSelected}" />
-							<h:outputLabel for="selectAllGroupAwareRoleCheckbox1" value=" #{msgs.usersbyrole_all_prefix} #{Option.groupAwareRole}#{msgs.usersbyrole_all_suffix}" style="color:#777;white-space:nowrap"/>
+							<h:outputLabel for="selectAllGroupAwareRoleCheckbox1" value=" #{msgs.usersbyrole_all_prefix}  #{row.pluralRolename} " style="color:#777;white-space:nowrap"/>
 							<h:outputText value=" - "  />
 							<h:panelGroup rendered="#{not Option.groupAwareRoleviewClicked}">
-								<h:commandLink action="#{Option.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_selectindividuals}" style="text-decoration: underline"/>
+								<h:commandLink action="#{Option.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_select} #{row.pluralRolename}" style="text-decoration: underline"/>
 							</h:panelGroup>
 							<h:panelGroup rendered="#{Option.groupAwareRoleviewClicked}">
-								<h:commandLink action="#{Option.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_collapseindividuals}" style="text-decoration: underline"/>
+								<h:commandLink action="#{Option.toggle_groupAwareRoleviewClicked}" value=" #{msgs.usersbyrole_collapse} #{row.pluralRolename}" style="text-decoration: underline"/>
 							</h:panelGroup>
 						</h:panelGroup>
 						<h:panelGroup rendered="#{Option.num_groups > 0}">	
