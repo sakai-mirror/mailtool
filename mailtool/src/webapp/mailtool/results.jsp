@@ -6,7 +6,6 @@
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai"%>
 
 <f:view>
-	
 	<f:verbatim>
 	<!DOCTYPE html
 	 PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
