@@ -23,12 +23,12 @@
 			<div class="portletBody">
 				<h:form>
 					<sakai:messages />
-					<div class="information">
+
 						<h:outputText escape="false" value="#{Mailtool.results}"/>
 						<h:panelGroup rendered="#{Mailtool.sendMeCopy}">
-						<h:outputText escape="false" value="#{msgs.result_copysenttothesender}" />
+							<h:outputText escape="false" value="#{msgs.result_copysenttothesender}" />
 						</h:panelGroup>
-					</div>	
+
 					<sakai:button_bar>
 						<sakai:button_bar_item
 							action="main_onepage"
