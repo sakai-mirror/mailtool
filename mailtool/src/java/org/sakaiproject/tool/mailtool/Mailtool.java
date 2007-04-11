@@ -1087,6 +1087,12 @@ public class Mailtool {
 		return hasPermissionForRole(myConfigRole, "mailtool.admin");
 	}
 
+	public boolean isAllowedToArchiveMessage() {
+		String myConfigRole = m_realmService.getUserRole(this.getCurrentUser()
+				.getUserid(), getSiteRealmID());
+		return hasPermissionForRole(myConfigRole, "mail.new");
+	}
+	
 	/**
 	 * explicitly add the permissions for this role in !site.helper with the
 	 * following

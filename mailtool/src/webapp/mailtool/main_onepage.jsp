@@ -136,7 +136,7 @@
 									<h:selectBooleanCheckbox value="#{Mailtool.sendMeCopy}" id="sendmeacopy"/>
 									<h:outputLabel for ="sendmeacopy"  value="#{msgs.sendmeacopy}" />
 								</h:panelGroup>	
-								<h:panelGroup rendered="#{Mailtool.emailArchiveInSite}">
+								<h:panelGroup rendered="#{Mailtool.emailArchiveInSite and Mailtool.allowedToArchiveMessage}">
 									<h:selectBooleanCheckbox value="#{Mailtool.archiveMessage}" id="addtoarchive" />
 									<h:outputLabel for ="addtoarchive" value="#{msgs.addtoemailarchive}" />
 								</h:panelGroup>

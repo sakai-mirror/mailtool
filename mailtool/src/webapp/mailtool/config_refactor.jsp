@@ -53,11 +53,11 @@
 							<h:outputText value=" " />
 						</h:panelGroup>
 
-						<h:panelGroup rendered="#{Option.emailArchiveInSite}"styleClass="checkbox">
+						<h:panelGroup rendered="#{Option.emailArchiveInSite and Mailtool.allowedToArchiveMessage}"styleClass="checkbox">
 							<h:selectBooleanCheckbox value="#{Option.archiveMessage}" id="achiveMessageID"/>
 							<h:outputLabel value="#{msgs.addtoemailarchive}" for="achiveMessageID" />
 						</h:panelGroup>
-						<h:panelGroup rendered="#{not Option.emailArchiveInSite}" style="height:100%;overflow:hidden;display:block;color:#555 !important" styleClass="checkbox">
+						<h:panelGroup rendered="#{not Option.emailArchiveInSite or not Mailtool.allowedToArchiveMessage}" style="height:100%;overflow:hidden;display:block;color:#555 !important" styleClass="checkbox">
 							<h:selectBooleanCheckbox disabled="true" value="#{Option.archiveMessage}" id="achiveMessageID2"/>
 							<h:outputLabel value="#{msgs.addtoemailarchive}" for="achiveMessageID2" style="color:#777;white-space:nowrap"/>
 						</h:panelGroup>
