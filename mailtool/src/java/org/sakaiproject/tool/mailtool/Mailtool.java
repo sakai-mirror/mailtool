@@ -139,6 +139,8 @@ public class Mailtool {
 	protected String m_siteid = "";
 
 	protected String m_realmid = "";
+	
+	protected String sitename = "";
 
 	protected boolean is_fckeditor = false;
 
@@ -263,6 +265,7 @@ public class Mailtool {
 		m_realmid = getSiteRealmID();
 		groupAwareRoleDefault = getGroupAwareRoleDefault();
 		groupAwareRoleFound = getGroupAwareRole();
+		sitename = getSiteTitle();
 
 		setSelectorType();
 		getRecipientSelectors();
@@ -2021,5 +2024,13 @@ public class Mailtool {
 
 	public void setGroupAwareRoleExist(boolean groupAwareRoleExist) {
 		GroupAwareRoleExist = groupAwareRoleExist;
+	}
+
+	public String getSitename() {
+		return sitename;
+	}
+
+	public void setSitename(String sitename) {
+		this.sitename = sitename;
 	}
 }
