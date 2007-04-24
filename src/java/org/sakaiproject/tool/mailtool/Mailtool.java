@@ -780,12 +780,16 @@ public class Mailtool
 			}
 		
 		//	Clear the Subject and Body of the Message
-		m_subject = getSubjectPrefixFromConfig();
+		m_subject = getSubjectPrefix().equals("") ? getSubjectPrefixFromConfig() : getSubjectPrefix();
 		m_otheremails="";
 		m_body = "";
 		num_files=0;
 		attachedFiles.clear();
 		m_buildNewView = true;
+		
+		m_recipientSelector = null;
+		setAllUsersSelected(false);		
+		
 
 		/* Display Users with Bad Emails if the option is
 		 * turned on.
