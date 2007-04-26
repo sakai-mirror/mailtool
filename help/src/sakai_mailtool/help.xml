@@ -19,12 +19,6 @@
     <property name="location"><value>/sakai_mailtool/options.htm</value></property>
     <property name="defaultForTool"><value>sakai.mailtool</value></property>
   </bean>
-  <bean id="mailtoolContent4" class="org.sakaiproject.component.app.help.model.ResourceBean">
-    <property name="docId"><value>mailtool_content4</value></property>
-    <property name="name"><value>Group/Section Awareness</value></property>
-    <property name="location"><value>/sakai_mailtool/groupaware.htm</value></property>
-    <property name="defaultForTool"><value>sakai.mailtool</value></property>
-  </bean>
   <bean id="org.sakaiproject.api.app.help.TableOfContents" 
         class="org.sakaiproject.component.app.help.model.TableOfContentsBean">
       <property name="name"><value>root</value></property>
@@ -37,7 +31,6 @@
                     <ref bean="mailtoolContent1"/>
 					<ref bean="mailtoolContent2"/>
 					<ref bean="mailtoolContent3"/>
-					<ref bean="mailtoolContent4"/>
                   </list>
                </property>
             </bean>

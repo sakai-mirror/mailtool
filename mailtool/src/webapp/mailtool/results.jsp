@@ -4,7 +4,6 @@
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f"%>
 <%-- Main Sakai tag library --%>
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai"%>
-
 <f:view>
 	<f:verbatim>
 	<!DOCTYPE html
