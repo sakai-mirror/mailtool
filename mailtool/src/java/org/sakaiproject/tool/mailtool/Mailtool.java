@@ -1971,8 +1971,8 @@ public class Mailtool {
 
 		if (!matchFound) {
 			FacesMessage message = new FacesMessage();
-			message.setDetail("Email not valid");
-			message.setSummary("Email not valid");
+			message.setDetail("Email not valid in Other Recipients field");
+			message.setSummary("Email not valid in Other Recipients field");
 			message.setSeverity(FacesMessage.SEVERITY_ERROR);
 			throw new ValidatorException(message);
 		}
