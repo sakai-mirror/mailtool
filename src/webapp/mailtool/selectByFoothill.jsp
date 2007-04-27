@@ -15,14 +15,12 @@
 				<sakai:button_bar_item
 					action="#{Mailtool.recipientSelector.processSelectAll}"
 					value="#{msgs.select_all_button}"
-					rendered="true"
 					immediate="false" />
 			</sakai:button_bar>
 			<sakai:button_bar>
 				<sakai:button_bar_item
 					action="#{Mailtool.recipientSelector.processSelectNone}"
 					value="#{msgs.select_none_button}"
-					rendered="true"
 					immediate="false" />
 			</sakai:button_bar>
 		</h:panelGroup>

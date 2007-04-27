@@ -74,7 +74,7 @@
 					<h:outputText value="" />
 					<h:panelGroup>
 						<h:outputLabel value="Other Recipient(s): " styleClass="block" for="email"/>
-						<h:inputText value="#{Mailtool.otherEmails}" size="40" validator="#{Mailtool.validateEmail}" id="email"/>
+						<h:inputText value="#{Mailtool.otherEmails}" size="40" id="email"/>
 						<h:outputText value="Separate additional email addresses with commas or semicolons." styleClass="instruction" style="display:block" />
 					</h:panelGroup>
 					<h:outputText value="#{msgs.message_subject}: " style="display:block;height:100%;overflow:hidden;float:right;padding:.5em .5em 0 0" />
