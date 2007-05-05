@@ -27,9 +27,9 @@ limitations under the License.
     <version>M2</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <name>sakai-mailtool-tool</name>
+  <name>mailtool</name>
   <groupId>org.sakaiproject</groupId>
-  <artifactId>sakai-mailtool-tool</artifactId>
+  <artifactId>mailtool</artifactId>
   <description>
     This project creates a WAR containing the Mailtool Tool for Sakai.
   </description>
