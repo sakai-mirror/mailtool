@@ -75,9 +75,7 @@
 						<%--
 								<h:outputText value="#{Mailtool.subjectPrefix}"/>
 						--%>
-					<h:inputText value="#{Mailtool.messageSubject}"	size="60" required="true">
-						<f:validateLength minimum="1"/>
-					</h:inputText>
+					<h:inputText value="#{Mailtool.messageSubject}"	size="60" id="subject" required="true" />
 
 					</h:panelGrid>
 					<h:panelGroup rendered="#{not Mailtool.attachClicked and Mailtool.maxNumAttachment!=0}" style="height:100%;display:block;overflow:hidden;vertical-align: middle;padding:.2em .5em 0 0">
@@ -146,7 +144,7 @@
 									<sakai:button_bar_item action="#{Mailtool.processSendEmail}" value="#{msgs.send_mail_button}" immediate="false" styleClass="active" />
 								</sakai:button_bar>	
 								<sakai:button_bar>
-									<sakai:button_bar_item action="#{Mailtool.processCancelEmail}" value="#{msgs.cancel_mail_button}" immediate="false" />
+									<sakai:button_bar_item action="#{Mailtool.processCancelEmail}" value="#{msgs.cancel_mail_button}" immediate="true" />
 								</sakai:button_bar>
 							</h:panelGrid>							
 						</h:panelGroup>

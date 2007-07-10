@@ -42,6 +42,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.io.FilenameUtils;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 // import org.sakaiproject.email.cover.EmailService;
 import org.sakaiproject.event.cover.NotificationService;
@@ -71,6 +73,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.validator.ValidatorException;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import java.util.Properties;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -655,7 +658,7 @@ public class Mailtool {
 	 */
 	public String processCancelEmail() {
 
-		this.m_recipientSelector = null;
+/*		this.m_recipientSelector = null;
 		this.m_subject = getSubjectPrefix().equals("") ? getSubjectPrefixFromConfig()
 				: getSubjectPrefix();
 		m_otheremails = "";
@@ -670,7 +673,10 @@ public class Mailtool {
 		setAllUsersSelected(false);
 		setAllGroupSelected(false);
 		setAllSectionSelected(false);
-
+*/
+		// reset tool
+		ToolSession ts = SessionManager.getCurrentSession().getToolSession(ToolManager.getCurrentPlacement().getId());
+		ts.clearAttributes();
 		return "cancel";
 	}
 
@@ -1967,7 +1973,7 @@ public class Mailtool {
 		Matcher m = p.matcher(enteredEmail);
 
 		// Check whether match is found
-		boolean matchFound = m.matches();
+		boolean matchFound = m.matches(); 
 
 		if (!matchFound) {
 			FacesMessage message = new FacesMessage();
@@ -1975,6 +1981,16 @@ public class Mailtool {
 			message.setSummary("Email not valid");
 			message.setSeverity(FacesMessage.SEVERITY_ERROR);
 			throw new ValidatorException(message);
+		}
+	}
+	public void validateSubject(FacesContext context, UIComponent toValidate,
+			Object value) throws ValidatorException {
+		String enteredSubject = (String) value;
+
+		if (enteredSubject==null || enteredSubject.trim().equals("")) {
+		       ((UIInput)toValidate).setValid(false);
+		        FacesMessage message = new FacesMessage("You cannot send a message until you have specified a subject.");
+		        context.addMessage(toValidate.getClientId(context), message);
 		}
 	}
 
