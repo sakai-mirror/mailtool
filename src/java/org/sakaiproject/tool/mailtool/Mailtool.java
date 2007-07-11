@@ -574,6 +574,7 @@ public class Mailtool
 
 	public String processCancelEmail()
 	{
+/*
 		this.m_recipientSelector = null;
 		this.m_subject = getSubjectPrefixFromConfig();
 		m_otheremails="";
@@ -581,6 +582,10 @@ public class Mailtool
 		num_files=0;
 		attachedFiles.clear();
 		m_buildNewView = true;
+*/
+		// reset tool
+		ToolSession ts = SessionManager.getCurrentSession().getToolSession(ToolManager.getCurrentPlacement().getId());
+		ts.clearAttributes();
 		return "cancel";
 	}
 //	public String processSendEmail(){ return "results";}
