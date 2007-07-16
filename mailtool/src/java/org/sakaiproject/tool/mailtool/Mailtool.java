@@ -42,6 +42,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.io.FilenameUtils;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 // import org.sakaiproject.email.cover.EmailService;
 import org.sakaiproject.event.cover.NotificationService;
@@ -654,7 +656,7 @@ public class Mailtool {
 	 * 		"cancel" for navigating to compse page
 	 */
 	public String processCancelEmail() {
-
+/*
 		this.m_recipientSelector = null;
 		this.m_subject = getSubjectPrefix().equals("") ? getSubjectPrefixFromConfig()
 				: getSubjectPrefix();
@@ -670,7 +672,9 @@ public class Mailtool {
 		setAllUsersSelected(false);
 		setAllGroupSelected(false);
 		setAllSectionSelected(false);
-
+*/
+		ToolSession ts = SessionManager.getCurrentSession().getToolSession(ToolManager.getCurrentPlacement().getId());
+		ts.clearAttributes();
 		return "cancel";
 	}
 
