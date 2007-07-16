@@ -83,6 +83,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeUtility;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -801,22 +802,25 @@ public class Mailtool {
 						getConfigParam("replyto").trim()) };
 				message.setReplyTo(replytoList);
 			}
-			message.setSubject(subject);
+			message.setSubject(MimeUtility.encodeText( subject, "UTF-8", "Q" ));
 			String text = m_body;
 			String attachmentdirectory = getUploadDirectory();
 
 			// Create the message part
-			BodyPart messageBodyPart = new MimeBodyPart();
+			MimeBodyPart messageBodyPart = new MimeBodyPart();
 
 			// Fill the message
 			String messagetype = "";
 
 			if (getTextFormat().equals("htmltext")) {
-				messagetype = "text/html";
+				messagetype = "text/html; charset=UTF-8";
+            messageBodyPart.setText(text, "UTF-8", "html");
 			} else {
-				messagetype = "text/plain";
+				messagetype = "text/plain; charset=UTF-8";
+            messageBodyPart.setText(text, "UTF-8", "plain");
 			}
-			messageBodyPart.setContent(text, messagetype);
+			messageBodyPart.addHeader("Content-Transfer-Encoding", "quoted-printable");
+			messageBodyPart.addHeader("Content-Type", messagetype );
 			Multipart multipart = new MimeMultipart();
 			multipart.addBodyPart(messageBodyPart);
 
@@ -925,6 +929,7 @@ public class Mailtool {
 		return "results";
 	}
 
+	
 	public RecipientSelector getRecipientSelector() {
 		getRecipientSelectors();
 
