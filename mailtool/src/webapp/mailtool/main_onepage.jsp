@@ -75,6 +75,9 @@
 						<%--
 								<h:outputText value="#{Mailtool.subjectPrefix}"/>
 						--%>
+					<%--
+					<h:inputText value="#{Mailtool.messageSubject}"	size="60" id="subject" required="true" validator="#{Mailtool.validateSubject}"/>
+					--%>
 					<h:inputText value="#{Mailtool.messageSubject}"	size="60" id="subject" required="true" />
 
 					</h:panelGrid>
