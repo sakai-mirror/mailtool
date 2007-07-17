@@ -814,10 +814,10 @@ public class Mailtool {
 
 			if (getTextFormat().equals("htmltext")) {
 				messagetype = "text/html; charset=UTF-8";
-            messageBodyPart.setText(text, "UTF-8", "html");
+            messageBodyPart.setContent(text, messagetype);
 			} else {
 				messagetype = "text/plain; charset=UTF-8";
-            messageBodyPart.setText(text, "UTF-8", "plain");
+            messageBodyPart.setContent(text, messagetype);
 			}
 			messageBodyPart.addHeader("Content-Transfer-Encoding", "quoted-printable");
 			messageBodyPart.addHeader("Content-Type", messagetype );
