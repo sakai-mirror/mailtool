@@ -27,7 +27,7 @@
 							<f:verbatim><br/></f:verbatim>
 							<h:outputText escape="false" value="#{msgs.result_copysenttothesender}" />
 						</h:panelGroup>
-						<h:panelGroup rendered="#{Mailtool.archiveMessage}">
+						<h:panelGroup rendered="#{Mailtool.archiveMessage and Mailtool.emailArchiveInSite and Mailtool.allowedToArchiveMessage}">
 							<f:verbatim><br/></f:verbatim>
 							<h:outputText escape="false" value="#{msgs.result_copysenttoemailarchive1} " />
 							<h:outputText escape="false" value="#{Mailtool.sitename}" />
