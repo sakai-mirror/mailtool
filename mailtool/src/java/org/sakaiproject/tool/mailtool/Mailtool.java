@@ -1019,9 +1019,11 @@ public class Mailtool {
 	 *		if type=project, return access.
 	 */
 	public String getGroupAwareRoleDefault() {
-		if (getSiteType().equals("course"))
+//		if (getSiteType().equals("course"))
+		if ("course".equals(getSiteType())) // it's a fix of SAK-11046
 			return "Student";
-		if (getSiteType().equals("project"))
+//		if (getSiteType().equals("project"))
+		if ("project".equals(getSiteType())) // it's a fix of SAK-11046
 			return "access";
 		return "";
 	}
