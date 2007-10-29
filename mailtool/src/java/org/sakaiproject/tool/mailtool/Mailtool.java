@@ -31,6 +31,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.TreeSet;
 import java.util.Iterator;
 import java.util.List;
@@ -787,6 +788,7 @@ public class Mailtool {
 
 			InternetAddress from = new InternetAddress(fromString);
 			message.setFrom(from);
+			message.setSentDate(new Date(System.currentTimeMillis())); // fix of SAK-11181
 			String reply = getReplyToSelected().trim().toLowerCase();
 			if (reply.equals("yes")) {
 				// "reply to sender" is default. So do nothing
@@ -1444,53 +1446,7 @@ public class Mailtool {
 				Collections.sort(mailusers);
 				EmailGroup thegroup = new EmailGroup(emailrole, mailusers);
 				thegroups.add(thegroup);
-			} 
-			else if (emailrole.roletype.equals("role_groupaware")) { // fix SAK-10076
-					String realmid = emailrole.getRealmid();
-
-					AuthzGroup therealm = null;
-					try {
-						therealm = m_realmService.getAuthzGroup(realmid);
-					} catch (Exception e) {
-						log.debug("Exception: Mailtool.getEmailGroups() #1, "
-								+ e.getMessage());
-					}
-					Set users = therealm.getUsersHasRole(emailrole.getRoleid());
-					List /* EmailUser */mailusers = new ArrayList();
-					for (Iterator j = users.iterator(); j.hasNext();) {
-						String userid = (String) j.next();
-						try {
-							User theuser = m_userDirectoryService.getUser(userid);
-							String firstname_for_display = "";
-							String lastname_for_display = "";
-							if (theuser.getFirstName().trim().equals("")) {
-								if (theuser.getEmail().trim().equals("")
-										&& theuser.getLastName().trim().equals(""))
-									firstname_for_display = theuser.getDisplayId(); // fix
-																					// for
-																					// SAK-7539
-								else
-									firstname_for_display = theuser.getEmail(); // fix
-																				// for
-																				// SAK-7356
-							} else {
-								firstname_for_display = theuser.getFirstName();
-							}
-							lastname_for_display = theuser.getLastName();
-							EmailUser emailuser = new EmailUser(theuser.getId(),
-									firstname_for_display, lastname_for_display,
-									theuser.getEmail());
-							mailusers.add(emailuser);
-						} catch (Exception e) {
-							log.debug("Exception: Mailtool.getEmailGroups() #2, "
-									+ e.getMessage());
-						}
-					}
-					Collections.sort(mailusers);
-					EmailGroup thegroup = new EmailGroup(emailrole, mailusers);
-					thegroups.add(thegroup);
-				}
-			else if (emailrole.roletype.equals("group")) {
+			} else if (emailrole.roletype.equals("group")) {
 				String sid = getSiteID();
 				Site currentSite = null;
 				try {
