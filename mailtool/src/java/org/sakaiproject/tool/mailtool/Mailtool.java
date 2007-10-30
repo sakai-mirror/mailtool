@@ -690,9 +690,7 @@ public class Mailtool {
 	 * 		return "results" for navigating to results page
 	 */
 	public String processSendEmail() {
-		
-		log.info("Mailtool.processSendEmail()");
-		
+				
 		/* EmailUser */selected = m_recipientSelector.getSelectedUsers();
 		if (m_selectByTree) {
 			selectedGroupAwareRoleUsers = m_recipientSelector1
@@ -890,6 +888,13 @@ public class Mailtool {
 			message.addRecipients(Message.RecipientType.BCC, recipientsString);
 
 			Transport.send(message);
+			
+			log.info("Mailtool.processSendEmail()"
+					+": SITE["+getSiteID()
+					+"] From["+m_userDirectoryService.getCurrentUser().getId()+"-"+fromEmail
+					+"] To["+recipientsString
+					+"] Subject["+getMessageSubject()+"]");
+			
 		} catch (Exception e) {
 			log.debug("Mailtool Exception while trying to send the email: "
 					+ e.getMessage());
@@ -935,6 +940,7 @@ public class Mailtool {
 				}
 			}
 		}
+		
 		return "results";
 	}
 

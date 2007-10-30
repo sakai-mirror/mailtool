@@ -153,6 +153,25 @@ public class OptionsBean {
 	public void setAuthzGroupService(AuthzGroupService service) { this.m_realmService = service; }
 	public void setUserDirectoryService(UserDirectoryService service) { this.m_userDirectoryService = service; }
 
+	/**
+	 * @return
+	 * 		return the current user
+	 */
+	public EmailUser getCurrentUser() {
+		EmailUser euser = null;
+		User curU = null;
+		try {
+			curU = m_userDirectoryService.getCurrentUser();
+			euser = new EmailUser(curU.getId(), curU.getDisplayName(), curU
+					.getEmail());
+		} catch (Exception e) {
+			log
+					.debug("Exception: Mailtool.getCurrentUser(), "
+							+ e.getMessage());
+		}
+		return euser;
+	}
+	
 	protected String getSiteID()
 	{
 		return (ToolManager.getCurrentPlacement().getContext());
@@ -932,7 +951,9 @@ public class OptionsBean {
 	public String processUpdateOptions()
 	{
 		
-		log.info("Mailtool-OptionsBean() - Options Updated");
+		log.info("Mailtool-Options Updated"
+				+" for SITE["+getSiteID()
+				+"] By["+m_userDirectoryService.getCurrentUser().getId()+"-"+getCurrentUser().getEmail()+"]");
 			
 		if (isShowRenamingRoles()){
 			int i=1;
