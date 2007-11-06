@@ -95,7 +95,8 @@ import javax.activation.FileDataSource;
  *
  */
 public class Mailtool {
-	private final Log log = LogFactory.getLog(this.getClass());
+	//private final Log log = LogFactory.getLog(this.getClass());
+	private static Log log = LogFactory.getLog(Mailtool.class);
 
 	protected FacesContext facesContext = FacesContext.getCurrentInstance();
 
@@ -259,6 +260,9 @@ public class Mailtool {
 	 * Mailtool bean for compose page
 	 */
 	public Mailtool() {
+		
+		//log.info("Mailtool() is initialized");
+		
 		num_groups = 0;
 		num_sections = 0;
 		num_groupawarerole = 0;
@@ -685,6 +689,9 @@ public class Mailtool {
 	 * 		return "results" for navigating to results page
 	 */
 	public String processSendEmail() {
+		
+		log.info("Mailtool.processSendEmail()");
+		
 		/* EmailUser */selected = m_recipientSelector.getSelectedUsers();
 		if (m_selectByTree) {
 			selectedGroupAwareRoleUsers = m_recipientSelector1
@@ -1120,7 +1127,7 @@ public class Mailtool {
 		try {
 			authzGroup = m_realmService.getAuthzGroup("!site.helper");
 		} catch (Exception e) {
-			log.info("No site helper template found");
+			log.info("Mailtool-No site helper template found");
 		}
 		if (authzGroup != null) {
 			realmList.add(authzGroup.getId());
@@ -1921,6 +1928,9 @@ public class Mailtool {
 	 */
 	public void processFileUpload(ValueChangeEvent event)
 			throws AbortProcessingException {
+		
+		//log.info("Mailtool.processFileUpload()");
+		
 		Attachment att = new Attachment();
 		int maxnumattachment = getMaxNumAttachment();
 		if (num_files < maxnumattachment) {
@@ -1961,6 +1971,9 @@ public class Mailtool {
 	 * remove the attachment file specified by id
 	 */
 	public void processRemoveFile() {
+		
+		//log.info("Mailtool.processRemoveFile()");
+		
 		String id = getFacesParamValue(facesContext, "id");
 		Attachment a = null;
 		Attachment aForRemoval = null;
