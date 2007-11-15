@@ -991,7 +991,7 @@ public class Mailtool {
 			
 			log.info("Mailtool.processSendEmail()"
 					+": SITE["+getSiteID()
-					+"] From["+m_userDirectoryService.getCurrentUser().getId()+"-"+curUser.getEmail()
+					+"] From["+curUser.getDisplayname()+"-"+curUser.getEmail()
 					+"] To["+recipientsString
 					+"] Subject["+getMessageSubject()+"]");
 			
