@@ -992,7 +992,7 @@ public class Mailtool {
 			log.info("Mailtool.processSendEmail()"
 					+": SITE["+getSiteID()
 //					+"] From["+m_userDirectoryService.getCurrentUser().getId()+"-"+curUser.getEmail()
-					+"] From["+curUser.getDisplayname()+"-"+curUser.getEmail()		// Apply David McCallum (dmccallum@unicon.net)'s path - See detail at http://jira.sakaiproject.org/jira/browse/SAK-11046			
+					+"] From["+curUser.getDisplayname()+"-"+curUser.getEmail()		// Apply Daniel McCallum (dmccallum@unicon.net)'s path - See detail at http://jira.sakaiproject.org/jira/browse/SAK-11046			
 					+"] To["+recipientsString
 					+"] Subject["+getMessageSubject()+"]");
 			
