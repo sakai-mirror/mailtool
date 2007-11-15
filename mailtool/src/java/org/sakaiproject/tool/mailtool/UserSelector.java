@@ -54,8 +54,7 @@ public class UserSelector implements RecipientSelector {
 
 			// do not add "section" and "group" emailusers
 			EmailRole role = (EmailRole) group.getEmailrole();
-			if (role.roletype.equals("role")) users.addAll(group.getEmailusers());
-			else if (role.roletype.equals("role_groupaware")) users.addAll(group.getEmailusers()); // fix SAK-10076
+			if (role.roletype.equals("role")) users.addAll(group.getEmailusers()); 
 		}
 		
 		m_usertable = new SelectByUserTable(users);

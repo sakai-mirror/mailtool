@@ -130,12 +130,10 @@ public class FoothillSelector implements RecipientSelector {
 		for (Iterator i = emailgroups.iterator(); i.hasNext();)
 		{
 			EmailGroup group = (EmailGroup) i.next();
-			String rtype = group.getEmailrole().roletype;
-			if (rtype.equals("role") || rtype.equals("role_groupaware")){ // fix SAK-10076
-				ListboxGroup listgroup = new ListboxGroup(group);
-				m_listboxGroups.add(listgroup);
-			}
+			ListboxGroup listgroup = new ListboxGroup(group);
+			m_listboxGroups.add(listgroup);
 		}
+		
 	}
 
 	public List /* EmailUser */ getSelectedUsers() 

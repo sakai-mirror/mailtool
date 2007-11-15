@@ -184,14 +184,11 @@ public class SideBySideModel {
 		for (Iterator i = groups.iterator(); i.hasNext();)
 		{
 			EmailGroup group = (EmailGroup) i.next();
-			String rtype = group.getEmailrole().roletype;
-			if (rtype.equals("role") || rtype.equals("role_groupaware")){ // fix SAK-10076
-				ListboxEntry entry = new ListboxEntry(count);
-				entry.setData(group);
-				entry.setSourceSelected(true);
-				m_listboxdata.add(entry);
-				count++;
-			}
+			ListboxEntry entry = new ListboxEntry(count);
+			entry.setData(group);
+			entry.setSourceSelected(true);
+			m_listboxdata.add(entry);
+			count++;
 		}
 /*		
 		ListboxEntry diventry = new ListboxEntry(count);
@@ -206,25 +203,23 @@ public class SideBySideModel {
 
 			String rtype = group.getEmailrole().roletype;
 			String rname = group.getEmailrole().getRolesingular();
-			if (rtype.equals("role") || rtype.equals("role_groupaware")){ // fix SAK-10076
-				ListboxEntry diventry = new ListboxEntry(count);
-				diventry.setDataAsDivider("["+rname+"]");
-				diventry.setSourceSelected(true);
-				m_listboxdata.add(diventry);
+			ListboxEntry diventry = new ListboxEntry(count);
+			diventry.setDataAsDivider("["+rname+"]");
+			diventry.setSourceSelected(true);
+			m_listboxdata.add(diventry);
+			count++;
+
+
+			List users = group.getEmailusers();
+			for (Iterator j = users.iterator(); j.hasNext();)
+			{
+				EmailUser user = (EmailUser) j.next();
+				ListboxEntry entry = new ListboxEntry(count);
+				entry.setData(user);
+				entry.setSourceSelected(true);
+				m_listboxdata.add(entry);
 				count++;
-	
-	
-				List users = group.getEmailusers();
-				for (Iterator j = users.iterator(); j.hasNext();)
-				{
-					EmailUser user = (EmailUser) j.next();
-					ListboxEntry entry = new ListboxEntry(count);
-					entry.setData(user);
-					entry.setSourceSelected(true);
-					m_listboxdata.add(entry);
-					count++;
-					
-				}
+				
 			}
 /*			
 			if (i.hasNext() == true)

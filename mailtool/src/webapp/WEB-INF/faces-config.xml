@@ -26,6 +26,21 @@
 		<managed-bean-name>Mailtool</managed-bean-name>
 		<managed-bean-class>org.sakaiproject.tool.mailtool.Mailtool</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<description>authzGroupService</description>
+			<property-name>authzGroupService</property-name>
+			<value>#{Components["org.sakaiproject.authz.api.AuthzGroupService"]}</value>
+		</managed-property>
+		<managed-property>
+			<description>userDirectoryService</description>
+			<property-name>userDirectoryService</property-name>
+			<value>#{Components["org.sakaiproject.user.api.UserDirectoryService"]}</value>
+		</managed-property>
+		<managed-property>
+			<description>Signals completion of managed property assignment</description>
+			<property-name>configured</property-name>
+			<value>true</value>
+		</managed-property>
 	</managed-bean>
 	<managed-bean>
 		<description>Option</description>

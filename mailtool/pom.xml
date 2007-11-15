@@ -30,6 +30,9 @@ limitations under the License.
   </description>
   <packaging>war</packaging>
   <build>
+	<sourceDirectory>src/java</sourceDirectory>
+	<testSourceDirectory>src/test</testSourceDirectory>
+	<testOutputDirectory>target/test-classes</testOutputDirectory>
     <resources>
       <resource>
         <directory>${basedir}/src/bundle</directory>
@@ -206,6 +209,11 @@ limitations under the License.
       <version>1.0.4</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>jmock</groupId>
+      <artifactId>jmock</artifactId>
+      <version>1.1.0</version>
+    </dependency>    
 <!--
     <dependency>
       <groupId>commons-io</groupId>
