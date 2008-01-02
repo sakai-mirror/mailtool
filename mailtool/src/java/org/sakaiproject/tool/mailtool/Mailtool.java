@@ -28,35 +28,65 @@ package org.sakaiproject.tool.mailtool;
 
 // import java.lang.Thread;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.TreeSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.TreeSet;
 import java.util.Vector;
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+import javax.faces.component.UIInput;
+import javax.mail.BodyPart;
+
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.event.AbortProcessingException;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.validator.ValidatorException;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.io.FilenameUtils;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.tool.cover.ToolManager;
-// import org.sakaiproject.email.cover.EmailService;
-import org.sakaiproject.event.cover.NotificationService;
 import org.sakaiproject.authz.api.AuthzGroup;
-import org.sakaiproject.authz.cover.AuthzGroupService;
+import org.sakaiproject.authz.api.AuthzGroupService;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.event.cover.NotificationService;
+import org.sakaiproject.mailarchive.api.MailArchiveChannel;
+import org.sakaiproject.mailarchive.api.MailArchiveMessageEdit;
+import org.sakaiproject.mailarchive.api.MailArchiveMessageHeaderEdit;
+import org.sakaiproject.mailarchive.cover.MailArchiveService;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.time.cover.TimeService;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
-import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.user.api.UserDirectoryService;
+import org.sakaiproject.util.StringUtil;
 import org.sakaiproject.mailarchive.api.MailArchiveChannel;
 import org.sakaiproject.mailarchive.api.MailArchiveMessageEdit;
 import org.sakaiproject.mailarchive.api.MailArchiveMessageHeaderEdit;
@@ -73,7 +103,6 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.validator.ValidatorException;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
 import java.util.Properties;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -84,6 +113,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeUtility;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -95,6 +125,56 @@ import javax.activation.FileDataSource;
  *
  */
 public class Mailtool {
+	
+	/**
+	 * Name of the {@link javax.mail.Session} property that enables
+	 * debugging in that package. At this time, std out is the only
+	 * supported output PrintStream for this logging. This is a standard
+	 * Java Mail value.
+	 */
+	public static final String JAVAX_MAIL_DEBUG_PROP_NAME = "mail.debug";
+	
+	/**
+	 * Default name of the {@link javax.mail.Session} property with which clients
+	 * specify the target mail server. This name is actually dynamic, being
+	 * composed of mail.<em>protocol</em>.host. At this time, all we support
+	 * is STMP, hence the current value of this constant.
+	 */
+	public static final String DEFAULT_JAVAX_MAIL_HOST_PROP_NAME = "mail.smtp.host";
+	
+	/**
+	 * Name of the Sakai property which defines the target mail host. At this
+	 * writing, we piggy-back on the <code>EmailService</code> configuration,
+	 * but do not actually have a dependency on that API.
+	 */
+	public static final String DEFAULT_SAKAI_MAIL_HOST_PROP_NAME = 
+		"smtp@org.sakaiproject.email.api.EmailService";
+	
+	/**
+	 * Name of the Sakai property which controls {@link javax.mail.Session}
+	 * debugging. At this writing, this name corresponds to the standard
+	 * javax.mail property name.
+	 */
+	public static final String DEFAULT_SAKAI_MAIL_DEBUG_PROP_NAME = 
+		JAVAX_MAIL_DEBUG_PROP_NAME;
+	
+	/**
+	 * Default pattern for verifying a single email address's syntax. Is quite
+	 * relaxed w/r/t allowable accountID and domain characters. Coded to
+	 * require all domains other than "localhost" to terminate with a 2 - 6
+	 * char TLD. The TLD is not actually verified against an official enumeration.
+	 * Anchored by beginning- and end-of-input markers.
+	 */
+	public static final String DEFAULT_EMAIL_ADDR_PATTERN = 
+		"^(.+?@(?:localhost)|(?:[^.]+\\.)+[a-zA-Z]{2,6})+$";
+	
+	/**
+	 * The account ID used when constructing no-reply "from" email addresses.
+	 * Currently private with no accessors since this is not yet a generally
+	 * configurable feature.
+	 */
+	private static final String NO_REPLY_ACCOUNT_ID = "noreply";
+	
 	private final Log log = LogFactory.getLog(this.getClass());
 
 	protected FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -204,6 +284,15 @@ public class Mailtool {
 	private SiteService siteService;
 
 	protected ToolConfiguration m_toolConfig = null;
+	
+	private String javaxMailHostPropertyName = DEFAULT_JAVAX_MAIL_HOST_PROP_NAME;
+	
+	private String sakaiMailHostPropertyName = DEFAULT_SAKAI_MAIL_HOST_PROP_NAME; 
+	
+	private String sakaiMailDebugPropertyName = DEFAULT_SAKAI_MAIL_DEBUG_PROP_NAME;
+	
+	// TODO: configurable pattern
+	private Pattern emailAddrPattern = Pattern.compile(DEFAULT_EMAIL_ADDR_PATTERN);
 
 	protected Site currentSite = null;
 
@@ -256,9 +345,27 @@ public class Mailtool {
 	private List selectedSectionUsers = null;
 
 	/**
-	 * Mailtool bean for compose page
+	 * Mailtool bean for compose page. After injecting
+	 * configuration and collaborators, invoke {@link init()}
+	 * to place this bean in a valid state.
 	 */
 	public Mailtool() {
+	  //
+	}
+	/**
+	 * Completes initialization of bean state following instantiation.
+	 * Typically invoked by the bean management framework (JSF, usually).
+	 * This processing does not occur in the constructor because it
+	 * depends on Sakai service collaborators which will not be available
+	 * at construction time.
+	 *
+	 * <p>Because JSF has no means for specifying an initialization mechanism
+	 * (short of the PostConstruct annotation), this method is typically
+	 * triggered a side effect of calling <code>setConfigured(true)</code></p>
+	 *
+	 * @see #setConfigured(boolean)
+	 */
+	protected void init() {
 		num_groups = 0;
 		num_sections = 0;
 		num_groupawarerole = 0;
@@ -428,7 +535,7 @@ public class Mailtool {
 		return (ToolManager.getCurrentPlacement().getContext());
 	}
 
-	private String getSiteRealmID() {
+	protected String getSiteRealmID() {
 		return ("/site/" + ToolManager.getCurrentPlacement().getContext());
 	}
 
@@ -740,14 +847,6 @@ public class Mailtool {
 
 		EmailUser curUser = getCurrentUser();
 
-		String fromEmail = "";
-		String fromDisplay = "";
-		if (curUser != null) {
-			fromEmail = curUser.getEmail();
-			fromDisplay = curUser.getDisplayname();
-		}
-		String fromString = fromDisplay + " <" + fromEmail + ">";
-
 		m_results = "Message sent to: <br>";
 
 		String subject = m_subject;
@@ -766,7 +865,7 @@ public class Mailtool {
 						+ a.getFilename() + "(" + a.getSize() + " Bytes)";
 				i++;
 			}
-			this.appendToArchive(emailarchive, fromString, subject, m_body
+			this.appendToArchive(emailarchive, curUser.getNiceEmail(), subject, m_body
 					+ attachment_info);
 		}
 		List headers = new ArrayList();
@@ -775,50 +874,32 @@ public class Mailtool {
 		else
 			headers.add("content-type: text/plain");
 
-		String smtp_server = ServerConfigurationService
-				.getString("smtp@org.sakaiproject.email.api.EmailService");
-		// String smtp_port = ServerConfigurationService.getString("smtp.port");
 		try {
-			Properties props = new Properties();
-			props.put("mail.smtp.host", smtp_server);
-			// props.put("mail.smtp.port", smtp_port);
-			Session s = Session.getInstance(props, null);
 
-			MimeMessage message = new MimeMessage(s);
+			Session s = createMailSession();
+			MimeMessage message = createNewMimeMessage(s);
+			configureMessageFrom(curUser, message);
+			configureMessageReplyTo(curUser, message);
 
-			InternetAddress from = new InternetAddress(fromString);
-			message.setFrom(from);
-			String reply = getReplyToSelected().trim().toLowerCase();
-			if (reply.equals("yes")) {
-				// "reply to sender" is default. So do nothing
-			} else if (reply.equals("no")) {
-				String noreply = getSiteTitle() + " <noreply@" + smtp_server
-						+ ">";
-				InternetAddress noreplyemail = new InternetAddress(noreply);
-				message.setFrom(noreplyemail);
-			} else if (reply.equals("otheremail")
-					&& getReplyToOtherEmail().equals("") != true) {
-				// need input(email) validation
-				InternetAddress replytoList[] = { new InternetAddress(
-						getConfigParam("replyto").trim()) };
-				message.setReplyTo(replytoList);
-			}
-			message.setSubject(subject);
+			message.setSubject(MimeUtility.encodeText( subject, "UTF-8", "Q" ));
 			String text = m_body;
 			String attachmentdirectory = getUploadDirectory();
 
 			// Create the message part
-			BodyPart messageBodyPart = new MimeBodyPart();
+			MimeBodyPart messageBodyPart = new MimeBodyPart();
 
 			// Fill the message
 			String messagetype = "";
 
 			if (getTextFormat().equals("htmltext")) {
-				messagetype = "text/html";
+				messagetype = "text/html; charset=UTF-8";
+            messageBodyPart.setContent(text, messagetype);
 			} else {
-				messagetype = "text/plain";
+				messagetype = "text/plain; charset=UTF-8";
+            messageBodyPart.setContent(text, messagetype);
 			}
-			messageBodyPart.setContent(text, messagetype);
+			messageBodyPart.addHeader("Content-Transfer-Encoding", "quoted-printable");
+			messageBodyPart.addHeader("Content-Type", messagetype );
 			Multipart multipart = new MimeMultipart();
 			multipart.addBodyPart(messageBodyPart);
 
@@ -843,10 +924,15 @@ public class Mailtool {
 				EmailUser euser = (EmailUser) i.next();
 				String toEmail = euser.getEmail(); // u.getEmail();
 				String toDisplay = euser.getDisplayname(); // u.getDisplayName();
+
+				if ( StringUtil.trimToNull(toEmail) == null ) {
+				  continue;
+				}
+
 				// if AllUsers are selected, do not add current user's email to
 				// recipients
-				if (isAllUsersSelected()
-						&& getCurrentUser().getEmail().equals(toEmail)) {
+				if (isAllUsersSelected() &&
+				    toEmail.equals(curUser.getEmail())) {
 					// don't add sender to recipients
 				} else {
 					recipientsString += toEmail;
@@ -868,7 +954,7 @@ public class Mailtool {
 				// Transport.send(message, to);
 			}
 			if (m_sendmecopy) {
-				message.addRecipients(Message.RecipientType.CC, fromEmail);
+				message.addRecipients(Message.RecipientType.CC, curUser.getEmail());
 				// trying to solve SAK-7410
 				// recipientsString+=fromEmail;
 				// InternetAddress to[] = {new InternetAddress(fromEmail) };
@@ -878,10 +964,19 @@ public class Mailtool {
 			// recipientsString);
 			message.addRecipients(Message.RecipientType.BCC, recipientsString);
 
-			Transport.send(message);
+			sendMimeMessage(message);
 		} catch (Exception e) {
-			log.debug("Mailtool Exception while trying to send the email: "
-					+ e.getMessage());
+			if ( log.isWarnEnabled() ) {
+				log.warn("Mailtool Exception while trying to send the email: ", e);
+			}
+			
+			FacesMessage message = new FacesMessage();
+			message.setDetail("Failed to send email. Error message: " + e.getMessage());
+			message.setSummary("Failed to send email. Error message: " + e.getMessage());
+			message.setSeverity(FacesMessage.SEVERITY_ERROR);
+			FacesContext.getCurrentInstance().addMessage("", message);
+			return "";
+			
 		}
 
 		// Clear the Subject and Body of the Message
@@ -925,6 +1020,240 @@ public class Mailtool {
 			}
 		}
 		return "results";
+	}
+
+/**
+ * Configure the from address on the given {@link MimeMessage}. In
+ * the event the current sender has no configured email address,
+ * the from address will be set to the result of
+ * {@link #createNoReplyInternetAddress(String)}, where the
+ * current sender's display name is passed as the <code>String</code>
+ * argument. This is subtly different than what occurs in
+ * {@link #configureMessageReplyTo(EmailUser, MimeMessage)} when the
+ * user has explicitly specified no-reply. See that method for more 
+ * details. 
+ * 
+ * @see #configureMessageReplyTo(EmailUser, MimeMessage)
+ * @param sender the current Sakai user attempting to send a message
+ * @param message the message to be sent
+ * @throws AddressException address creation failure
+ * @throws UnsupportedEncodingException address creation failure
+ * @throws MessagingException address assignment failure
+ */
+protected void configureMessageFrom(EmailUser sender, MimeMessage message)
+		throws AddressException, UnsupportedEncodingException,
+		MessagingException {
+	
+	InternetAddress fromAddr = sender.getInternetAddress();
+	
+	if ( fromAddr == null || fromAddr.getAddress() == null ) { // if user has no configured email addr, for example
+		fromAddr = createNoReplyInternetAddress(sender.getDisplayname());
+	}
+	
+	message.setFrom(fromAddr);
+	
+}
+
+	/**
+	 * Configure the reply-to address on the given {@link MimeMessage}.
+	 * Assumes that the from address has already been configured (although,
+	 * as implemented, may override that value).
+	 * 
+	 * <p>If the sending user explicitly selects the "no-reply" feature, 
+	 * we assume she is interested in actually concealing her identity,
+	 * and output a stock personal name in the message's from header, as 
+	 * determed by {@link #getDefaultNoReplyAddressPersonalName()}. This
+	 * is distinct from the behavior triggered by a sender with no
+	 * configured email address, in which case the from address's personal
+	 * name is derived from the current user's display name, even if the
+	 * actual address is a no-reply account. (The latter case is actually
+	 * handled by {@link #configureMessageFrom(EmailUser, MimeMessage)}</p>
+	 * 
+	 * @see #configureMessageFrom(EmailUser, MimeMessage)
+	 * @param sender the current Sakai user attempting to send a message
+	 * @param message the message to be sent
+	 * @throws AddressException address creation failure
+	 * @throws UnsupportedEncodingException address creation failure
+	 * @throws MessagingException address assignment failure
+	 */
+	protected void configureMessageReplyTo(EmailUser sender, MimeMessage message) 
+	throws AddressException, MessagingException, UnsupportedEncodingException {
+		String reply = getReplyToSelected().trim().toLowerCase();
+		if (reply.equals("yes")) {
+			// "reply to sender" is default. So do nothing
+		} else if (reply.equals("no")) {
+			// override whatever's already been set in the "from" field
+			InternetAddress noReplyAddr = createNoReplyInternetAddress();
+			message.setFrom(noReplyAddr);
+		} else if (reply.equals("otheremail")
+				&& !(getReplyToOtherEmail().equals(""))) {
+			// need input(email) validation
+			InternetAddress replytoList[] = { new InternetAddress(
+					getConfigParam("replyto").trim()) };
+			message.setReplyTo(replytoList);
+		}
+	}
+
+	/**
+	 * Perform the work of transmitting a {@link MimeMessage}.
+	 * 
+	 * @see Transport#send(Message)
+	 * @param message a message to send
+	 * @throws MessagingException if message transmission fails
+	 */
+	protected void sendMimeMessage(MimeMessage message)
+			throws MessagingException {
+		Transport.send(message);
+	}
+
+	/**
+	 * Factory method for {@link MimeMessage}s associated with the
+	 * given {@link Session}.
+	 * 
+	 * @param javaxMailSession the session to associate with the message
+	 * @return a new {@link MimeMessage}
+	 */
+	protected MimeMessage createNewMimeMessage(Session javaxMailSession) {
+		return new MimeMessage(javaxMailSession);
+	}
+
+	/**
+	 * Instantiate and configure a new {@link javax.mail.Session}.
+	 * 
+	 * @see #createMailSessionProperties()
+	 * @return a new {@link javax.mail.Session}
+	 */
+	protected Session createMailSession() {
+		Properties sessionProps = createMailSessionProperties();
+		Session s = Session.getInstance(sessionProps, null);
+		return s;
+	}
+	
+	/**
+	 * Collect a {@link Properties} instance representing the
+	 * standard configuration for a new Mailtool {@link javax.mail.Session}
+	 * instance. As implemented, simply configures a single mail host
+	 * and a debugging flag.
+	 * 
+	 * @see #getMailHost()
+	 * @see #getMailDebug()
+	 * @return {@link javax.mail.Session} configuration
+	 */
+	protected Properties createMailSessionProperties() {
+		
+		Properties props = new Properties();
+		
+		// we assume only one mail host
+		String mailHost = StringUtil.trimToNull(getMailHost());
+		if ( mailHost == null ) {
+			if ( log.isWarnEnabled() ) {
+				log.warn("No javax.mail host configured.");
+			}
+		} else {
+			if ( log.isDebugEnabled() ) {
+				log.debug("Setting javax.mail.Session property [name = " + javaxMailHostPropertyName + 
+						"][value = " + mailHost + "]");
+			}
+			props.put(javaxMailHostPropertyName, mailHost);
+		}
+		
+		String debugJavaxMail = getMailDebug();
+		if ( log.isDebugEnabled() ) {
+			log.debug("Setting javax.mail.Session property [name = " + JAVAX_MAIL_DEBUG_PROP_NAME + 
+					"][value = " + debugJavaxMail + "]");
+		}
+		props.put(JAVAX_MAIL_DEBUG_PROP_NAME, debugJavaxMail);
+		
+		return props;
+		
+	}
+	
+	/**
+	 * Constructs an {@link InternetAddress} for use as a "no-reply" from address.
+	 * Follows the historical convention of using the configured mail host
+	 * as the address domain. Uses the given String is the address's personal name
+	 * unless <code>null</code>, in which case the current worksite's title will
+	 * be used. If the latter is null, the address will not have a personal name.
+	 * 
+	 * @see #getMailHost()
+	 * @return a new {@link InternetAddress}
+	 * @throws UnsupportedEncodingException
+	 */
+	protected InternetAddress createNoReplyInternetAddress(String personalName) 
+	throws AddressException, UnsupportedEncodingException {
+		personalName = personalName == null ? getDefaultNoReplyAddressPersonalName() : personalName;
+		String noReplyEmailAddrStr = getNoReplyEmailAddress();
+		if ( log.isDebugEnabled() ) {
+			log.debug("Constructing a no-reply email addr [personal name = " + personalName + 
+					"][address = " + noReplyEmailAddrStr + "]");
+		}
+		InternetAddress internetAddr = 
+			personalName == null ?
+						new InternetAddress(noReplyEmailAddrStr) : 
+						new InternetAddress(noReplyEmailAddrStr, personalName);
+		return internetAddr;
+	}
+	
+	/**
+	 * Same as <code>createNoReplyInternetAddress(null)</code>.
+	 * 
+	 * @see #createNoReplyInternetAddress(String)
+	 */
+	protected InternetAddress createNoReplyInternetAddress() 
+	throws AddressException, UnsupportedEncodingException {
+		return createNoReplyInternetAddress(null);
+	}
+	
+	/**
+	 * Access the default personal name to associate with no-reply "from"
+	 * email addresses. May return <code>null</code>. As implemented, simply
+	 * returns the value of {@link #getSiteTitle()}
+	 * 
+	 * @return an email personal name, possibly <code>null</code>
+	 */
+	protected String getDefaultNoReplyAddressPersonalName() {
+		return getSiteTitle();
+	}
+	
+	/**
+	 * Access the "raw" String representation of the email address from
+	 * which to send no-reply mail.
+	 * 
+	 * @return a no-reply email address, never <code>null</code>
+	 */
+	protected String getNoReplyEmailAddress() {
+		return NO_REPLY_ACCOUNT_ID + "@" + getMailHost();
+	}
+	
+	/**
+	 * Access the name of the target mail host. Currently implemented
+	 * to retrieve this value from the Sakai {@link ServerConfigurationService}
+	 * using a configurable key.
+	 * 
+	 * @see #getSakaiMailHostPropertyName()
+	 * @see ServerConfigurationService#getString(String)
+	 * @return name of the mail host used by this tool
+	 */
+	public String getMailHost() {
+		String hostName = 
+			ServerConfigurationService.getString(sakaiMailHostPropertyName);
+		return hostName;
+	}
+	
+	/**
+	 * Access the current {@link javax.mail.Session} debugging flag (String-encoded
+	 * boolean). Will not return <code>null</code>; defaults to "false".
+	 * Currently implemented to retrieve this value from the Sakai 
+	 * {@link ServerConfigurationService} using a configurable key.
+	 * 
+	 * @see #getSakaiMailDebugPropertyName()
+	 * @see ServerConfigurationService#getString(String)
+	 * @return
+	 */
+	public String getMailDebug() {
+		String debug = 
+			StringUtil.trimToNull(ServerConfigurationService.getString(sakaiMailDebugPropertyName));
+		return debug == null ? "false" : "true";
 	}
 
 	public RecipientSelector getRecipientSelector() {
@@ -1965,24 +2294,43 @@ public class Mailtool {
 	 */
 	public void validateEmail(FacesContext context, UIComponent toValidate,
 			Object value) throws ValidatorException {
-		String enteredEmail = (String) value;
-		Pattern p = Pattern.compile("(.+@.+\\.[a-z]+)"); // Set the email
-															// pattern string
-
-		// Match the given string with the pattern
-		Matcher m = p.matcher(enteredEmail);
-
-		// Check whether match is found
-		boolean matchFound = m.matches(); 
+		boolean matchFound = isValidEmailList((String)value);
 
 		if (!matchFound) {
 			FacesMessage message = new FacesMessage();
-			message.setDetail("Email not valid");
-			message.setSummary("Email not valid");
+			message.setDetail("Email not valid in Other Recipients field");
+			message.setSummary("Email not valid in Other Recipients field");
 			message.setSeverity(FacesMessage.SEVERITY_ERROR);
 			throw new ValidatorException(message);
 		}
 	}
+	
+	/**
+	 * Tests if a string contains one or more valid email addresses and no invalid
+	 * addresses. Test is purely syntactical. Default pattern is defined by
+	 * {@link #DEFAULT_EMAIL_ADDR_PATTERN}.
+	 * 
+	 * @param emailAddresses a String, possibly representing a comma- or semi-colon-
+	 *   delimited list of email addresses
+	 * @return <code>true</code> unless any of the tokens in the given string
+	 *   are syntactically invalid email addresses.
+	 */
+	protected boolean isValidEmailList(String emailAddresses) {
+		// TODO configurable delims?
+		StringTokenizer tokenizer = new StringTokenizer(emailAddresses, ",;");
+		for ( String token = null; tokenizer.hasMoreTokens(); ) {
+			token = tokenizer.nextToken().trim();
+			if (!(emailAddrPattern.matcher(token).matches())) {
+				if ( log.isDebugEnabled() ) {
+					log.debug("Email failed syntax validation test [email addr = " + token +
+							"][pattern = " + emailAddrPattern.pattern() + "]");
+				}
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public void validateSubject(FacesContext context, UIComponent toValidate,
 			Object value) throws ValidatorException {
 		String enteredSubject = (String) value;
@@ -2048,5 +2396,75 @@ public class Mailtool {
 
 	public void setSitename(String sitename) {
 		this.sitename = sitename;
+	}
+	
+	/**
+	 * Access the name of the {@link javax.mail.Session} property
+	 * to use when assigning the target host name. 
+	 * 
+	 * @return a {@link javax.mail.Session} property name
+	 */
+	public String getJavaxMailHostPropertyName() {
+		return javaxMailHostPropertyName;
+	}
+
+	/**
+	 * Set the name of the {@link javax.mail.Session} property
+	 * to use when assigning the target host name. This is technically
+	 * a dynamic value, being composed of mail.<em>protocol</em>.host.
+	 * Defaults to {@link #DEFAULT_JAVAX_MAIL_HOST_PROP_NAME}. 
+	 * 
+	 * @param javaxMailHostPropertyName
+	 */
+	public void setJavaxMailHostPropertyName(String javaxMailHostPropertyName) {
+		this.javaxMailHostPropertyName = javaxMailHostPropertyName;
+	}
+
+	/**
+	 * Access the name of the Sakai property which defines the target mail host. 
+	 * (Not the actual mail host name itself).
+	 * 
+	 * @see #getMailHost()
+	 * @see ServerConfigurationService#getString(String)
+	 * @return a Sakai property name
+	 */
+	public String getSakaiMailHostPropertyName() {
+		return sakaiMailHostPropertyName;
+	}
+
+	/**
+	 * Set the name of the Sakai property which defines the target mail host. 
+	 * (Not the actual mail host name itself). Defaults to 
+	 * {@link #DEFAULT_SAKAI_MAIL_HOST_PROP_NAME}.
+	 * 
+	 * @see ServerConfigurationService#getString(String)
+	 * @param sakaiMailHostPropertyName a Sakai property name
+	 */
+	public void setSakaiMailHostPropertyName(String sakaiMailHostPropertyName) {
+		this.sakaiMailHostPropertyName = sakaiMailHostPropertyName;
+	}
+
+	/**
+	 * Access the name of the Sakai property which controls {@link javax.mail.Session}
+	 * debugging. (Not the actual boolean setting itself).
+	 * 
+	 * @see #getMailDebug()
+	 * @see ServerConfigurationService#getString(String)
+	 * @return a Sakai property name
+	 */
+	public String getSakaiMailDebugPropertyName() {
+		return sakaiMailDebugPropertyName;
+	}
+
+	/**
+	 * Assign the name of the Sakai property which controls {@link javax.mail.Session}
+	 * debugging. (Not the actual boolean setting itself). Defaults to
+	 * {@link #DEFAULT_SAKAI_MAIL_DEBUG_PROP_NAME}
+	 * 
+	 * @see ServerConfigurationService#getString(String)
+	 * @param sakaiMailDebugPropertyName a Sakai property name
+	 */
+	public void setSakaiMailDebugPropertyName(String sakaiMailDebugPropertyName) {
+		this.sakaiMailDebugPropertyName = sakaiMailDebugPropertyName;
 	}
 }
