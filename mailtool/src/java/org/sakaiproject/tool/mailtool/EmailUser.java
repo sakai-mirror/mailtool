@@ -21,13 +21,6 @@
 
 package org.sakaiproject.tool.mailtool;
 
-import java.io.UnsupportedEncodingException;
-
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-
-import org.sakaiproject.util.StringUtil;
-
 
 /**
  * EmailUser contains user id, full name, first/last names, etc. (commented by kimsooil@bu.edu)
@@ -114,35 +107,6 @@ public class EmailUser implements Comparable {
 		return nicestring;
 	}
 
-	/**
-	 * Constructs an {@link InternetAddress} based on this user's current
-	 * state. If the user has not been assigned an email address String, will
-	 * return an "empty" {@link InternetAddress}. If no display name
-	 * has been assigned, will return an instance initialized by 
-	 * {@link InternetAddress#InternetAddress(String)}. If both a display
-	 * name and an email address String have been assigned, will return
-	 * an instance initialized by {@link InternetAddress#InternetAddress(String, String)}
-	 * 
-	 * @return a new {@link InternetAddress} derived from this user's state
-	 * @throws AddressException if the proposed address fails {@link InternetAddress}
-	 *   parsing rules
-	 * @throws UnsupportedEncodingException
-	 */
-	public InternetAddress getInternetAddress() throws AddressException, 
-	UnsupportedEncodingException {
-		
-		if ( StringUtil.trimToNull(m_email) == null ) {
-			return new InternetAddress();
-		}
-		
-		if ( StringUtil.trimToNull(m_displayname) == null ) {
-			return new InternetAddress(m_email);
-		}
-		
-		return new InternetAddress(m_email, m_displayname);
-		
-	}
-	
 	public int compareTo(Object anotherEmailUser) throws ClassCastException
 	{
 		if (!(anotherEmailUser instanceof EmailUser))
