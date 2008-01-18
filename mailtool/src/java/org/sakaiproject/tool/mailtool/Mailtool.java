@@ -75,10 +75,13 @@ import javax.faces.validator.ValidatorException;
 import javax.faces.component.UIComponent;
 import java.util.Properties;
 import javax.mail.BodyPart;
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.SendFailedException;
+import javax.mail.SendFailedException;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
@@ -785,6 +788,7 @@ public class Mailtool {
 		try {
 			Properties props = new Properties();
 			props.put("mail.smtp.host", smtp_server);
+			props.put("mail.smtp.sendpartial", "true");
 			// props.put("mail.smtp.port", smtp_port);
 			Session s = Session.getInstance(props, null);
 
@@ -896,6 +900,30 @@ public class Mailtool {
 		} catch (Exception e) {
 			log.debug("Mailtool Exception while trying to send the email: "
 					+ e.getMessage());
+
+
+			int okusers = 0;
+			int badusers = 0;
+ 			if (e instanceof SendFailedException) {
+			    SendFailedException sfe = (SendFailedException)e;
+			    Address[] okaddrs = sfe.getValidSentAddresses();
+			    Address[] invalid = sfe.getInvalidAddresses();
+			    Address[] notsent = sfe.getValidUnsentAddresses();
+			    
+			    if (okaddrs != null) 
+				okusers += okaddrs.length;
+			    if (invalid != null)
+				badusers += invalid.length;
+			    if (notsent != null)
+				badusers += notsent.length;
+			}
+
+			if (okusers > 0) {
+			    m_results = "Mail sent successfully to " + okusers + " users, but there were errors for " + badusers + " users.<br/><br/>See the following error messages for specific problems:<br/><br/>" + e.getMessage() + "<br/><br/>Here is what we attempted to do: " + m_results;
+			} else {
+			    m_results = "Failed to send email. Error message: " + e.getMessage() + "<br/><br/>Here is what we attempted to do: " + m_results;
+			}
+
 		}
 
 		// Clear the Subject and Body of the Message
