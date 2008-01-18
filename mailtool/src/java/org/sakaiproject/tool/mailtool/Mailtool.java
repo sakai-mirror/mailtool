@@ -52,8 +52,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.validator.ValidatorException;
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.SendFailedException;
 import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -106,6 +108,13 @@ public class Mailtool {
 		 * Java Mail value.
 		 */
 		public static final String JAVAX_MAIL_DEBUG_PROP_NAME = "mail.debug";
+
+		/**
+		 * Name of the {@link javax.mail.Session} property that enables
+		 * a message to be sent even if one or more addresses are bad.
+		 * Java Mail value.
+		 */
+		public static final String JAVAX_MAIL_SENDPARTIAL_PROP_NAME = "mail.smtp.sendpartial";
 		
 		/**
 		 * Default name of the {@link javax.mail.Session} property with which clients
@@ -1005,9 +1014,32 @@ public class Mailtool {
 			}
 			
 			FacesMessage message = new FacesMessage();
-			message.setDetail("Failed to send email. Error message: " + e.getMessage());
-			message.setSummary("Failed to send email. Error message: " + e.getMessage());
-			message.setSeverity(FacesMessage.SEVERITY_ERROR);
+
+			int okusers = 0;
+			int badusers = 0;
+
+			if (e instanceof SendFailedException) {
+			    SendFailedException sfe = (SendFailedException)e;
+			    Address[] okaddrs = sfe.getValidSentAddresses();
+			    Address[] invalid = sfe.getInvalidAddresses();
+			    Address[] notsent = sfe.getValidUnsentAddresses();
+			    
+			    if (okaddrs != null) 
+				okusers += okaddrs.length;
+			    if (invalid != null)
+				badusers += invalid.length;
+			    if (notsent != null)
+				badusers += notsent.length;
+			}
+
+			if (okusers > 0) {
+			    message.setDetail("Mail sent successfully to " + okusers + " users, but there were errors for " + badusers + " users.\n\nSee the following error messages for specific problems:\n\n" + e.getMessage());
+
+			    message.setSummary("Mail sent successfully to " + okusers + " users, but there were errors for " + badusers + " users.\n\nSee the following error messasges for specific problems:\n\n" + e.getMessage());
+			} else {
+			    message.setSummary("Failed to send email. Error message: " + e.getMessage());
+			    message.setSeverity(FacesMessage.SEVERITY_ERROR);
+			}
 			FacesContext.getCurrentInstance().addMessage("", message);
 			return "";			
 			
@@ -1103,7 +1135,8 @@ public class Mailtool {
 						"][value = " + debugJavaxMail + "]");
 			}
 			props.put(JAVAX_MAIL_DEBUG_PROP_NAME, debugJavaxMail);
-			
+			props.put(JAVAX_MAIL_SENDPARTIAL_PROP_NAME, "true");
+
 			return props;
 			
 		}
