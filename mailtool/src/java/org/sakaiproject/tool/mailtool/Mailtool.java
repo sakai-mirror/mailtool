@@ -31,6 +31,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.TreeSet;
 import java.util.Iterator;
 import java.util.List;
@@ -788,6 +789,7 @@ public class Mailtool {
 
 			InternetAddress from = new InternetAddress(fromString);
 			message.setFrom(from);
+			message.setSentDate(new Date(System.currentTimeMillis()));
 			String reply = getReplyToSelected().trim().toLowerCase();
 			if (reply.equals("yes")) {
 				// "reply to sender" is default. So do nothing
