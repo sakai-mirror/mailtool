@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <!--
 Copyright (c) 2003, 2004, 2005, 2006, 2007 The Sakai Foundation.
 
@@ -30,9 +30,9 @@ limitations under the License.
   </description>
   <packaging>war</packaging>
   <build>
-	<sourceDirectory>src/java</sourceDirectory>
-	<testSourceDirectory>src/test</testSourceDirectory>
-	<testOutputDirectory>target/test-classes</testOutputDirectory>
+    <sourceDirectory>src/java</sourceDirectory>
+    <testSourceDirectory>src/test</testSourceDirectory>
+    <testOutputDirectory>target/test-classes</testOutputDirectory>
     <resources>
       <resource>
         <directory>${basedir}/src/bundle</directory>
@@ -51,6 +51,18 @@ limitations under the License.
     </resources>
   </build>
   <dependencies>
+    <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-kernel-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-component-manager</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject.kernel.util</groupId>
+      <artifactId>sakai-util</artifactId>
+    </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
@@ -72,10 +84,10 @@ limitations under the License.
       <version>1.1.01</version>
     </dependency>
     <dependency>
-       <groupId>commons-fileupload</groupId>
-       <artifactId>commons-fileupload</artifactId>
-       <version>${sakai.commons.fileupload.version}</version>
-       <scope>provided</scope>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>${sakai.commons.fileupload.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -102,47 +114,19 @@ limitations under the License.
       <artifactId>sakai-jsf-app</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-util</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
+<!--org.sakaiprojectsakai-util${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-depend-jsf-widgets-sun</artifactId>
       <version>${sakai.version}</version>
       <type>pom</type>
     </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-email-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-entity-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-event-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-content-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-site-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-util-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
+<!--org.sakaiprojectsakai-email-api${sakai.version}-->
+<!--org.sakaiprojectsakai-entity-api${sakai.version}-->
+<!--org.sakaiprojectsakai-event-api${sakai.version}-->
+<!--org.sakaiprojectsakai-content-api${sakai.version}-->
+<!--org.sakaiprojectsakai-site-api${sakai.version}-->
+<!--org.sakaiprojectsakai-util-api${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-mailarchive-api</artifactId>
@@ -153,26 +137,10 @@ limitations under the License.
       <artifactId>sakai-message-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-tool-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-authz-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-user-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-component-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
+<!--org.sakaiprojectsakai-tool-api${sakai.version}-->
+<!--org.sakaiprojectsakai-authz-api${sakai.version}-->
+<!--org.sakaiprojectsakai-user-api${sakai.version}-->
+<!--org.sakaiprojectsakai-component-api${sakai.version}-->
 <!--try for sakai tag and wysiwyg-->
     <dependency>
       <groupId>commons-digester</groupId>
@@ -195,7 +163,7 @@ limitations under the License.
       <artifactId>standard</artifactId>
       <version>1.1.2</version>
     </dependency>
--->    
+-->
 <!-- 
     <dependency>
       <groupId>commons-logging</groupId>
@@ -213,13 +181,13 @@ limitations under the License.
       <groupId>jmock</groupId>
       <artifactId>jmock</artifactId>
       <version>1.1.0</version>
-    </dependency>    
+    </dependency>
 <!--
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>1.2</version>
     </dependency>
--->    
+-->
   </dependencies>
 </project>
