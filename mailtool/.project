@@ -1,21 +1,17 @@
 <projectDescription>
   <name>mailtool</name>
   <comment>This project creates a WAR containing the Mailtool Tool for Sakai.</comment>
-  <projects>
-    <project>sakai-depend-jsf-widgets-sun</project>
-    <project>sakai-jsf-app</project>
-    <project>sakai-jsf-tool</project>
-    <project>sakai-jsf-widgets</project>
-    <project>sakai-jsf-widgets-sun</project>
-    <project>sakai-mailarchive-api</project>
-    <project>sakai-message-api</project>
-  </projects>
+  <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
     </buildCommand>
+    <buildCommand>
+      <name>org.maven.ide.eclipse.maven2Builder</name>
+    </buildCommand>
   </buildSpec>
   <natures>
     <nature>org.eclipse.jdt.core.javanature</nature>
+    <nature>org.maven.ide.eclipse.maven2Nature</nature>
   </natures>
 </projectDescription>

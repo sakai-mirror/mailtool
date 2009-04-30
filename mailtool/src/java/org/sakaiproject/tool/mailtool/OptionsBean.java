@@ -29,8 +29,10 @@ import java.util.Set;
 import javax.faces.model.SelectItem;
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
 import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
@@ -66,7 +68,7 @@ public class OptionsBean {
 	protected boolean m_selectSideBySide = false;
 	protected boolean m_selectByFoothill = false;
 	protected boolean m_sendmecopy = false;
-	protected boolean EmailArchiveInSite=false;
+	protected boolean EmailArchiveInSite=false; //Name should start with a lowercase
 	protected boolean m_archiveMessage = false;
 	protected String m_replyto="";
 	protected String m_textformat = "";
@@ -475,6 +477,8 @@ public class OptionsBean {
 			}
 			catch(Exception e) {
 				log.debug("Exception: OptionsBean.getEmailRoles()2, " + e.getMessage());
+				//If currentSite is Null then will be NPE, prefer to return early.
+				return theroles;
 			}
 			Collection groups = currentSite.getGroups();
 			for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
@@ -517,8 +521,14 @@ public class OptionsBean {
 				AuthzGroup therealm = null;
 				try {
 					therealm = m_realmService.getAuthzGroup(realmid);
-				} catch (Exception e) {
-					log.debug("Exception: OptionsBean.getEmailGroups() #1, " + e.getMessage());
+				} catch (GroupNotDefinedException e1){
+					log.debug("GroupNotDefinedException: Mailtool.getEmailGroups() #1, "
+							, e1);
+					return thegroups;
+				} catch (Exception e2) {
+					log.debug("Exception: Mailtool.getEmailGroups() #1, "
+							+ e2.getMessage());
+					return thegroups;
 				}
 				Set users = therealm.getUsersHasRole(emailrole.getRoleid());
 				List /* EmailUser */ mailusers = new ArrayList();
@@ -559,11 +569,16 @@ public class OptionsBean {
 				Site currentSite=null;
 				try{
 					currentSite = siteService.getSite(sid);
+				} catch (IdUnusedException e1){
+					log.debug("IdUnusedException: Mailtool.getEmailGroups() #3, "
+							, e1);
+					return thegroups;
+				} catch (Exception e2) {
+					log.debug("Exception: Mailtool.getEmailGroups() #3, "
+							+ e2.getMessage());
+					return thegroups;
 				}
-				catch(Exception e)
-				{
-					log.debug("Exception: OptionsBean.getEmailGroups() #3, " + e.getMessage());
-				}
+				
 				Collection groups = currentSite.getGroups();
 				Group agroup=null;
 				for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
@@ -608,11 +623,16 @@ public class OptionsBean {
 				Site currentSite=null;
 				try{
 					currentSite = siteService.getSite(sid);
+				} catch (IdUnusedException e1){
+					log.debug("IdUnusedException: Mailtool.getEmailGroups() #4, "
+							, e1);
+					return thegroups;
+				} catch (Exception e2) {
+					log.debug("Exception: Mailtool.getEmailGroups() #4, "
+							+ e2.getMessage());
+					return thegroups;
 				}
-				catch(Exception e)
-				{
-					log.debug("Exception: Mailtool.getEmailGroups() #4, " + e.getMessage());
-				}
+
 				Collection groups = currentSite.getGroups();
 				Group agroup=null;
 				for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
@@ -668,8 +688,14 @@ public class OptionsBean {
 				AuthzGroup therealm = null;
 				try {
 					therealm = m_realmService.getAuthzGroup(realmid);
-				} catch (Exception e) {
-					log.debug("Exception: OptionsBean.getEmailGroupsByType() #1, " + e.getMessage());
+				} catch (GroupNotDefinedException e1){
+					log.debug("GroupNotDefinedException: Mailtool.getEmailGroups() #1, "
+							, e1);
+					return thegroups;
+				} catch (Exception e2) {
+					log.debug("Exception: Mailtool.getEmailGroups() #1, "
+							+ e2.getMessage());
+					return thegroups;
 				}
 				Set users = therealm.getUsersHasRole(emailrole.getRoleid());
 				List /* EmailUser */ mailusers = new ArrayList();
@@ -707,10 +733,14 @@ public class OptionsBean {
 				Site currentSite=null;
 				try{
 					currentSite = siteService.getSite(sid);
-				}
-				catch(Exception e)
-				{
-					log.debug("Exception: Mailtool.getEmailGroupsByType() #3, " + e.getMessage());
+				} catch (IdUnusedException e1){
+					log.debug("IdUnusedException: Mailtool.getEmailGroups() #3, "
+						, e1);
+					return thegroups;
+				} catch (Exception e2) {
+					log.debug("Exception: Mailtool.getEmailGroups() #3, "
+						+ e2.getMessage());
+					return thegroups;
 				}
 				Collection groups = currentSite.getGroups();
 				Group agroup=null;
@@ -754,13 +784,18 @@ public class OptionsBean {
 			{
 				String sid = getSiteID();
 				Site currentSite=null;
-				try{
+				try {
 					currentSite = siteService.getSite(sid);
+				} catch (IdUnusedException e1){
+					log.debug("IdUnusedException: Mailtool.getEmailGroups() #4, "
+							, e1);
+					return thegroups;
+				} catch (Exception e2) {
+					log.debug("Exception: Mailtool.getEmailGroups() #4, "
+							+ e2.getMessage());
+					return thegroups;
 				}
-				catch(Exception e)
-				{
-					log.debug("Exception: OptionsBean.getEmailGroupsByType() #4, " + e.getMessage());
-				}
+
 				Collection groups = currentSite.getGroups();
 				Group agroup=null;
 				for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();){
@@ -803,9 +838,15 @@ public class OptionsBean {
 				AuthzGroup therealm = null;
 				try {
 					therealm = m_realmService.getAuthzGroup(realmid);
-				} catch (Exception e) {
-					log.debug("Exception: OptionsBean.getEmailGroupsByType() #5, " + e.getMessage());
-				}
+				}catch (GroupNotDefinedException e1){
+					log.debug("GroupNotDefinedException: Mailtool.getEmailGroupsByType() #5, "
+							, e1);
+					return thegroups;
+				} catch (Exception e2) {
+					log.debug("Exception: Mailtool.getEmailGroupsByType() #5, "
+							+ e2.getMessage());
+					return thegroups;
+				} 
 				Set users = therealm.getUsersHasRole(emailrole.getRoleid());
 				List /* EmailUser */ mailusers = new ArrayList();
 				for (Iterator j = users.iterator(); j.hasNext();)

@@ -70,8 +70,10 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.AuthzGroupService;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.event.cover.NotificationService;
@@ -694,8 +696,11 @@ public class Mailtool {
 	 */
 	protected void setSelectorType() {
 		String type = getRecipview();
-		if (type.equals("") || type == null)
+		
+		//Would of been NPE if type Null so changed order
+		if ( type == null || type.equals("")){
 			type = recipviewDefault;
+		}
 
 		m_selectByRole = false;
 		m_selectByUser = false;
@@ -1535,7 +1540,8 @@ public class Mailtool {
 	 */
 	public boolean isFCKeditor() {
 		String editortype = this.getConfigParam("wysiwygeditor");
-		if (editortype.equals("") || editortype == null) {
+		//Fixed NPE if editortype Null
+		if (editortype == null || editortype.equals("") ) {
 			editortype = ServerConfigurationService.getString("wysiwyg.editor");
 			if (editortype == null)
 				return false;
@@ -1560,7 +1566,8 @@ public class Mailtool {
 	 */
 	public boolean isHTMLArea() {
 		String editortype = this.getConfigParam("wysiwygeditor");
-		if (editortype.equals("") || editortype == null) {
+		//Fixed NPE if editortype null
+		if ( editortype == null || editortype.equals("")) {
 			editortype = ServerConfigurationService.getString("wysiwyg.editor");
 			if (editortype == null)
 				return false;
@@ -1802,9 +1809,13 @@ public class Mailtool {
 				AuthzGroup therealm = null;
 				try {
 					therealm = m_realmService.getAuthzGroup(realmid);
-				} catch (Exception e) {
-					log.debug("Exception: Mailtool.getEmailGroups() #1, "
-							+ e.getMessage());
+				}catch (GroupNotDefinedException e1){
+					log.debug("getEmailGroups could not find therealm would of been NPE",e1);
+					return thegroups;
+				} catch (Exception e2) {
+					log.debug("Exception: Mailtool.getEmailGroups() #1, Would be NPE"
+							+ e2.getMessage());
+					return thegroups;
 				}
 				Set users = therealm.getUsersHasRole(emailrole.getRoleid());
 				List /* EmailUser */mailusers = new ArrayList();
@@ -1845,9 +1856,14 @@ public class Mailtool {
 				Site currentSite = null;
 				try {
 					currentSite = siteService.getSite(sid);
-				} catch (Exception e) {
+				} catch (IdUnusedException e1){
+					log.debug("IdUnusedException: Mailtool.getEmailGroups() #3, "
+							, e1);
+					return thegroups;
+				} catch (Exception e2) {
 					log.debug("Exception: Mailtool.getEmailGroups() #3, "
-							+ e.getMessage());
+							+ e2.getMessage());
+					return thegroups;
 				}
 				Collection groups = currentSite.getGroups();
 				Group agroup = null;
@@ -1899,9 +1915,14 @@ public class Mailtool {
 				Site currentSite = null;
 				try {
 					currentSite = siteService.getSite(sid);
-				} catch (Exception e) {
-					log.debug("Exception: Mailtool.getEmailGroups() #4, "
-							+ e.getMessage());
+				} catch (IdUnusedException e1){
+					log.debug("Exception: Mailtool.getEmailGroups() #4, Would of been NPE"
+							, e1);
+					return thegroups;	
+				} catch (Exception e2) {
+					log.debug("Exception: Mailtool.getEmailGroups() #4, Would of been NPE"
+							+ e2.getMessage());
+					return thegroups;
 				}
 				Collection groups = currentSite.getGroups();
 				Group agroup = null;
@@ -1974,9 +1995,15 @@ public class Mailtool {
 				try {
 					// therealm = m_realmService.getRealm(realmid);
 					therealm = m_realmService.getAuthzGroup(realmid);
-				} catch (Exception e) {
+				} catch(GroupNotDefinedException e1){
+					log.debug("GroupNotDefinedException: Mailtool.getEmailGroups() #1, "
+							, e1);
+					return thegroups;
+				}
+				catch (Exception e2) {
 					log.debug("Exception: Mailtool.getEmailGroups() #1, "
-							+ e.getMessage());
+							+ e2.getMessage());
+					return thegroups;
 				}
 				Set users = therealm.getUsersHasRole(emailrole.getRoleid());
 				List /* EmailUser */mailusers = new ArrayList();
@@ -2025,10 +2052,16 @@ public class Mailtool {
 				Site currentSite = null;
 				try {
 					currentSite = siteService.getSite(sid);
-				} catch (Exception e) {
+				} catch (IdUnusedException e1){
+					log.debug("IdUnusedException: Mailtool.getEmailGroups() #3, "
+							, e1);
+					return thegroups;
+				} catch (Exception e2) {
 					log.debug("Exception: Mailtool.getEmailGroups() #3, "
-							+ e.getMessage());
+							+ e2.getMessage());
+					return thegroups;
 				}
+
 				Collection groups = currentSite.getGroups();
 				Group agroup = null;
 				for (Iterator groupIterator = groups.iterator(); groupIterator
@@ -2082,9 +2115,14 @@ public class Mailtool {
 				Site currentSite = null;
 				try {
 					currentSite = siteService.getSite(sid);
-				} catch (Exception e) {
+				}catch (IdUnusedException e1){
+					log.debug("IdUnusedException: Mailtool.getEmailGroups() #4, "
+							, e1);
+					return thegroups;
+				} catch (Exception e2) { 
 					log.debug("Exception: Mailtool.getEmailGroups() #4, "
-							+ e.getMessage());
+							+ e2.getMessage());
+					return thegroups;
 				}
 				Collection groups = currentSite.getGroups();
 				Group agroup = null;
@@ -2137,9 +2175,14 @@ public class Mailtool {
 				AuthzGroup therealm = null;
 				try {
 					therealm = m_realmService.getAuthzGroup(realmid);
-				} catch (Exception e) {
+				} catch (GroupNotDefinedException e1){
+					log.debug("GroupNotDefinedException: Mailtool.getEmailGroups() #5, "
+							, e1);
+					return thegroups;
+				} catch (Exception e2) {
 					log.debug("Exception: Mailtool.getEmailGroups() #5, "
-							+ e.getMessage());
+							+ e2.getMessage());
+					return thegroups;
 				}
 				Set users = therealm.getUsersHasRole(emailrole.getRoleid());
 				List /* EmailUser */mailusers = new ArrayList();
