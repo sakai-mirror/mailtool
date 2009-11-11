@@ -52,9 +52,6 @@
       <groupId>org.sakaiproject.kernel</groupId>
       <artifactId>sakai-component-manager</artifactId>
     </dependency>
-<!--
-      This has been relocated to sakai-kernel-util
-      org.sakaiproject.kernel.utilsakai-util-->
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
@@ -85,33 +82,24 @@
       <artifactId>jsp-api</artifactId>
       <version>2.0</version>
     </dependency>
-<!--javax.servletservlet-api${sakai.servletapi.version}-->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
       <version>1.1.2</version>
     </dependency>
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-jsf-tool</artifactId>
-      <version>${sakai.version}</version>
+      <groupId>org.sakaiproject.jsf</groupId>
+      <artifactId>jsf-tool</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-jsf-app</artifactId>
+      <groupId>org.sakaiproject.jsf</groupId>
+      <artifactId>jsf-app</artifactId>
     </dependency>
-<!--org.sakaiprojectsakai-util${sakai.version}-->
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-depend-jsf-widgets-sun</artifactId>
+      <groupId>org.sakaiproject.jsf</groupId>
+      <artifactId>jsf-widgets-sun-depend</artifactId>
       <type>pom</type>
     </dependency>
-<!--org.sakaiprojectsakai-email-api${sakai.version}-->
-<!--org.sakaiprojectsakai-entity-api${sakai.version}-->
-<!--org.sakaiprojectsakai-event-api${sakai.version}-->
-<!--org.sakaiprojectsakai-content-api${sakai.version}-->
-<!--org.sakaiprojectsakai-site-api${sakai.version}-->
-<!--org.sakaiprojectsakai-util-api${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-mailarchive-api</artifactId>
@@ -120,11 +108,7 @@
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-message-api</artifactId>
     </dependency>
-<!--org.sakaiprojectsakai-tool-api${sakai.version}-->
-<!--org.sakaiprojectsakai-authz-api${sakai.version}-->
-<!--org.sakaiprojectsakai-user-api${sakai.version}-->
-<!--org.sakaiprojectsakai-component-api${sakai.version}-->
-<!--try for sakai tag and wysiwyg-->
+    <!--try for sakai tag and wysiwyg-->
     <dependency>
       <groupId>commons-digester</groupId>
       <artifactId>commons-digester</artifactId>
